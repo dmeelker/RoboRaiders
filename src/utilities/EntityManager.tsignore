@@ -1,0 +1,78 @@
+import { Viewport } from "../GameHost";
+import { FrameTime } from "./FrameTime";
+import { ILocation, Point, Rectangle, Size, Vector } from "./Trig";
+
+export abstract class Entity {
+    private _bounds = new Rectangle(0, 0, 0, 0);
+    public owner: EntityManager = new EntityManager();
+    public abstract update(time: FrameTime): void;
+    public abstract render(viewport: Viewport): void;
+
+    public set bounds(value: Rectangle) {
+        this._bounds = value;
+    }
+
+    public get bounds(): Rectangle {
+        return this._bounds;
+    }
+
+    public get location(): Point {
+        return this.bounds.location;
+    }
+
+    public get size(): Size {
+        return this.bounds.size;
+    }
+
+    public set location(location: ILocation) {
+        this.bounds = new Rectangle(location.x, location.y, this.bounds.width, this.bounds.height);
+    }
+
+    public get centerLocation(): Vector {
+        return new Vector(
+            this._bounds.x + (this._bounds.width / 2),
+            this._bounds.y + (this._bounds.height / 2));
+    }
+
+    public collides(other: Entity) {
+        return this._bounds.overlaps(other._bounds);
+    }
+
+    public destroy() {
+        this.owner.remove(this);
+    }
+}
+
+export class EntityManager {
+    private _entities: Array<Entity> = [];
+
+    public add(entity: Entity) {
+        this._entities.push(entity);
+        entity.owner = this;
+    }
+
+    public remove(entity: Entity) {
+        this._entities.splice(this._entities.indexOf(entity), 1);
+    }
+
+    public update(time: FrameTime) {
+        for (let entity of this._entities) {
+            entity.update(time);
+        }
+    }
+
+    public render(viewport: Viewport) {
+        for (let entity of this._entities) {
+            entity.render(viewport);
+        }
+    }
+
+    public getEntities(filter: (entity: Entity) => boolean) {
+        return this._entities.filter(filter);
+    }
+
+    public findCollisions(entity: Entity): Array<Entity> {
+        return this._entities
+            .filter(other => other != entity && other.bounds.overlaps(entity.bounds));
+    }
+}
