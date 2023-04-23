@@ -1,66 +1,104 @@
+import { FrameCounter } from "./utilities/FrameCounter";
 import { FrameTime } from "./utilities/FrameTime";
-import { Size } from "./utilities/Trig";
+import { Point, Size } from "./utilities/Trig";
 import { Viewport } from "./utilities/Viewport";
+import * as Dom from "./utilities/Dom";
+import * as Align from "./utilities/Align";
+import { ScreenManager } from "./utilities/ScreenManager";
+import { GameScreen } from "./GameScreen";
+import { GameContext } from "./GameContext";
+import { createPlayer1InputProvider } from "./input/InputConfiguration";
+import { Keyboard } from "./input/Keyboard";
+import { GamepadPoller } from "./input/GamepadPoller";
+import { ImageLoader } from "./utilities/ImagesLoader";
+import { AudioLoader } from "./utilities/AudioLoader";
 
-export abstract class Screen {
-    protected _viewport: Viewport;
-
-    public constructor(viewport: Viewport) {
-        this._viewport = viewport;
-    }
-
-    public abstract update(time: FrameTime): void;
-    public abstract render(): void;
-
-    protected get viewport(): Viewport { return this._viewport; }
+export interface ImageResources {
+    apple: ImageBitmap;
 }
 
-class TestScreen extends Screen {
-    public update(time: FrameTime): void {
-
-    }
-
-    public render(): void {
-        this.viewport.clearCanvas();
-    }
-
+export interface AudioResources {
+    apple: HTMLAudioElement;
 }
 
-export class ScreenManager {
-    private _activeScreen: Screen;
+class Main {
+    private _container: HTMLElement;
+    private _viewport: Viewport;
+    private _screenManager: ScreenManager;
+    private _fpsCounter = new FrameCounter();
+    private _lastFrameTime = 0;
 
-    public constructor(activeScreen: Screen) {
-        this._activeScreen = activeScreen;
-        this.activateScreen(activeScreen);
-    }
+    private _keyboard = new Keyboard();
+    private _gamepadPoller = new GamepadPoller();
+    private _images: ImageResources = null!;
 
-    public changeScreen(newScreen: Screen) {
-        this.deactivateScreen(this._activeScreen);
-        this._activeScreen = newScreen;
-        this.activateScreen(newScreen);
-    }
-
-    private activateScreen(screen: Screen) {
+    public constructor(container: HTMLElement) {
+        this._container = container;
 
     }
 
-    private deactivateScreen(screen: Screen) {
+    public start() {
+        this.requestAnimationFrame();
 
+        this.fillWindow();
+
+        window.addEventListener("resize", () => this.fillWindow());
     }
 
-    public update(time: FrameTime) {
-        this._activeScreen.update(time);
+    public async initialize() {
+        await this.loadResources();
+
+        this._viewport = new Viewport(new Size(800, 600), this._container);
+
+        const inputProvider = createPlayer1InputProvider(this._keyboard, this._gamepadPoller);
+        const testScreen = new GameScreen(new GameContext(this._viewport, inputProvider, this._images));
+        this._screenManager = new ScreenManager(testScreen, new FrameTime(0, 0));
     }
 
-    public render() {
-        this._activeScreen.render();
+    private async loadResources() {
+        const imageLoader = new ImageLoader("assets/gfx");
+        this._images = {
+            apple: await imageLoader.load("red.png"),
+        };
+
+        const soundLoader = new AudioLoader("assets/sound");
+        // add sound
     }
 
-    public get activeScreen(): Screen { return this._activeScreen; }
+    private requestAnimationFrame() {
+        requestAnimationFrame((time) => this.update(time));
+    }
+
+    private update(time: number): void {
+        let frameTime = new FrameTime(time, time - this._lastFrameTime);
+
+        this._screenManager.update(frameTime);
+        this._screenManager.render();
+
+        this._keyboard.nextFrame();
+        this._fpsCounter.frame();
+        this._lastFrameTime = time;
+
+        this.requestAnimationFrame();
+    }
+
+    private fillWindow() {
+        let windowSize = new Size(window.innerWidth, window.innerHeight);
+        let scale = this._viewport.size.getScaleFactor(windowSize);
+        let newSize = new Size(this._viewport.width * scale, this._viewport.height * scale);
+
+        this._container.style.transformOrigin = "top left";
+        this._container.style.transform = `scale(${scale})`;
+
+        // Center the container in the window
+        Dom.setLocation(this._container, Align.centerSizes(windowSize, newSize));
+    }
 }
 
-let container = document.getElementById("game");
-let viewport = new Viewport(new Size(800, 600), container);
+async function initialize() {
+    let main = new Main(document.getElementById("game"));
+    await main.initialize();
+    main.start();
+}
 
-let testScreen = new TestScreen(viewport);
-let screenManager = new ScreenManager(testScreen);
+initialize();

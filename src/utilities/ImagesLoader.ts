@@ -1,15 +1,12 @@
-export class Images {
-    private readonly _images = new Map<string, ImageBitmap>();
+export class ImageLoader {
     public basePath: string = "";
 
     public constructor(basePath?: string) {
         this.basePath = basePath ?? "";
     }
 
-    public async load(code: string, url: string): Promise<ImageBitmap> {
+    public async load(url: string): Promise<ImageBitmap> {
         const image = await this.loadImage(this.getImageUrl(url));
-
-        this.add(code, image);
         return image;
     }
 
@@ -35,13 +32,5 @@ export class Images {
 
             image.src = url;
         });
-    }
-
-    public get(code: string): ImageBitmap {
-        return this._images.get(code)!;
-    }
-
-    public add(code: string, image: ImageBitmap) {
-        this._images.set(code, image);
     }
 }
