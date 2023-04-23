@@ -24,7 +24,7 @@ export class Viewport {
         this._canvas.style.inset = "0";
         this._element.appendChild(this._canvas);
 
-        this._canvasContext = this._canvas.getContext("2d");
+        this._canvasContext = this._canvas.getContext("2d")!;
 
         this._uiElement = document.createElement("div");
         this._uiElement.style.position = "absolute";

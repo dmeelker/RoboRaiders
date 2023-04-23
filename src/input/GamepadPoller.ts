@@ -14,20 +14,20 @@ export class GamepadPoller {
         }
     }
 
-    private logButtonPresses() {
-        for (let padIndex = 0; padIndex < this._currentState.length; padIndex++) {
-            if (!this._currentState[padIndex]) {
-                continue;
-            }
+    // private logButtonPresses() {
+    //     for (let padIndex = 0; padIndex < this._currentState.length; padIndex++) {
+    //         if (!this._currentState[padIndex]) {
+    //             continue;
+    //         }
 
-            for (let i = 0; i < this._currentState[padIndex].buttons.length; i++) {
-                let button = this._currentState[padIndex].buttons[i];
-                if (button.pressed) {
-                    console.log(`Gamepad ${padIndex} Button: ${i}`);
-                }
-            }
-        }
-    }
+    //         for (let i = 0; i < this._currentState[padIndex].buttons.length; i++) {
+    //             let button = this._currentState[padIndex].buttons[i];
+    //             if (button.pressed) {
+    //                 console.log(`Gamepad ${padIndex} Button: ${i}`);
+    //             }
+    //         }
+    //     }
+    // }
 
     public isButtonDown(gamepadIndex: number, buttonIndex: number): boolean {
         return this.buttonDownInState(this._currentState, gamepadIndex, buttonIndex)

@@ -1,6 +1,6 @@
 import { FrameCounter } from "./utilities/FrameCounter";
 import { FrameTime } from "./utilities/FrameTime";
-import { Point, Size } from "./utilities/Trig";
+import { Size } from "./utilities/Trig";
 import { Viewport } from "./utilities/Viewport";
 import * as Dom from "./utilities/Dom";
 import * as Align from "./utilities/Align";
@@ -11,7 +11,6 @@ import { createPlayer1InputProvider } from "./input/InputConfiguration";
 import { Keyboard } from "./input/Keyboard";
 import { GamepadPoller } from "./input/GamepadPoller";
 import { ImageLoader } from "./utilities/ImagesLoader";
-import { AudioLoader } from "./utilities/AudioLoader";
 
 export interface ImageResources {
     apple: ImageBitmap;
@@ -22,9 +21,9 @@ export interface AudioResources {
 }
 
 class Main {
-    private _container: HTMLElement;
-    private _viewport: Viewport;
-    private _screenManager: ScreenManager;
+    private _container: HTMLElement = null!;
+    private _viewport: Viewport = null!;
+    private _screenManager: ScreenManager = null!;
     private _fpsCounter = new FrameCounter();
     private _lastFrameTime = 0;
 
@@ -61,7 +60,7 @@ class Main {
             apple: await imageLoader.load("red.png"),
         };
 
-        const soundLoader = new AudioLoader("assets/sound");
+        //const soundLoader = new AudioLoader("assets/sound");
         // add sound
     }
 
@@ -96,7 +95,7 @@ class Main {
 }
 
 async function initialize() {
-    let main = new Main(document.getElementById("game"));
+    let main = new Main(document.getElementById("game")!);
     await main.initialize();
     main.start();
 }

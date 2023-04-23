@@ -11,8 +11,8 @@ export abstract class Screen {
         this._context = context;
     }
 
-    public activate(time: FrameTime): void { }
-    public deactivate(time: FrameTime): void { }
+    public activate(_time: FrameTime): void { }
+    public deactivate(_time: FrameTime): void { }
 
     public abstract update(time: FrameTime): void;
     public abstract render(): void;
