@@ -1,5 +1,5 @@
 import { GameContext } from "../GameContext";
-import { ImageResources } from "../Main";
+import { AudioResources, ImageResources } from "../Main";
 import { InputProvider } from "../input/InputProvider";
 import { FrameTime } from "./FrameTime";
 import { Viewport } from "./Viewport";
@@ -20,6 +20,7 @@ export abstract class Screen {
     protected get viewport(): Viewport { return this._context.viewport; }
     protected get input(): InputProvider { return this._context.input; }
     protected get images(): ImageResources { return this._context.images; }
+    protected get audio(): AudioResources { return this._context.audio; }
 }
 
 export class ScreenManager {

@@ -11,13 +11,14 @@ import { createPlayer1InputProvider } from "./input/InputConfiguration";
 import { Keyboard } from "./input/Keyboard";
 import { GamepadPoller } from "./input/GamepadPoller";
 import { ImageLoader } from "./utilities/ImagesLoader";
+import { AudioLoader } from "./utilities/AudioLoader";
 
 export interface ImageResources {
     apple: ImageBitmap;
 }
 
 export interface AudioResources {
-    apple: HTMLAudioElement;
+    fire: HTMLAudioElement;
 }
 
 class Main {
@@ -30,6 +31,7 @@ class Main {
     private _keyboard = new Keyboard();
     private _gamepadPoller = new GamepadPoller();
     private _images: ImageResources = null!;
+    private _audio: AudioResources = null!;
 
     public constructor(container: HTMLElement) {
         this._container = container;
@@ -50,7 +52,7 @@ class Main {
         this._viewport = new Viewport(new Size(800, 600), this._container);
 
         const inputProvider = createPlayer1InputProvider(this._keyboard, this._gamepadPoller);
-        const testScreen = new GameScreen(new GameContext(this._viewport, inputProvider, this._images));
+        const testScreen = new GameScreen(new GameContext(this._viewport, inputProvider, this._images, this._audio));
         this._screenManager = new ScreenManager(testScreen, new FrameTime(0, 0));
     }
 
@@ -60,8 +62,10 @@ class Main {
             apple: await imageLoader.load("red.png"),
         };
 
-        //const soundLoader = new AudioLoader("assets/sound");
-        // add sound
+        const soundLoader = new AudioLoader("assets/sounds");
+        this._audio = {
+            fire: await soundLoader.load("fire.wav")
+        };
     }
 
     private requestAnimationFrame() {
