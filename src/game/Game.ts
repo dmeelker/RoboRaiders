@@ -30,7 +30,7 @@ export class Game {
         } else if (this.input.isButtonDown(Keys.MoveRight)) {
             this._player.moveRight();
         } else {
-            this._player.velocity.x = 0;
+            this._player.physics.velocity.x = 0;
         }
 
         this._entities.update(time);
