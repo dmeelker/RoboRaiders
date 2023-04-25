@@ -96,7 +96,7 @@ export class Rectangle {
         return true;
     }
 
-    containsPoint(p: Point) {
+    containsPoint(p: ILocation) {
         return p.x >= this.location.x && p.x < this.location.x + this.size.width &&
             p.y >= this.location.y && p.y < this.location.y + this.size.height;
     }
@@ -115,20 +115,12 @@ export class Rectangle {
 }
 
 export class Vector implements ILocation {
-    private readonly _x: number;
-    private readonly _y: number;
+    public x: number;
+    public y: number;
 
     constructor(x: number = 0, y: number = 0) {
-        this._x = x;
-        this._y = y;
-    }
-
-    public get x(): number {
-        return this._x;
-    }
-
-    public get y(): number {
-        return this._y;
+        this.x = x;
+        this.y = y;
     }
 
     public get length() {
@@ -136,25 +128,33 @@ export class Vector implements ILocation {
     }
 
     public add(vector: Vector) {
-        return new Vector(this._x + vector.x, this._y + vector.y);
+        return new Vector(this.x + vector.x, this.y + vector.y);
+    }
+
+    public addY(y: number) {
+        return new Vector(this.x, this.y + y);
+    }
+
+    public addX(x: number) {
+        return new Vector(this.x + x, this.y);
     }
 
     public subtract(vector: Vector) {
-        return new Vector(this._x - vector.x, this._y - vector.y);
+        return new Vector(this.x - vector.x, this.y - vector.y);
     }
 
     public multiplyScalar(scalar: number) {
-        return new Vector(this._x * scalar, this._y * scalar);
+        return new Vector(this.x * scalar, this.y * scalar);
     }
 
     public toUnit() {
         let length = this.length;
 
-        return new Vector(this._x / length, this._y / length);
+        return new Vector(this.x / length, this.y / length);
     }
 
     public get angleInRadians(): number {
-        return Math.atan2(this._y, this._x);
+        return Math.atan2(this.y, this.x);
     }
 
     public get angleInDegrees(): number {
