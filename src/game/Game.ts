@@ -4,6 +4,7 @@ import { InputProvider, Keys } from "../input/InputProvider";
 import { FrameTime } from "../utilities/FrameTime";
 import { Vector } from "../utilities/Trig";
 import { Viewport } from "../utilities/Viewport";
+import { EnemyEntity } from "./entities/Enemy";
 import { EntityManager } from "./entities/EntityManager";
 import { PlayerEntity } from "./entities/PlayerEntity";
 import { ProjectileEntity } from "./entities/Projectile";
@@ -20,6 +21,9 @@ export class Game {
     public initialize(_time: FrameTime) {
         this._player = new PlayerEntity(new Vector(200, 200));
         this._entities.add(this._player);
+
+        let enemy = new EnemyEntity(new Vector(200, 100));
+        this._entities.add(enemy);
     }
 
     public update(time: FrameTime) {
@@ -28,7 +32,7 @@ export class Game {
         }
 
         if (this.input.wasButtonPressedInFrame(Keys.B)) {
-            let projectile = new ProjectileEntity(this._player.centerLocation, new Vector(500, 0));
+            let projectile = new ProjectileEntity(this._player.centerLocation, this._player.lookVector.multiplyScalar(500));
             this._entities.add(projectile);
         }
 

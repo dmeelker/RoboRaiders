@@ -4,14 +4,9 @@ import { Viewport } from "../../utilities/Viewport";
 import { PhyicalObject } from "../Physics";
 import { Entity } from "./Entity";
 
-export enum Facing {
-    Left,
-    Right,
-}
-
-export class PlayerEntity extends Entity {
+export class EnemyEntity extends Entity {
     public physics: PhyicalObject;
-    private _facing = Facing.Left;
+    private _hitpoints = 10;
 
     public constructor(location: Vector) {
         super(location, new Size(20, 20));
@@ -33,37 +28,21 @@ export class PlayerEntity extends Entity {
 
     public moveLeft() {
         this.physics.velocity.x = -200;
-        this._facing = Facing.Left;
     }
 
     public moveRight() {
         this.physics.velocity.x = 200;
-        this._facing = Facing.Right;
     }
 
     public render(viewport: Viewport) {
-        viewport.context.fillStyle = "gray";
-        viewport.context.fillRect(150, 200, 100, 10);
-        viewport.context.fillRect(100, 250, 50, 10);
-        viewport.context.fillRect(250, 250, 50, 10);
-
-        viewport.context.fillRect(0, 0, 400, 100);
-        viewport.context.fillRect(0, 300, 400, 100);
-        viewport.context.fillRect(0, 0, 100, 400);
-        viewport.context.fillRect(300, 0, 100, 400);
-
-        viewport.context.fillStyle = "green";
+        viewport.context.fillStyle = "yellow";
         viewport.context.fillRect(Math.floor(this.location.x), Math.floor(this.location.y), this.size.width, this.size.height);
     }
 
-    public get facing() { return this._facing; }
-
-    public get lookVector() {
-        switch (this._facing) {
-            case Facing.Left:
-                return Vector.left;
-            case Facing.Right:
-                return Vector.right;
+    public hit() {
+        this._hitpoints--;
+        if (this._hitpoints == 0) {
+            this.markDisposable();
         }
     }
 }

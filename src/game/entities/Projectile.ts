@@ -2,6 +2,7 @@ import { FrameTime } from "../../utilities/FrameTime";
 import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { PhyicalObject } from "../Physics";
+import { EnemyEntity } from "./Enemy";
 import { Entity } from "./Entity";
 
 export class ProjectileEntity extends Entity {
@@ -20,7 +21,15 @@ export class ProjectileEntity extends Entity {
         this.location = this.physics.location;
 
         if (this.physics.lastCollisions.length > 0) {
+            this.markDisposable();
+        }
 
+        let enemies = this.manager.getOfType(EnemyEntity);
+        for (let enemy of enemies) {
+            if (enemy.bounds.overlaps(this.bounds)) {
+                enemy.hit();
+                this.markDisposable();
+            }
         }
     }
 

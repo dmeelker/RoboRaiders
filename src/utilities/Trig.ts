@@ -184,6 +184,14 @@ export class Vector implements ILocation {
     static get zero() {
         return new Vector(0, 0);
     }
+
+    static get left() {
+        return new Vector(-1, 0);
+    }
+
+    static get right() {
+        return new Vector(1, 0);
+    }
 }
 
 export function degreesToRadians(degrees: number): number {

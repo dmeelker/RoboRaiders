@@ -6,6 +6,7 @@ export class EntityManager {
     private readonly _entities = new Array<Entity>();
 
     public add(entity: Entity) {
+        entity.manager = this;
         this._entities.push(entity);
     }
 
@@ -16,6 +17,11 @@ export class EntityManager {
     public update(time: FrameTime) {
         for (let entity of this._entities) {
             entity.update(time);
+
+            if (entity.disposable) {
+                this.remove(entity);
+                entity.onDispose(time);
+            }
         }
     }
 
