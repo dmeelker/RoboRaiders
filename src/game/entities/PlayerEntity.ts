@@ -17,19 +17,25 @@ export class PlayerEntity extends Entity {
         if (this.velocity.x != 0) {
             let distanceX = _time.calculateMovement(this.velocity.x);
             let newX = this.location.x + distanceX;
-            let nextLocation = new Vector(newX, this.location.y);
 
             if (this.velocity.x > 0) {
-                let collision = this.checkCollisions(this.getRightCollisionPoints(nextLocation));
-                if (collision) {
-                    this.velocity.x = 0;
-                    newX = collision.bounds.x - this.width;
+                let steps = this.getPointsToCheck(this.location, new Vector(Math.sign(this.velocity.x) * this._collisionGranularity, 0), distanceX);
+                for (let step of steps) {
+                    let collision = this.checkCollisions(this.getRightCollisionPoints(step));
+                    if (collision) {
+                        this.velocity.x = 0;
+                        newX = collision.bounds.x - this.width;
+                        break;
+                    }
                 }
             } else if (this.velocity.x < 0) {
-                let collision = this.checkCollisions(this.getLeftCollisionPoints(nextLocation));
-                if (collision) {
-                    this.velocity.x = 0;
-                    newX = collision.bounds.x + collision.bounds.width;
+                let steps = this.getPointsToCheck(this.location, new Vector(Math.sign(this.velocity.x) * this._collisionGranularity, 0), distanceX * -1);
+                for (let step of steps) {
+                    let collision = this.checkCollisions(this.getLeftCollisionPoints(step));
+                    if (collision) {
+                        this.velocity.x = 0;
+                        newX = collision.bounds.x + collision.bounds.width;
+                    }
                 }
             }
 
@@ -39,19 +45,24 @@ export class PlayerEntity extends Entity {
         if (this.velocity.y != 0) {
             let distanceY = _time.calculateMovement(this.velocity.y);
             let newY = this.location.y + distanceY;
-            let nextLocation = new Vector(this.location.x, newY);
 
             if (this.velocity.y > 0) {
-                let collision = this.checkCollisions(this.getBottomCollisionPoints(nextLocation));
-                if (collision) {
-                    this.velocity.y = 0;
-                    newY = collision.bounds.y - this.height;
+                let steps = this.getPointsToCheck(this.location, new Vector(0, Math.sign(this.velocity.y) * this._collisionGranularity), distanceY);
+                for (let step of steps) {
+                    let collision = this.checkCollisions(this.getBottomCollisionPoints(step));
+                    if (collision) {
+                        this.velocity.y = 0;
+                        newY = collision.bounds.y - this.height;
+                    }
                 }
             } else if (this.velocity.y < 0) {
-                let collision = this.checkCollisions(this.getTopCollisionPoints(nextLocation));
-                if (collision) {
-                    this.velocity.y = 0;
-                    newY = collision.bounds.y + collision.bounds.height;
+                let steps = this.getPointsToCheck(this.location, new Vector(0, Math.sign(this.velocity.y) * this._collisionGranularity), distanceY * -1);
+                for (let step of steps) {
+                    let collision = this.checkCollisions(this.getTopCollisionPoints(step));
+                    if (collision) {
+                        this.velocity.y = 0;
+                        newY = collision.bounds.y + collision.bounds.height;
+                    }
                 }
             }
 
@@ -124,10 +135,10 @@ export class PlayerEntity extends Entity {
             }
         };
 
-        return checkRect(new Rectangle(0, 0, 500, 100)) ??
-            checkRect(new Rectangle(0, 300, 500, 100)) ??
-            checkRect(new Rectangle(0, 0, 100, 500)) ??
-            checkRect(new Rectangle(300, 0, 100, 500)) ??
+        return checkRect(new Rectangle(0, 0, 400, 100)) ??
+            checkRect(new Rectangle(0, 300, 400, 100)) ??
+            checkRect(new Rectangle(0, 0, 100, 400)) ??
+            checkRect(new Rectangle(300, 0, 100, 400)) ??
             checkRect(new Rectangle(150, 200, 100, 10)) ??
             checkRect(new Rectangle(100, 250, 50, 10)) ??
             checkRect(new Rectangle(250, 250, 50, 10)) ??
@@ -140,10 +151,10 @@ export class PlayerEntity extends Entity {
         viewport.context.fillRect(100, 250, 50, 10);
         viewport.context.fillRect(250, 250, 50, 10);
 
-        viewport.context.fillRect(0, 0, 500, 100);
-        viewport.context.fillRect(0, 300, 500, 100);
-        viewport.context.fillRect(0, 0, 100, 500);
-        viewport.context.fillRect(300, 0, 100, 500);
+        viewport.context.fillRect(0, 0, 400, 100);
+        viewport.context.fillRect(0, 300, 400, 100);
+        viewport.context.fillRect(0, 0, 100, 400);
+        viewport.context.fillRect(300, 0, 100, 400);
 
         viewport.context.fillStyle = "green";
         viewport.context.fillRect(Math.floor(this.location.x), Math.floor(this.location.y), this.size.width, this.size.height);
