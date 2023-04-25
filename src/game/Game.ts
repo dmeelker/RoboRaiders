@@ -6,6 +6,7 @@ import { Vector } from "../utilities/Trig";
 import { Viewport } from "../utilities/Viewport";
 import { EntityManager } from "./entities/EntityManager";
 import { PlayerEntity } from "./entities/PlayerEntity";
+import { ProjectileEntity } from "./entities/Projectile";
 
 export class Game {
     private readonly _context: GameContext;
@@ -25,6 +26,12 @@ export class Game {
         if (this.input.isButtonDown(Keys.A)) {
             this._player.jump();
         }
+
+        if (this.input.wasButtonPressedInFrame(Keys.B)) {
+            let projectile = new ProjectileEntity(this._player.centerLocation, new Vector(500, 0));
+            this._entities.add(projectile);
+        }
+
         if (this.input.isButtonDown(Keys.MoveLeft)) {
             this._player.moveLeft();
         } else if (this.input.isButtonDown(Keys.MoveRight)) {

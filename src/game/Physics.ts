@@ -11,6 +11,7 @@ export class PhyicalObject {
     public velocity: Vector = Vector.zero;
     public gravity = true;
     private _onGround = false;
+    private _lastCollisions = new Array<CollisionResult>();
 
     public constructor(location: Vector, size: Size, velocity: Vector) {
         this.location = location;
@@ -24,6 +25,7 @@ export class PhyicalObject {
         }
 
         this._onGround = false;
+        this._lastCollisions = new Array<CollisionResult>();
 
         if (this.velocity.x != 0) {
             let distanceX = _time.calculateMovement(this.velocity.x);
@@ -34,6 +36,7 @@ export class PhyicalObject {
                 for (let step of steps) {
                     let collision = this.checkCollisions(this.getRightCollisionPoints(step));
                     if (collision) {
+                        this._lastCollisions.push(collision);
                         this.velocity.x = 0;
                         newX = collision.bounds.x - this.width;
                         break;
@@ -44,6 +47,7 @@ export class PhyicalObject {
                 for (let step of steps) {
                     let collision = this.checkCollisions(this.getLeftCollisionPoints(step));
                     if (collision) {
+                        this._lastCollisions.push(collision);
                         this.velocity.x = 0;
                         newX = collision.bounds.x + collision.bounds.width;
                         break;
@@ -63,6 +67,7 @@ export class PhyicalObject {
                 for (let step of steps) {
                     let collision = this.checkCollisions(this.getBottomCollisionPoints(step));
                     if (collision) {
+                        this._lastCollisions.push(collision);
                         this.velocity.y = 0;
                         newY = collision.bounds.y - this.height;
                         this._onGround = true;
@@ -74,6 +79,7 @@ export class PhyicalObject {
                 for (let step of steps) {
                     let collision = this.checkCollisions(this.getTopCollisionPoints(step));
                     if (collision) {
+                        this._lastCollisions.push(collision);
                         this.velocity.y = 0;
                         newY = collision.bounds.y + collision.bounds.height;
                         break;
@@ -150,4 +156,6 @@ export class PhyicalObject {
     public get width() { return this.size.width; }
     public get height() { return this.size.height; }
     public get onGround() { return this._onGround; }
+
+    public get lastCollisions() { return this._lastCollisions; }
 }

@@ -24,4 +24,16 @@ export class EntityManager {
             entity.render(viewport);
         }
     }
+
+    public getOfType<T extends Entity>(cls: new (...a: any) => T): Array<T> {
+        let result = new Array<T>();
+
+        for (let entity of this._entities) {
+            if (entity instanceof cls) {
+                result.push(entity);
+            }
+        }
+
+        return result;
+    }
 }
