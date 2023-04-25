@@ -22,7 +22,7 @@ export class Game {
     }
 
     public update(time: FrameTime) {
-        if (this.input.wasButtonPressedInFrame(Keys.A)) {
+        if (this.input.isButtonDown(Keys.A)) {
             this._player.jump();
         }
         if (this.input.isButtonDown(Keys.MoveLeft)) {

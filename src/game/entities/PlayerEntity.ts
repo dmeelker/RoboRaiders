@@ -19,7 +19,9 @@ export class PlayerEntity extends Entity {
     }
 
     public jump() {
-        this.physics.velocity.y = -300;
+        if (this.physics.onGround) {
+            this.physics.velocity.y = -300;
+        }
     }
 
     public moveLeft() {

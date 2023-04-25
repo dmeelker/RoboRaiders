@@ -10,6 +10,7 @@ export class PhyicalObject {
     public size: Size;
     public velocity: Vector = Vector.zero;
     public gravity = true;
+    private _onGround = false;
 
     public constructor(location: Vector, size: Size, velocity: Vector) {
         this.location = location;
@@ -21,6 +22,8 @@ export class PhyicalObject {
         if (this.gravity) {
             this.velocity = this.velocity.add(new Vector(0, _time.calculateMovement(500)));
         }
+
+        this._onGround = false;
 
         if (this.velocity.x != 0) {
             let distanceX = _time.calculateMovement(this.velocity.x);
@@ -62,6 +65,7 @@ export class PhyicalObject {
                     if (collision) {
                         this.velocity.y = 0;
                         newY = collision.bounds.y - this.height;
+                        this._onGround = true;
                         break;
                     }
                 }
@@ -145,4 +149,5 @@ export class PhyicalObject {
 
     public get width() { return this.size.width; }
     public get height() { return this.size.height; }
+    public get onGround() { return this._onGround; }
 }
