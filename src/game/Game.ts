@@ -34,6 +34,7 @@ export class Game {
         if (this.input.wasButtonPressedInFrame(Keys.B)) {
             let projectile = new ProjectileEntity(this._player.centerLocation, this._player.lookVector.multiplyScalar(500));
             this._entities.add(projectile);
+            this.viewport.shakeMedium(time);
         }
 
         if (this.input.isButtonDown(Keys.MoveLeft)) {

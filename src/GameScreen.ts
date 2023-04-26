@@ -11,6 +11,7 @@ export class GameScreen extends Screen {
 
     public update(time: FrameTime): void {
         this._game.update(time);
+        this.viewport.update(time);
     }
 
     public render(): void {
