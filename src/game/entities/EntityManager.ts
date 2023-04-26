@@ -20,7 +20,7 @@ export class EntityManager {
 
             if (entity.disposable) {
                 this.remove(entity);
-                entity.onDispose(time);
+                entity.dispose(time);
             }
         }
     }

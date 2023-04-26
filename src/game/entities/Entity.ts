@@ -7,6 +7,7 @@ export class Entity {
     private _location: Vector;
     private _size: Size;
     private _disposable = false;
+    private _disposed = false;
     public manager: EntityManager = null!;
 
     public constructor(location: Vector, size: Size) {
@@ -14,16 +15,13 @@ export class Entity {
         this._size = size;
     }
 
-    public update(_time: FrameTime) {
+    public update(_time: FrameTime) { }
+    public render(_viewport: Viewport) { }
+    protected onDispose(_time: FrameTime) { }
 
-    }
-
-    public render(_viewport: Viewport) {
-
-    }
-
-    public onDispose(_time: FrameTime) {
-
+    public dispose(time: FrameTime) {
+        this._disposed = true;
+        this.onDispose(time);
     }
 
     public set location(newLocation: Vector) {
@@ -38,5 +36,6 @@ export class Entity {
     public get centerLocation() { return new Vector(this._location.x + (this._size.width / 2), this._location.y + (this._size.height / 2)) }
 
     public get disposable() { return this._disposable; }
+    public get disposed() { return this._disposed; }
     public markDisposable() { this._disposable = true; }
 }

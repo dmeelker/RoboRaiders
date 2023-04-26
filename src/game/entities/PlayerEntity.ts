@@ -2,8 +2,9 @@ import { FrameTime } from "../../utilities/FrameTime";
 import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { PhyicalObject } from "../Physics";
+import { Player } from "../Player";
 import { Entity } from "./Entity";
-import { PriceEntity } from "./PriceEntity";
+import { PriceEntity } from "./PrizeEntity";
 
 export enum Facing {
     Left,
@@ -11,11 +12,13 @@ export enum Facing {
 }
 
 export class PlayerEntity extends Entity {
+    private readonly _player: Player;
     public physics: PhyicalObject;
     private _facing = Facing.Left;
 
-    public constructor(location: Vector) {
+    public constructor(location: Vector, player: Player) {
         super(location, new Size(20, 20));
+        this._player = player;
 
         this.physics = new PhyicalObject(location, this.size, Vector.zero);
     }
@@ -25,10 +28,11 @@ export class PlayerEntity extends Entity {
 
         this.location = this.physics.location;
 
-        let prices = this.manager.getOfType(PriceEntity);
-        for (let price of prices) {
-            if (price.bounds.overlaps(this.bounds)) {
-
+        let prizes = this.manager.getOfType(PriceEntity);
+        for (let prize of prizes) {
+            if (prize.bounds.overlaps(this.bounds)) {
+                prize.markDisposable();
+                this._player.addPoint();
             }
         }
     }

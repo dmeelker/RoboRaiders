@@ -39,11 +39,11 @@ export class EnemyEntity extends Entity {
     }
 
     public moveLeft() {
-        this.physics.velocity.x = -200;
+        this.physics.velocity.x = -100;
     }
 
     public moveRight() {
-        this.physics.velocity.x = 200;
+        this.physics.velocity.x = 100;
     }
 
     private turn() {
