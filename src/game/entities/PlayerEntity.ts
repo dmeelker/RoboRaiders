@@ -3,6 +3,7 @@ import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { PhyicalObject } from "../Physics";
 import { Entity } from "./Entity";
+import { PriceEntity } from "./PriceEntity";
 
 export enum Facing {
     Left,
@@ -23,6 +24,13 @@ export class PlayerEntity extends Entity {
         this.physics.update(_time);
 
         this.location = this.physics.location;
+
+        let prices = this.manager.getOfType(PriceEntity);
+        for (let price of prices) {
+            if (price.bounds.overlaps(this.bounds)) {
+
+            }
+        }
     }
 
     public jump() {

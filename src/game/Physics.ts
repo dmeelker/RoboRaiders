@@ -1,7 +1,13 @@
 import { FrameTime } from "../utilities/FrameTime";
 import { Rectangle, Size, Vector } from "../utilities/Trig";
 
+export enum Axis {
+    X,
+    Y,
+}
+
 export interface CollisionResult {
+    axis: Axis,
     bounds: Rectangle
 }
 
@@ -34,7 +40,7 @@ export class PhyicalObject {
             if (this.velocity.x > 0) {
                 let steps = this.getPointsToCheck(this.location, new Vector(Math.sign(this.velocity.x) * this._collisionGranularity, 0), distanceX);
                 for (let step of steps) {
-                    let collision = this.checkCollisions(this.getRightCollisionPoints(step));
+                    let collision = this.checkCollisions(this.getRightCollisionPoints(step), Axis.X);
                     if (collision) {
                         this._lastCollisions.push(collision);
                         this.velocity.x = 0;
@@ -45,7 +51,7 @@ export class PhyicalObject {
             } else if (this.velocity.x < 0) {
                 let steps = this.getPointsToCheck(this.location, new Vector(Math.sign(this.velocity.x) * this._collisionGranularity, 0), distanceX * -1);
                 for (let step of steps) {
-                    let collision = this.checkCollisions(this.getLeftCollisionPoints(step));
+                    let collision = this.checkCollisions(this.getLeftCollisionPoints(step), Axis.X);
                     if (collision) {
                         this._lastCollisions.push(collision);
                         this.velocity.x = 0;
@@ -65,7 +71,7 @@ export class PhyicalObject {
             if (this.velocity.y > 0) {
                 let steps = this.getPointsToCheck(this.location, new Vector(0, Math.sign(this.velocity.y) * this._collisionGranularity), distanceY);
                 for (let step of steps) {
-                    let collision = this.checkCollisions(this.getBottomCollisionPoints(step));
+                    let collision = this.checkCollisions(this.getBottomCollisionPoints(step), Axis.Y);
                     if (collision) {
                         this._lastCollisions.push(collision);
                         this.velocity.y = 0;
@@ -77,7 +83,7 @@ export class PhyicalObject {
             } else if (this.velocity.y < 0) {
                 let steps = this.getPointsToCheck(this.location, new Vector(0, Math.sign(this.velocity.y) * this._collisionGranularity), distanceY * -1);
                 for (let step of steps) {
-                    let collision = this.checkCollisions(this.getTopCollisionPoints(step));
+                    let collision = this.checkCollisions(this.getTopCollisionPoints(step), Axis.Y);
                     if (collision) {
                         this._lastCollisions.push(collision);
                         this.velocity.y = 0;
@@ -109,9 +115,9 @@ export class PhyicalObject {
         return this.getPointsToCheck(new Vector(Math.floor(location.x + this.size.width), Math.floor(location.y)), new Vector(0, this._collisionGranularity), this.height);
     }
 
-    private checkCollisions(points: Array<Vector>): CollisionResult | undefined {
+    private checkCollisions(points: Iterable<Vector>, axis: Axis): CollisionResult | undefined {
         for (let point of points) {
-            let collision = this.checkCollision(point);
+            let collision = this.checkCollision(point, axis);
             if (collision) {
                 return collision;
             }
@@ -134,10 +140,10 @@ export class PhyicalObject {
         return result;
     }
 
-    private checkCollision(location: Vector): CollisionResult | undefined {
+    private checkCollision(location: Vector, axis: Axis): CollisionResult | undefined {
         let checkRect = (rect: Rectangle) => {
             if (rect.containsPoint(location)) {
-                return { bounds: rect };
+                return { bounds: rect, axis };
             } else {
                 return undefined;
             }

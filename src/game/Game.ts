@@ -7,6 +7,7 @@ import { Viewport } from "../utilities/Viewport";
 import { EnemyEntity } from "./entities/Enemy";
 import { EntityManager } from "./entities/EntityManager";
 import { PlayerEntity } from "./entities/PlayerEntity";
+import { PriceEntity } from "./entities/PriceEntity";
 import { ProjectileEntity } from "./entities/Projectile";
 
 export class Game {
@@ -24,6 +25,8 @@ export class Game {
 
         let enemy = new EnemyEntity(new Vector(200, 100));
         this._entities.add(enemy);
+
+        this._entities.add(new PriceEntity(new Vector(200 - 5, 300 - 10)));
     }
 
     public update(time: FrameTime) {
@@ -34,7 +37,6 @@ export class Game {
         if (this.input.wasButtonPressedInFrame(Keys.B)) {
             let projectile = new ProjectileEntity(this._player.centerLocation, this._player.lookVector.multiplyScalar(500));
             this._entities.add(projectile);
-            this.viewport.shakeMedium(time);
         }
 
         if (this.input.isButtonDown(Keys.MoveLeft)) {
