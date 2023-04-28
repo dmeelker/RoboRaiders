@@ -1,99 +1,121 @@
 import { FrameTime } from "../utilities/FrameTime";
 import { Rectangle, Size, Vector } from "../utilities/Trig";
+import { Level } from "./Level";
+import { Entity } from "./entities/Entity";
+import { EntityManager } from "./entities/EntityManager";
 
 export enum Axis {
     X,
     Y,
 }
 
+type EntityCollisionFilter = (entity: Entity) => boolean;
+
 export interface CollisionResult {
     axis: Axis,
-    bounds: Rectangle
+    bounds: Rectangle,
+    passable: boolean,
+    entity?: Entity
+}
+
+export class CollisionContext {
+    public constructor(public readonly level: Level, public readonly entities: EntityManager) {
+    }
 }
 
 export class PhyicalObject {
-    public location: Vector;
-    public size: Size;
+    public entity: Entity;
     public velocity: Vector = Vector.zero;
+    public entityFilter?: EntityCollisionFilter;
     public gravity = true;
+    private readonly _context: CollisionContext;
     private _onGround = false;
     private _lastCollisions = new Array<CollisionResult>();
 
-    public constructor(location: Vector, size: Size, velocity: Vector) {
-        this.location = location;
-        this.size = size;
+    public constructor(entity: Entity, velocity: Vector, context: CollisionContext, entityFilter?: EntityCollisionFilter) {
+        this.entity = entity;
         this.velocity = velocity;
+        this._context = context;
+        this.entityFilter = entityFilter;
     }
 
-    public update(_time: FrameTime) {
+    public update(time: FrameTime) {
         if (this.gravity) {
-            this.velocity = this.velocity.add(new Vector(0, _time.calculateMovement(500)));
+            this.velocity = this.velocity.add(new Vector(0, time.calculateMovement(500)));
         }
 
         this._onGround = false;
         this._lastCollisions = new Array<CollisionResult>();
 
         if (this.velocity.x != 0) {
-            let distanceX = _time.calculateMovement(this.velocity.x);
-            let newX = this.location.x + distanceX;
+            let distanceX = time.calculateMovement(this.velocity.x);
+            let newX = this.entity.location.x + distanceX;
 
             if (this.velocity.x > 0) {
-                let steps = this.getPointsToCheck(this.location, new Vector(Math.sign(this.velocity.x) * this._collisionGranularity, 0), distanceX);
+                let steps = this.getPointsToCheck(this.entity.location, new Vector(Math.sign(this.velocity.x) * this._collisionGranularity, 0), distanceX);
                 for (let step of steps) {
                     let collision = this.checkCollisions(this.getRightCollisionPoints(step), Axis.X);
                     if (collision) {
                         this._lastCollisions.push(collision);
-                        this.velocity.x = 0;
-                        newX = collision.bounds.x - this.width;
+                        if (!collision.passable) {
+                            this.velocity.x = 0;
+                            newX = collision.bounds.x - this.width;
+                        }
                         break;
                     }
                 }
             } else if (this.velocity.x < 0) {
-                let steps = this.getPointsToCheck(this.location, new Vector(Math.sign(this.velocity.x) * this._collisionGranularity, 0), distanceX * -1);
+                let steps = this.getPointsToCheck(this.entity.location, new Vector(Math.sign(this.velocity.x) * this._collisionGranularity, 0), distanceX * -1);
                 for (let step of steps) {
                     let collision = this.checkCollisions(this.getLeftCollisionPoints(step), Axis.X);
                     if (collision) {
                         this._lastCollisions.push(collision);
-                        this.velocity.x = 0;
-                        newX = collision.bounds.x + collision.bounds.width;
+                        if (!collision.passable) {
+                            this.velocity.x = 0;
+                            newX = collision.bounds.x + collision.bounds.width;
+                        }
                         break;
                     }
                 }
             }
 
-            this.location.x = newX;
+            this.entity.location.x = newX;
         }
 
         if (this.velocity.y != 0) {
-            let distanceY = _time.calculateMovement(this.velocity.y);
-            let newY = this.location.y + distanceY;
+            let distanceY = time.calculateMovement(this.velocity.y);
+            let newY = this.entity.location.y + distanceY;
 
             if (this.velocity.y > 0) {
-                let steps = this.getPointsToCheck(this.location, new Vector(0, Math.sign(this.velocity.y) * this._collisionGranularity), distanceY);
+                let steps = this.getPointsToCheck(this.entity.location, new Vector(0, Math.sign(this.velocity.y) * this._collisionGranularity), distanceY);
                 for (let step of steps) {
-                    let collision = this.checkCollisions(this.getBottomCollisionPoints(step), Axis.Y);
+                    let collision = this.checkCollisions(this.getBottomCollisionPoints(step), Axis.Y,);
                     if (collision) {
                         this._lastCollisions.push(collision);
-                        this.velocity.y = 0;
-                        newY = collision.bounds.y - this.height;
-                        this._onGround = true;
+                        if (!collision.passable) {
+                            this.velocity.y = 0;
+                            newY = collision.bounds.y - this.height;
+                            this._onGround = true;
+                        }
                         break;
                     }
                 }
             } else if (this.velocity.y < 0) {
-                let steps = this.getPointsToCheck(this.location, new Vector(0, Math.sign(this.velocity.y) * this._collisionGranularity), distanceY * -1);
+                let steps = this.getPointsToCheck(this.entity.location, new Vector(0, Math.sign(this.velocity.y) * this._collisionGranularity), distanceY * -1);
                 for (let step of steps) {
                     let collision = this.checkCollisions(this.getTopCollisionPoints(step), Axis.Y);
                     if (collision) {
                         this._lastCollisions.push(collision);
-                        this.velocity.y = 0;
-                        newY = collision.bounds.y + collision.bounds.height;
+                        if (!collision.passable) {
+                            this.velocity.y = 0;
+                            newY = collision.bounds.y + collision.bounds.height;
+                        }
                         break;
                     }
                 }
             }
 
-            this.location.y = newY;
+            this.entity.location.y = newY;
         }
     }
 
@@ -104,7 +126,7 @@ export class PhyicalObject {
     }
 
     private getBottomCollisionPoints(location: Vector): Array<Vector> {
-        return this.getPointsToCheck(new Vector(Math.floor(location.x), Math.floor(location.y + this.size.height)), new Vector(this._collisionGranularity, 0), this.width);
+        return this.getPointsToCheck(new Vector(Math.floor(location.x), Math.floor(location.y + this.height)), new Vector(this._collisionGranularity, 0), this.width);
     }
 
     private getLeftCollisionPoints(location: Vector): Array<Vector> {
@@ -112,7 +134,7 @@ export class PhyicalObject {
     }
 
     private getRightCollisionPoints(location: Vector): Array<Vector> {
-        return this.getPointsToCheck(new Vector(Math.floor(location.x + this.size.width), Math.floor(location.y)), new Vector(0, this._collisionGranularity), this.height);
+        return this.getPointsToCheck(new Vector(Math.floor(location.x + this.width), Math.floor(location.y)), new Vector(0, this._collisionGranularity), this.height);
     }
 
     private checkCollisions(points: Iterable<Vector>, axis: Axis): CollisionResult | undefined {
@@ -141,26 +163,51 @@ export class PhyicalObject {
     }
 
     private checkCollision(location: Vector, axis: Axis): CollisionResult | undefined {
+        return this.checkLevelCollision(location, axis) ??
+            this.checkEntityCollision(location, axis);
+    }
+
+    private checkLevelCollision(location: Vector, axis: Axis): CollisionResult | undefined {
         let checkRect = (rect: Rectangle) => {
             if (rect.containsPoint(location)) {
-                return { bounds: rect, axis };
+                return { bounds: rect, axis, passable: false };
             } else {
                 return undefined;
             }
         };
 
-        return checkRect(new Rectangle(0, 0, 400, 100)) ??
-            checkRect(new Rectangle(0, 300, 400, 100)) ??
-            checkRect(new Rectangle(0, 0, 100, 400)) ??
-            checkRect(new Rectangle(300, 0, 100, 400)) ??
-            checkRect(new Rectangle(150, 200, 100, 10)) ??
-            checkRect(new Rectangle(100, 250, 50, 10)) ??
-            checkRect(new Rectangle(250, 250, 50, 10)) ??
-            undefined;
+        for (let block of this._context.level.blocks) {
+            let collision = checkRect(block);
+            if (collision) {
+                return collision;
+            }
+        }
+
+        return undefined;
     }
 
-    public get width() { return this.size.width; }
-    public get height() { return this.size.height; }
+    private checkEntityCollision(location: Vector, axis: Axis): CollisionResult | undefined {
+        if (this.entityFilter) {
+            let entities = this._context.entities.getAtLocation(location);
+            for (let entity of entities) {
+                if (this.entityFilter(entity) && this.canCollideWith(entity)) {
+                    return { bounds: entity.bounds, axis, passable: true, entity };
+                }
+            }
+        }
+
+        return undefined;
+    }
+
+    private canCollideWith(entity: Entity): boolean {
+        if (entity == this.entity) {
+            return false;
+        }
+        return true;
+    }
+
+    public get width() { return this.entity.size.width; }
+    public get height() { return this.entity.size.height; }
     public get onGround() { return this._onGround; }
 
     public get lastCollisions() { return this._lastCollisions; }

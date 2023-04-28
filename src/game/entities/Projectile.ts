@@ -1,35 +1,36 @@
 import { FrameTime } from "../../utilities/FrameTime";
 import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
-import { PhyicalObject } from "../Physics";
+import { IGameContext } from "../Game";
+import { CollisionContext, PhyicalObject } from "../Physics";
 import { EnemyEntity } from "./Enemy";
 import { Entity } from "./Entity";
 
 export class ProjectileEntity extends Entity {
     public physics: PhyicalObject;
 
-    public constructor(location: Vector, velocity: Vector) {
-        super(location, new Size(3, 3));
+    public constructor(location: Vector, velocity: Vector, gameContext: IGameContext) {
+        super(location, new Size(3, 3), gameContext);
 
-        this.physics = new PhyicalObject(location, this.size, velocity);
+        this.physics = new PhyicalObject(
+            this,
+            velocity,
+            new CollisionContext(this.context.level, this.context.entityManager),
+            entity => entity instanceof EnemyEntity);
         this.physics.gravity = false;
     }
 
-    public update(_time: FrameTime) {
-        this.physics.update(_time);
-
-        this.location = this.physics.location;
+    public update(time: FrameTime) {
+        this.physics.update(time);
 
         if (this.physics.lastCollisions.length > 0) {
             this.markDisposable();
         }
 
-        let enemies = this.manager.getOfType(EnemyEntity);
-        for (let enemy of enemies) {
-            if (enemy.bounds.overlaps(this.bounds)) {
-                enemy.hit();
-                this.markDisposable();
-            }
+        let hitEnemies = this.physics.lastCollisions.filter(c => c.entity instanceof EnemyEntity).map(c => c.entity as EnemyEntity);
+
+        for (let enemy of hitEnemies) {
+            enemy.hit();
         }
     }
 

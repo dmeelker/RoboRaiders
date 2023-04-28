@@ -1,4 +1,4 @@
-import { Point, Size, Vector } from "./Trig";
+import { Size, Vector } from "./Trig";
 import * as Dom from "./Dom";
 import { FrameTime } from "./FrameTime";
 import { randomInt } from "./Random";
@@ -38,7 +38,6 @@ export class Viewport {
     }
 
     public clearCanvas() {
-        this._canvasContext.beginPath();
         this._canvasContext.fillStyle = "black";
         this._canvasContext.fillRect(0, 0, this.size.width, this.size.height);
     }

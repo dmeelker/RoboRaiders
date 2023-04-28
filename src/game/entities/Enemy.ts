@@ -1,7 +1,8 @@
 import { FrameTime } from "../../utilities/FrameTime";
 import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
-import { Axis, PhyicalObject } from "../Physics";
+import { IGameContext } from "../Game";
+import { Axis, CollisionContext, PhyicalObject } from "../Physics";
 import { Entity } from "./Entity";
 import { Facing } from "./PlayerEntity";
 
@@ -10,26 +11,26 @@ export class EnemyEntity extends Entity {
     private _hitpoints = 10;
     private _facing = Facing.Left;
 
-    public constructor(location: Vector) {
-        super(location, new Size(20, 20));
+    public constructor(location: Vector, gameContext: IGameContext) {
+        super(location, new Size(20, 20), gameContext);
 
-        this.physics = new PhyicalObject(location, this.size, Vector.zero);
+        this.physics = new PhyicalObject(
+            this, Vector.zero,
+            new CollisionContext(this.context.level, this.context.entityManager));
     }
 
-    public update(_time: FrameTime) {
+    public update(time: FrameTime) {
         if (this._facing == Facing.Left) {
             this.moveLeft();
         } else {
             this.moveRight();
         }
 
-        this.physics.update(_time);
+        this.physics.update(time);
 
-        if (this.physics.lastCollisions.filter(c => c.axis == Axis.X).length > 0) {
+        if (this.physics.lastCollisions.filter(c => c.axis == Axis.X && !c.passable).length > 0) {
             this.turn();
         }
-
-        this.location = this.physics.location;
     }
 
     public jump() {

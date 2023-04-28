@@ -1,18 +1,18 @@
 import { FrameTime } from "../../utilities/FrameTime";
 import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
+import { IGameContext } from "../Game";
 import { Entity } from "./Entity";
 
 export class PriceEntity extends Entity {
     private _renderOffset = Vector.zero;
 
-    public constructor(location: Vector) {
-        super(location, new Size(10, 10));
+    public constructor(location: Vector, gameContext: IGameContext) {
+        super(location, new Size(10, 10), gameContext);
     }
 
     public update(time: FrameTime) {
         this._renderOffset.y = Math.sin(time.currentTime / 100) * 2;
-        console.log(this._renderOffset.y);
     }
 
     public render(viewport: Viewport) {

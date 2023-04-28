@@ -1,14 +1,17 @@
-import { GameContext } from "../GameContext";
-import { AudioResources, ImageResources } from "../Main";
+import { Resources } from "../Main";
 import { InputProvider } from "../input/InputProvider";
 import { FrameTime } from "./FrameTime";
 import { Viewport } from "./Viewport";
 
 export abstract class Screen {
-    protected _context: GameContext;
+    protected readonly _viewport: Viewport;
+    protected readonly _resources: Resources;
+    protected readonly _input: InputProvider;
 
-    public constructor(context: GameContext) {
-        this._context = context;
+    public constructor(viewport: Viewport, resources: Resources, input: InputProvider) {
+        this._viewport = viewport;
+        this._resources = resources;
+        this._input = input;
     }
 
     public activate(_time: FrameTime): void { }
@@ -17,10 +20,9 @@ export abstract class Screen {
     public abstract update(time: FrameTime): void;
     public abstract render(): void;
 
-    protected get viewport(): Viewport { return this._context.viewport; }
-    protected get input(): InputProvider { return this._context.input; }
-    protected get images(): ImageResources { return this._context.images; }
-    protected get audio(): AudioResources { return this._context.audio; }
+    protected get viewport(): Viewport { return this._viewport; }
+    protected get input(): InputProvider { return this._input; }
+    protected get resources(): Resources { return this._resources; }
 }
 
 export class ScreenManager {

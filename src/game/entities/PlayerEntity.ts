@@ -1,7 +1,8 @@
 import { FrameTime } from "../../utilities/FrameTime";
 import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
-import { PhyicalObject } from "../Physics";
+import { IGameContext } from "../Game";
+import { CollisionContext, PhyicalObject } from "../Physics";
 import { Player } from "../Player";
 import { Entity } from "./Entity";
 import { PriceEntity } from "./PrizeEntity";
@@ -16,19 +17,17 @@ export class PlayerEntity extends Entity {
     public physics: PhyicalObject;
     private _facing = Facing.Left;
 
-    public constructor(location: Vector, player: Player) {
-        super(location, new Size(20, 20));
+    public constructor(location: Vector, player: Player, gameContext: IGameContext) {
+        super(location, new Size(20, 20), gameContext);
         this._player = player;
 
-        this.physics = new PhyicalObject(location, this.size, Vector.zero);
+        this.physics = new PhyicalObject(this, Vector.zero, new CollisionContext(this.context.level, this.context.entityManager));
     }
 
-    public update(_time: FrameTime) {
-        this.physics.update(_time);
+    public update(time: FrameTime) {
+        this.physics.update(time);
 
-        this.location = this.physics.location;
-
-        let prizes = this.manager.getOfType(PriceEntity);
+        let prizes = this.context.entityManager.getOfType(PriceEntity);
         for (let prize of prizes) {
             if (prize.bounds.overlaps(this.bounds)) {
                 prize.markDisposable();
@@ -54,15 +53,15 @@ export class PlayerEntity extends Entity {
     }
 
     public render(viewport: Viewport) {
-        viewport.context.fillStyle = "gray";
-        viewport.context.fillRect(150, 200, 100, 10);
-        viewport.context.fillRect(100, 250, 50, 10);
-        viewport.context.fillRect(250, 250, 50, 10);
+        // viewport.context.fillStyle = "gray";
+        // viewport.context.fillRect(150, 200, 100, 10);
+        // viewport.context.fillRect(100, 250, 50, 10);
+        // viewport.context.fillRect(250, 250, 50, 10);
 
-        viewport.context.fillRect(0, 0, 400, 100);
-        viewport.context.fillRect(0, 300, 400, 100);
-        viewport.context.fillRect(0, 0, 100, 400);
-        viewport.context.fillRect(300, 0, 100, 400);
+        // viewport.context.fillRect(0, 0, 400, 100);
+        // viewport.context.fillRect(0, 300, 400, 100);
+        // viewport.context.fillRect(0, 0, 100, 400);
+        // viewport.context.fillRect(300, 0, 100, 400);
 
         viewport.context.fillStyle = "green";
         viewport.context.fillRect(Math.floor(this.location.x), Math.floor(this.location.y), this.size.width, this.size.height);

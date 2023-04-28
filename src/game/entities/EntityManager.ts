@@ -1,4 +1,5 @@
 import { FrameTime } from "../../utilities/FrameTime";
+import { ILocation } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { Entity } from "./Entity";
 
@@ -6,7 +7,6 @@ export class EntityManager {
     private readonly _entities = new Array<Entity>();
 
     public add(entity: Entity) {
-        entity.manager = this;
         this._entities.push(entity);
     }
 
@@ -31,15 +31,24 @@ export class EntityManager {
         }
     }
 
-    public getOfType<T extends Entity>(cls: new (...a: any) => T): Array<T> {
-        let result = new Array<T>();
+    public * getOfType<T extends Entity>(cls: new (...a: any) => T) {
+        //let result = new Array<T>();
 
         for (let entity of this._entities) {
             if (entity instanceof cls) {
-                result.push(entity);
+                yield entity;
+                //result.push(entity);
             }
         }
 
-        return result;
+        //return result;
+    }
+
+    public * getAtLocation(location: ILocation) {
+        for (let entity of this._entities) {
+            if (entity.bounds.containsPoint(location)) {
+                yield entity;
+            }
+        }
     }
 }

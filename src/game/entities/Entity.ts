@@ -1,18 +1,19 @@
 import { FrameTime } from "../../utilities/FrameTime";
 import { Rectangle, Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
-import { EntityManager } from "./EntityManager";
+import { IGameContext } from "../Game";
 
 export class Entity {
     private _location: Vector;
     private _size: Size;
     private _disposable = false;
     private _disposed = false;
-    public manager: EntityManager = null!;
+    protected readonly context: IGameContext;
 
-    public constructor(location: Vector, size: Size) {
+    public constructor(location: Vector, size: Size, context: IGameContext) {
         this._location = location;
         this._size = size;
+        this.context = context;
     }
 
     public update(_time: FrameTime) { }

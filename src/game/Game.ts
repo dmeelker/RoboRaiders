@@ -1,39 +1,49 @@
-import { GameContext } from "../GameContext";
-import { AudioResources, ImageResources } from "../Main";
+import { Resources } from "../Main";
 import { InputProvider, Keys } from "../input/InputProvider";
 import { FrameTime } from "../utilities/FrameTime";
 import { randomInt } from "../utilities/Random";
 import { Vector } from "../utilities/Trig";
 import { Viewport } from "../utilities/Viewport";
+import { Level } from "./Level";
 import { Player } from "./Player";
 import { EnemyEntity } from "./entities/Enemy";
 import { EntityManager } from "./entities/EntityManager";
-import { PlayerEntity } from "./entities/PlayerEntity";
 import { PriceEntity as PrizeEntity } from "./entities/PrizeEntity";
 import { ProjectileEntity } from "./entities/Projectile";
 
-export class Game {
-    private readonly _context: GameContext;
+export interface IGameContext {
+    get resources(): Resources;
+    get level(): Level;
+    get entityManager(): EntityManager;
+}
+
+export class Game implements IGameContext {
+    private readonly _viewport: Viewport;
+    private readonly _resources: Resources;
+    private readonly _input: InputProvider;
     private readonly _entities = new EntityManager();
+    private _level = new Level();
     private _player: Player = null!;
     private _prize: PrizeEntity = null!;
 
-    public constructor(context: GameContext) {
-        this._context = context;
+    public constructor(viewport: Viewport, resources: Resources, input: InputProvider) {
+        this._viewport = viewport;
+        this._resources = resources;
+        this._input = input;
     }
 
     public initialize(_time: FrameTime) {
-        this._player = new Player(new Vector(200, 200));
+        this._player = new Player(new Vector(200, 200), this);
         this._entities.add(this._player.entity);
 
-        let enemy = new EnemyEntity(new Vector(200, 100));
+        let enemy = new EnemyEntity(new Vector(200, 100), this);
         this._entities.add(enemy);
 
         this.spawnPrize();
     }
 
     private spawnPrize() {
-        this._prize = new PrizeEntity(new Vector(randomInt(100, 300), randomInt(100, 300)));
+        this._prize = new PrizeEntity(new Vector(randomInt(100, 300), randomInt(100, 300)), this);
         this._entities.add(this._prize);
     }
 
@@ -43,7 +53,7 @@ export class Game {
         }
 
         if (this.input.wasButtonPressedInFrame(Keys.B)) {
-            let projectile = new ProjectileEntity(this._player.entity.centerLocation, this._player.entity.lookVector.multiplyScalar(500));
+            let projectile = new ProjectileEntity(this._player.entity.centerLocation, this._player.entity.lookVector.multiplyScalar(500), this);
             this._entities.add(projectile);
         }
 
@@ -63,17 +73,20 @@ export class Game {
     }
 
     public render() {
-        this.viewport.clearCanvas();
+        //this.viewport.clearCanvas();
 
-        this.viewport.context.beginPath();
+
         this.viewport.context.fillStyle = "pink";
-        this.viewport.context.fillRect(100, 100, 200, 200);
+        this.viewport.context.fillRect(0, 0, this.viewport.width, this.viewport.height);
+        this._level.render(this.viewport);
 
         this._entities.render(this.viewport);
     }
 
-    private get viewport(): Viewport { return this._context.viewport; }
-    private get input(): InputProvider { return this._context.input; }
-    private get images(): ImageResources { return this._context.images; }
-    private get audio(): AudioResources { return this._context.audio; }
+    private get viewport(): Viewport { return this._viewport; }
+    private get input(): InputProvider { return this._input; }
+
+    public get resources() { return this._resources; }
+    public get level() { return this._level; }
+    public get entityManager() { return this._entities; }
 }
