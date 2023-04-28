@@ -168,18 +168,13 @@ export class PhyicalObject {
     }
 
     private checkLevelCollision(location: Vector, axis: Axis): CollisionResult | undefined {
-        let checkRect = (rect: Rectangle) => {
-            if (rect.containsPoint(location)) {
-                return { bounds: rect, axis, passable: false };
-            } else {
-                return undefined;
-            }
-        };
+        if (!this._context.level.bounds.containsPoint(location)) {
+
+        }
 
         for (let block of this._context.level.blocks) {
-            let collision = checkRect(block);
-            if (collision) {
-                return collision;
+            if (block.containsPoint(location)) {
+                return { bounds: block, axis, passable: false };
             }
         }
 

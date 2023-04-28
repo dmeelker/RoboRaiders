@@ -8,9 +8,10 @@ import { Entity } from "./Entity";
 
 export class ProjectileEntity extends Entity {
     public physics: PhyicalObject;
+    public power = 1;
 
     public constructor(location: Vector, velocity: Vector, gameContext: IGameContext) {
-        super(location, new Size(3, 3), gameContext);
+        super(location, new Size(4, 4), gameContext);
 
         this.physics = new PhyicalObject(
             this,
@@ -30,7 +31,7 @@ export class ProjectileEntity extends Entity {
         let hitEnemies = this.physics.lastCollisions.filter(c => c.entity instanceof EnemyEntity).map(c => c.entity as EnemyEntity);
 
         for (let enemy of hitEnemies) {
-            enemy.hit();
+            enemy.hit(this.power);
         }
     }
 

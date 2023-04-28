@@ -96,9 +96,16 @@ export class Rectangle {
         return true;
     }
 
-    containsPoint(p: ILocation) {
+    public containsPoint(p: ILocation) {
         return p.x >= this.location.x && p.x < this.location.x + this.size.width &&
             p.y >= this.location.y && p.y < this.location.y + this.size.height;
+    }
+
+    public containsRect(rect: Rectangle): boolean {
+        return rect.x >= this.x &&
+            rect.x + rect.width <= this.x + this.width &&
+            rect.y >= this.y &&
+            rect.y + rect.height <= this.y + this.height;
     }
 
     public addBorder(size: number): Rectangle {
@@ -175,6 +182,10 @@ export class Vector implements ILocation {
 
     static fromDegreeAngle(degrees: number): Vector {
         return this.fromRadianAngle(degreesToRadians(degrees));
+    }
+
+    public mirrorX(): Vector {
+        return new Vector(this.x * -1, this.y);
     }
 
     public clone() {

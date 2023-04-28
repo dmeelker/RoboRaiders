@@ -14,5 +14,6 @@ export class Player {
         this._score++;
     }
 
+    public get score() { return this._score; }
     public get entity() { return this._entity; }
 }

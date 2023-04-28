@@ -16,6 +16,7 @@ export class Entity {
         this.context = context;
     }
 
+    public initialize(_time: FrameTime) { }
     public update(_time: FrameTime) { }
     public render(_viewport: Viewport) { }
     protected onDispose(_time: FrameTime) { }

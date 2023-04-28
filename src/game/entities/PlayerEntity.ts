@@ -4,6 +4,8 @@ import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 import { CollisionContext, PhyicalObject } from "../Physics";
 import { Player } from "../Player";
+import { MachineGunWeapon } from "../weapons/MachineGun";
+import { PistolWeapon } from "../weapons/Pistol";
 import { Entity } from "./Entity";
 import { PriceEntity } from "./PrizeEntity";
 
@@ -16,6 +18,9 @@ export class PlayerEntity extends Entity {
     private readonly _player: Player;
     public physics: PhyicalObject;
     private _facing = Facing.Left;
+    private _weaponOffset = new Vector(2, -1);
+    private _weapon = new MachineGunWeapon();
+
 
     public constructor(location: Vector, player: Player, gameContext: IGameContext) {
         super(location, new Size(20, 20), gameContext);
@@ -36,6 +41,10 @@ export class PlayerEntity extends Entity {
         }
     }
 
+    public fire(time: FrameTime) {
+        this._weapon.fire(this.weaponLocation, this.lookVector, this.context, time);
+    }
+
     public jump() {
         if (this.physics.onGround) {
             this.physics.velocity.y = -300;
@@ -53,19 +62,13 @@ export class PlayerEntity extends Entity {
     }
 
     public render(viewport: Viewport) {
-        // viewport.context.fillStyle = "gray";
-        // viewport.context.fillRect(150, 200, 100, 10);
-        // viewport.context.fillRect(100, 250, 50, 10);
-        // viewport.context.fillRect(250, 250, 50, 10);
-
-        // viewport.context.fillRect(0, 0, 400, 100);
-        // viewport.context.fillRect(0, 300, 400, 100);
-        // viewport.context.fillRect(0, 0, 100, 400);
-        // viewport.context.fillRect(300, 0, 100, 400);
-
         viewport.context.fillStyle = "green";
         viewport.context.fillRect(Math.floor(this.location.x), Math.floor(this.location.y), this.size.width, this.size.height);
+
+        this._weapon.render(this.weaponLocation, this.lookVector, viewport);
     }
+
+    private get weaponLocation() { return this.centerLocation.add(this._facing == Facing.Right ? this._weaponOffset : this._weaponOffset.mirrorX()); }
 
     public get facing() { return this._facing; }
 

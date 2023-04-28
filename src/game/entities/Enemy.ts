@@ -56,14 +56,17 @@ export class EnemyEntity extends Entity {
         viewport.context.fillRect(Math.floor(this.location.x), Math.floor(this.location.y), this.size.width, this.size.height);
     }
 
-    public hit() {
-        this._hitpoints--;
-        if (this._hitpoints == 0) {
+    public hit(power: number) {
+        this._hitpoints -= power;
+        if (this._hitpoints <= 0) {
             this.markDisposable();
         }
     }
 
     public get facing() { return this._facing; }
+    public set facing(facing: Facing) {
+        this._facing = facing;
+    }
 
     public get lookVector() {
         switch (this._facing) {
