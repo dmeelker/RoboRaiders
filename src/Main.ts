@@ -50,7 +50,7 @@ class Main {
     public async initialize() {
         await this.loadResources();
 
-        this._viewport = new Viewport(new Size(800, 600), this._container);
+        this._viewport = new Viewport(new Size(640, 480), this._container);
 
         const inputProvider = createPlayer1InputProvider(this._keyboard, this._gamepadPoller);
         const testScreen = new GameScreen(this._viewport, this._resources, inputProvider);

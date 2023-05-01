@@ -1,5 +1,24 @@
-import { Rectangle, Size } from "../utilities/Trig";
+import { Rectangle, Size, Vector } from "../utilities/Trig";
 import { Viewport } from "../utilities/Viewport";
+import { GateDirection } from "./entities/Gate";
+
+export class LevelDefinition {
+    public blocks = new Array<Rectangle>();
+    public gates = new Array<GateDefinition>();
+    public spawns = new Array<EnemySpawnDefinition>();
+}
+
+export class GateDefinition {
+    public id = "";
+    public location = Vector.zero;
+    public direction = GateDirection.Left;
+    public matchingGateId = "";
+}
+
+export class EnemySpawnDefinition {
+    public location = Vector.zero;
+    public size = new Size(10, 10);
+}
 
 export class Level {
     private _blocks = new Array<Rectangle>();
@@ -7,18 +26,21 @@ export class Level {
     private readonly _bounds: Rectangle;
     private readonly _itemSpawnAreas: Array<Rectangle>;
 
-    public constructor(size: Size) {
+    public constructor(size: Size, blocks: Array<Rectangle>) {
         this._size = size;
         this._bounds = new Rectangle(0, 0, size.width, size.height);
 
         this.createLevelBoundaries();
 
-        this._blocks.push(new Rectangle(0, 40, 22, 10));
-        this._blocks.push(new Rectangle(200 - 22, 40, 22, 10));
+        for (let block of blocks) {
+            this._blocks.push(block);
+        }
+        // this._blocks.push(new Rectangle(0, 40, 22, 10));
+        // this._blocks.push(new Rectangle(200 - 22, 40, 22, 10));
 
-        this._blocks.push(new Rectangle(50, 100, 100, 10));
-        this._blocks.push(new Rectangle(0, 150, 50, 10));
-        this._blocks.push(new Rectangle(150, 150, 50, 10));
+        // this._blocks.push(new Rectangle(50, 100, 100, 10));
+        // this._blocks.push(new Rectangle(0, 150, 50, 10));
+        // this._blocks.push(new Rectangle(150, 150, 50, 10));
 
         this._itemSpawnAreas = this.determineItemSpawnAreas();
     }

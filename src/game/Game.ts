@@ -4,7 +4,7 @@ import { FrameTime } from "../utilities/FrameTime";
 import { randomArrayElement, randomInt, randomLocation } from "../utilities/Random";
 import { Size, Vector } from "../utilities/Trig";
 import { Viewport } from "../utilities/Viewport";
-import { Level } from "./Level";
+import { Level, LevelDefinition } from "./Level";
 import { Player } from "./Player";
 import { EnemyEntity } from "./entities/Enemy";
 import { EntityManager } from "./entities/EntityManager";
@@ -12,6 +12,7 @@ import { EntitySpawner } from "./entities/EntitySpawner";
 import { Gate, GateDirection } from "./entities/Gate";
 import { PriceEntity as PrizeEntity } from "./entities/PrizeEntity";
 import { ProjectileEntity } from "./entities/Projectile";
+import * as Level1 from "./levels/Level1";
 
 export interface IGameContext {
     get resources(): Resources;
@@ -24,7 +25,7 @@ export class Game implements IGameContext {
     private readonly _resources: Resources;
     private readonly _input: InputProvider;
     private readonly _entities = new EntityManager();
-    private _level = new Level(new Size(200, 200));
+    private _level: Level = null!;
     private _player: Player = null!;
     private _prize: PrizeEntity = null!;
 
@@ -37,32 +38,9 @@ export class Game implements IGameContext {
     }
 
     public initialize(_time: FrameTime) {
-        this._player = new Player(new Vector(100, 200), this);
+        this.loadLevel(Level1.get());
 
-        {
-            let gate1 = new Gate(new Vector(0, 0), GateDirection.Left, this);
-            this._entities.add(gate1);
-
-            let gate2 = new Gate(new Vector(200 - 22, 200 - 40), GateDirection.Right, this);
-            this._entities.add(gate2);
-
-            gate1._matchingGate = gate2;
-            gate2._matchingGate = gate1;
-        }
-
-        {
-            let gate1 = new Gate(new Vector(0, 200 - 40), GateDirection.Left, this);
-            this._entities.add(gate1);
-
-            let gate2 = new Gate(new Vector(200 - 22, 0), GateDirection.Right, this);
-            this._entities.add(gate2);
-
-            gate1._matchingGate = gate2;
-            gate2._matchingGate = gate1;
-        }
-
-        this._entities.add(new EntitySpawner(new Vector(50, 0), new Size(100, 20), this));
-
+        this._player = new Player(new Vector(100, 100), this);
         this._entities.add(this._player.entity);
 
         this.spawnPrize();
@@ -70,6 +48,30 @@ export class Game implements IGameContext {
         this._scoreLabel.className = "ui-label";
         this.updateScoreLabel();
         this.viewport.uiElement.appendChild(this._scoreLabel);
+    }
+
+    public loadLevel(level: LevelDefinition) {
+        this._level = new Level(new Size(640, 480), level.blocks);
+
+        for (let spawn of level.spawns) {
+            this._entities.add(new EntitySpawner(spawn.location, spawn.size, this));
+        }
+
+        let gates = new Map<string, Gate>();
+        for (let g of level.gates) {
+            gates.set(g.id, new Gate(g.location, g.direction, this));
+        }
+
+        for (let g of level.gates) {
+            let g1 = gates.get(g.id)!;
+            let g2 = gates.get(g.matchingGateId)!;
+
+            g1._matchingGate = g2;
+            g2._matchingGate = g1;
+
+            this._entities.add(g1);
+            this._entities.add(g2);
+        }
     }
 
     private spawnPrize() {
@@ -84,7 +86,9 @@ export class Game implements IGameContext {
 
     public update(time: FrameTime) {
         if (this.input.isButtonDown(Keys.A)) {
-            this._player.entity.jump();
+            this._player.entity.jump(time);
+        } else {
+            this._player.entity.stopJump();
         }
 
         if (this.input.isButtonDown(Keys.B)) {

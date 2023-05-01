@@ -7,7 +7,7 @@ import { ProjectileEntity } from "../entities/Projectile";
 import { Weapon } from "./Weapon";
 
 export class MachineGunWeapon extends Weapon {
-    private readonly _size = new Size(10, 4);
+    private readonly _size = new Size(18, 5);
     private _lastFireTime = 0;
     private _fireInterval = 100;
 

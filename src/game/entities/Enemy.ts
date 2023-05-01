@@ -12,7 +12,7 @@ export class EnemyEntity extends Entity {
     private _facing = Facing.Left;
 
     public constructor(location: Vector, gameContext: IGameContext) {
-        super(location, new Size(20, 20), gameContext);
+        super(location, new Size(32, 32), gameContext);
 
         this.physics = new PhyicalObject(
             this, Vector.zero,
@@ -40,11 +40,11 @@ export class EnemyEntity extends Entity {
     }
 
     public moveLeft() {
-        this.physics.velocity.x = -100;
+        this.physics.velocity.x = -200;
     }
 
     public moveRight() {
-        this.physics.velocity.x = 100;
+        this.physics.velocity.x = 200;
     }
 
     private turn() {

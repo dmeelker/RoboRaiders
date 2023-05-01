@@ -16,7 +16,7 @@ export class Gate extends Entity {
     public _matchingGate?: Gate;
 
     public constructor(location: Vector, direction: GateDirection, context: IGameContext) {
-        super(location, new Size(22, 40), context);
+        super(location, new Size(32 + 2, 32 * 2), context);
 
         this._direction = direction;
     }

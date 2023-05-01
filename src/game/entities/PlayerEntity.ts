@@ -20,10 +20,12 @@ export class PlayerEntity extends Entity {
     private _facing = Facing.Left;
     private _weaponOffset = new Vector(2, -1);
     private _weapon = new MachineGunWeapon();
+    private _jumpStart = 0;
+    private _jumping = false;
 
 
     public constructor(location: Vector, player: Player, gameContext: IGameContext) {
-        super(location, new Size(20, 20), gameContext);
+        super(location, new Size(32, 32), gameContext);
         this._player = player;
 
         this.physics = new PhyicalObject(this, Vector.zero, new CollisionContext(this.context.level, this.context.entityManager));
@@ -45,19 +47,30 @@ export class PlayerEntity extends Entity {
         this._weapon.fire(this.weaponLocation, this.lookVector, this.context, time);
     }
 
-    public jump() {
+    public jump(time: FrameTime) {
         if (this.physics.onGround) {
-            this.physics.velocity.y = -300;
+            this._jumpStart = time.currentTime;
+            this._jumping = true;
+            this.physics.velocity.y = -350;
+        } else if (this._jumping) {
+            if (time.currentTime - this._jumpStart > 100) {
+                this.physics.velocity.y += -150;
+                this._jumping = false;
+            }
         }
     }
 
+    public stopJump() {
+        this._jumping = false;
+    }
+
     public moveLeft() {
-        this.physics.velocity.x = -200;
+        this.physics.velocity.x = -300;
         this._facing = Facing.Left;
     }
 
     public moveRight() {
-        this.physics.velocity.x = 200;
+        this.physics.velocity.x = 300;
         this._facing = Facing.Right;
     }
 
