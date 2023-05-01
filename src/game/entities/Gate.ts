@@ -23,7 +23,7 @@ export class Gate extends Entity {
 
     public update(_time: FrameTime) {
         let enemies = this.context.entityManager.getOfType(EnemyEntity);
-        let players = this.context.entityManager.getOfType(PlayerEntity);
+        // let players = this.context.entityManager.getOfType(PlayerEntity);
 
         for (let enemy of enemies) {
             if (this.bounds.containsRect(enemy.bounds)) {
@@ -31,11 +31,11 @@ export class Gate extends Entity {
             }
         }
 
-        for (let player of players) {
-            if (this.bounds.containsRect(player.bounds)) {
-                this.moveEntity(player);
-            }
-        }
+        // for (let player of players) {
+        //     if (this.bounds.containsRect(player.bounds)) {
+        //         this.moveEntity(player);
+        //     }
+        // }
     }
 
     private moveEntity(entity: Entity) {
@@ -43,7 +43,7 @@ export class Gate extends Entity {
             return;
 
         let entranceOffset = entity.location.subtract(this.location);
-        let exitOffset = this._direction == GateDirection.Right ? new Vector(1, 0) : new Vector(-1, 1);
+        let exitOffset = this._direction == GateDirection.Right ? new Vector(4, 0) : new Vector(-4, 0);
         entity.location = this._matchingGate.location.add(exitOffset).add(entranceOffset);
     }
 

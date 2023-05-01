@@ -76,9 +76,9 @@ export class Game implements IGameContext {
 
     private spawnPrize() {
         let area = randomArrayElement(this._level.itemSpawnAreas);
-        let x = randomInt(0, area.width - 10);
+        let x = randomInt(0, area.width - 20);
 
-        let location = new Vector(area.x + x, area.y + area.height - 10);
+        let location = new Vector(area.x + x, area.y + area.height - 20);
 
         this._prize = new PrizeEntity(location, this);
         this._entities.add(this._prize);

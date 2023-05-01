@@ -39,12 +39,12 @@ export function get(): LevelDefinition {
         {
             id: "topright",
             direction: GateDirection.Right,
-            location: new Vector(0, 480 - 64)
+            location: new Vector(640 - 34, 0)
         },
         {
             id: "bottomleft",
             direction: GateDirection.Left,
-            location: new Vector(640 - 34, 0)
+            location: new Vector(0, 480 - 64)
         }, level.gates);
 
     let spawn = new EnemySpawnDefinition();

@@ -8,7 +8,7 @@ export class PriceEntity extends Entity {
     private _renderOffset = Vector.zero;
 
     public constructor(location: Vector, gameContext: IGameContext) {
-        super(location, new Size(10, 10), gameContext);
+        super(location, new Size(20, 20), gameContext);
     }
 
     public update(time: FrameTime) {
