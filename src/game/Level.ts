@@ -3,9 +3,12 @@ import { Viewport } from "../utilities/Viewport";
 import { GateDirection } from "./entities/Gate";
 
 export class LevelDefinition {
+    public backdropImage = "";
     public blocks = new Array<Rectangle>();
     public gates = new Array<GateDefinition>();
     public spawns = new Array<EnemySpawnDefinition>();
+    public player1Location = new Vector(0, 0);
+    public player2Location = new Vector(0, 0);
 }
 
 export class GateDefinition {

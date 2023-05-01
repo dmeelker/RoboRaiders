@@ -1,5 +1,4 @@
-import { Resources } from "../Main";
-import { InputProvider, Keys } from "../input/InputProvider";
+import { Inputs, Resources } from "../Main";
 import { FrameTime } from "../utilities/FrameTime";
 import { randomArrayElement, randomInt } from "../utilities/Random";
 import { Size, Vector } from "../utilities/Trig";
@@ -9,30 +8,34 @@ import { Player } from "./Player";
 import { EntityManager } from "./entities/EntityManager";
 import { EntitySpawner } from "./entities/EntitySpawner";
 import { Gate } from "./entities/Gate";
-import { PriceEntity as PrizeEntity } from "./entities/PrizeEntity";
+import { PriceEntity, PriceEntity as PrizeEntity } from "./entities/PrizeEntity";
 import * as Level1 from "./levels/Level1";
 
 export interface IGameContext {
     get resources(): Resources;
     get level(): Level;
     get entityManager(): EntityManager;
+    addPoint(): void;
 }
 
 export class Game implements IGameContext {
     private readonly _viewport: Viewport;
     private readonly _resources: Resources;
-    private readonly _input: InputProvider;
+    private readonly _inputs: Inputs;
     private readonly _entities = new EntityManager();
     private _level: Level = null!;
-    private _player: Player = null!;
+    private _backdropImage: ImageBitmap = null!;
+
+    private _score = 0;
+    private _players: Array<Player> = null!;
     private _prize: PrizeEntity = null!;
 
     private _scoreLabel = document.createElement("div");
 
-    public constructor(viewport: Viewport, resources: Resources, input: InputProvider) {
+    public constructor(viewport: Viewport, resources: Resources, inputs: Inputs) {
         this._viewport = viewport;
         this._resources = resources;
-        this._input = input;
+        this._inputs = inputs;
     }
 
     public reset(time: FrameTime) {
@@ -43,18 +46,24 @@ export class Game implements IGameContext {
     public initialize(_time: FrameTime) {
         this.loadLevel(Level1.get());
 
-        this._player = new Player(new Vector(100, 100), this);
-        this._entities.add(this._player.entity);
+        for (let player of this._players) {
+            this._entities.add(player.entity);
+        }
 
         this.spawnPrize();
 
         this._scoreLabel.className = "ui-label";
-        this.updateScoreLabel();
+        this._scoreLabel.style.textAlign = "center";
         this.viewport.uiElement.appendChild(this._scoreLabel);
+        this.updateScoreLabel();
     }
 
     public loadLevel(level: LevelDefinition) {
         this._level = new Level(new Size(640, 480), level.blocks);
+
+        if (level.backdropImage == "level1") {
+            this._backdropImage = this.resources.images.levels.level1;
+        }
 
         for (let spawn of level.spawns) {
             this._entities.add(new EntitySpawner(spawn.location, spawn.size, this));
@@ -75,35 +84,25 @@ export class Game implements IGameContext {
             this._entities.add(g1);
             this._entities.add(g2);
         }
+
+        this._players = [
+            new Player(level.player1Location.clone(), this._inputs.player1, 0, this),
+            new Player(level.player2Location.clone(), this._inputs.player2, 1, this)];
     }
 
     private spawnPrize() {
         let area = randomArrayElement(this._level.itemSpawnAreas);
-        let x = randomInt(0, area.width - 20);
+        let x = randomInt(0, area.width - PriceEntity.size.height);
 
-        let location = new Vector(area.x + x, area.y + area.height - 20);
+        let location = new Vector(area.x + x, area.y + area.height - PriceEntity.size.height);
 
         this._prize = new PrizeEntity(location, this);
         this._entities.add(this._prize);
     }
 
     public update(time: FrameTime) {
-        if (this.input.isButtonDown(Keys.A)) {
-            this._player.entity.jump();
-        } else {
-            this._player.entity.stopJump();
-        }
-
-        if (this.input.isButtonDown(Keys.B)) {
-            this._player.entity.fire(time);
-        }
-
-        if (this.input.isButtonDown(Keys.MoveLeft)) {
-            this._player.entity.moveLeft();
-        } else if (this.input.isButtonDown(Keys.MoveRight)) {
-            this._player.entity.moveRight();
-        } else {
-            this._player.entity.physics.velocity.x = 0;
+        for (let player of this._players) {
+            player.update(time);
         }
 
         if (this._prize.disposed) {
@@ -111,7 +110,7 @@ export class Game implements IGameContext {
             this.spawnPrize();
         }
 
-        if (this._player.entity.dead) {
+        if (this._players.filter(p => !p.entity.dead).length == 0) {
             this.reset(time);
         }
 
@@ -119,22 +118,24 @@ export class Game implements IGameContext {
     }
 
     private updateScoreLabel() {
-        this._scoreLabel.innerText = this._player.score.toString();
+        this._scoreLabel.innerText = this._score.toString();
+    }
+
+    public addPoint() {
+        this._score++;
+        this.updateScoreLabel();
     }
 
     public render() {
-        //this.viewport.clearCanvas();
-
-
         this.viewport.context.fillStyle = "pink";
         this.viewport.context.fillRect(0, 0, this.viewport.width, this.viewport.height);
-        this._level.render(this.viewport);
+        this.viewport.context.drawImage(this._backdropImage, 0, 0);
+        //this._level.render(this.viewport);
 
         this._entities.render(this.viewport);
     }
 
     private get viewport(): Viewport { return this._viewport; }
-    private get input(): InputProvider { return this._input; }
 
     public get resources() { return this._resources; }
     public get level() { return this._level; }

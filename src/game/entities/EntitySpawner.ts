@@ -37,7 +37,7 @@ export class EntitySpawner extends Entity {
     }
 
     public render(viewport: Viewport) {
-        viewport.context.fillStyle = "maroon";
-        viewport.context.fillRect(Math.floor(this.location.x), Math.floor(this.location.y), this.size.width, this.size.height);
+        //viewport.context.fillStyle = "maroon";
+        //viewport.context.fillRect(Math.floor(this.location.x), Math.floor(this.location.y), this.size.width, this.size.height);
     }
 }

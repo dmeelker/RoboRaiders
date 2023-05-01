@@ -6,19 +6,23 @@ import * as Dom from "./utilities/Dom";
 import * as Align from "./utilities/Align";
 import { ScreenManager } from "./utilities/ScreenManager";
 import { GameScreen } from "./GameScreen";
-import { createPlayer1InputProvider } from "./input/InputConfiguration";
+import { createPlayer1InputProvider, createPlayer2InputProvider } from "./input/InputConfiguration";
 import { Keyboard } from "./input/Keyboard";
 import { GamepadPoller } from "./input/GamepadPoller";
 import { ImageLoader } from "./utilities/ImagesLoader";
 import { AudioLoader } from "./utilities/AudioLoader";
 import { SpriteSheetLoader } from "./utilities/SpriteSheetLoader";
 import { AnimationDefinition } from "./utilities/Animation";
+import { InputProvider } from "./input/InputProvider";
 
 export interface ImageResources {
+    crate: ImageBitmap,
     shotgun: ImageBitmap,
-    player1StandRight: Array<ImageBitmap>;
-    player1WalkRight: Array<ImageBitmap>;
-    player1JumpRight: Array<ImageBitmap>;
+    levels: LevelBackdrops
+}
+
+export interface LevelBackdrops {
+    level1: ImageBitmap;
 }
 
 export interface AudioResources {
@@ -31,7 +35,14 @@ export interface AnimationResources {
     player1JumpRight: AnimationDefinition,
     player1StandLeft: AnimationDefinition,
     player1WalkLeft: AnimationDefinition,
-    player1JumpLeft: AnimationDefinition
+    player1JumpLeft: AnimationDefinition,
+
+    player2StandRight: AnimationDefinition,
+    player2WalkRight: AnimationDefinition,
+    player2JumpRight: AnimationDefinition,
+    player2StandLeft: AnimationDefinition,
+    player2WalkLeft: AnimationDefinition,
+    player2JumpLeft: AnimationDefinition
 }
 
 export class Resources {
@@ -39,6 +50,11 @@ export class Resources {
         public readonly images: ImageResources,
         public readonly audio: AudioResources,
         public readonly animations: AnimationResources) { }
+}
+
+export interface Inputs {
+    player1: InputProvider,
+    player2: InputProvider
 }
 
 class Main {
@@ -50,10 +66,16 @@ class Main {
 
     private _keyboard = new Keyboard();
     private _gamepadPoller = new GamepadPoller();
+    private _inputs: Inputs;
     private _resources: Resources = null!;
 
     public constructor(container: HTMLElement) {
         this._container = container;
+
+        this._inputs = {
+            player1: createPlayer1InputProvider(this._keyboard, this._gamepadPoller),
+            player2: createPlayer2InputProvider(this._keyboard, this._gamepadPoller),
+        };
     }
 
     public start() {
@@ -69,22 +91,31 @@ class Main {
 
         this._viewport = new Viewport(new Size(640, 480), this._container);
 
-        const inputProvider = createPlayer1InputProvider(this._keyboard, this._gamepadPoller);
-        const testScreen = new GameScreen(this._viewport, this._resources, inputProvider);
+        const testScreen = new GameScreen(this._viewport, this._resources, this._inputs);
         this._screenManager = new ScreenManager(testScreen, new FrameTime(0, 0));
     }
 
     private async loadResources() {
         const imageLoader = new ImageLoader("assets/gfx");
         let images = {
+            crate: await imageLoader.load("crate.png"),
             shotgun: await imageLoader.load("weapons/shotgun.png"),
+            levels: {
+                level1: await imageLoader.load("levels/level1.png"),
+            },
             player1StandRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player1_stand_right.png"), 1, 1),
             player1WalkRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player1_walk_right.png"), 4, 1),
             player1JumpRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player1_jump_right.png"), 1, 1),
-
             player1StandLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player1_stand_left.png"), 1, 1),
             player1WalkLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player1_walk_left.png"), 4, 1),
             player1JumpLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player1_jump_left.png"), 1, 1),
+
+            player2StandRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player2_stand_right.png"), 1, 1),
+            player2WalkRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player2_walk_right.png"), 4, 1),
+            player2JumpRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player2_jump_right.png"), 1, 1),
+            player2StandLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player2_stand_left.png"), 1, 1),
+            player2WalkLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player2_walk_left.png"), 4, 1),
+            player2JumpLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player2_jump_left.png"), 1, 1),
         };
         console.log(images);
         const soundLoader = new AudioLoader("assets/sounds");
@@ -96,10 +127,16 @@ class Main {
             player1StandRight: new AnimationDefinition(images.player1StandRight, 1),
             player1WalkRight: new AnimationDefinition(images.player1WalkRight, 150),
             player1JumpRight: new AnimationDefinition(images.player1JumpRight, 1),
-
             player1StandLeft: new AnimationDefinition(images.player1StandLeft, 1),
             player1WalkLeft: new AnimationDefinition(images.player1WalkLeft, 150),
             player1JumpLeft: new AnimationDefinition(images.player1JumpLeft, 1),
+
+            player2StandRight: new AnimationDefinition(images.player2StandRight, 1),
+            player2WalkRight: new AnimationDefinition(images.player2WalkRight, 150),
+            player2JumpRight: new AnimationDefinition(images.player2JumpRight, 1),
+            player2StandLeft: new AnimationDefinition(images.player2StandLeft, 1),
+            player2WalkLeft: new AnimationDefinition(images.player2WalkLeft, 150),
+            player2JumpLeft: new AnimationDefinition(images.player2JumpLeft, 1),
         };
 
         console.log(animations);

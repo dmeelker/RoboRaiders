@@ -6,22 +6,22 @@ import { GateDirection } from "../entities/Gate";
 export function get(): LevelDefinition {
     //640, 480
     let level = new LevelDefinition();
-    level.blocks.push(createPlatform(new Vector(170, 350), 300));
+    level.backdropImage = "level1";
 
-    level.blocks.push(createPlatform(new Vector(0, 250), 100));
-    level.blocks.push(createPlatform(new Vector(640 - 100, 250), 100));
-    //level.blocks.push(createPlatform(new Vector(170, 150), 300));
+    level.blocks.push(createStonePlatform(new Vector(151, 150), 336)); // Upper
 
-    level.blocks.push(createPlatform(new Vector(170, 150), 300));
+    level.blocks.push(createWoodPlatform(new Vector(0, 250), 100));
+    level.blocks.push(createWoodPlatform(new Vector(640 - 100, 250), 100));
 
-    level.blocks.push(createPlatform(new Vector(0, 64), 100));
-    level.blocks.push(createPlatform(new Vector(640 - 100, 64), 100));
+    level.blocks.push(createStonePlatform(new Vector(151, 350), 336)); // Middle
 
-    // level.blocks.push(new Rectangle(0, 40, 22, 10));
-    // level.blocks.push(new Rectangle(200 - 22, 40, 22, 10));
-    // level.blocks.push(new Rectangle(50, 100, 100, 10));
-    // level.blocks.push(new Rectangle(0, 150, 50, 10));
-    // level.blocks.push(new Rectangle(150, 150, 50, 10));
+    level.blocks.push(createStonePlatform(new Vector(0, 64), 100));
+    level.blocks.push(createStonePlatform(new Vector(640 - 100, 64), 100));
+
+    level.blocks.push(createStonePlatform(new Vector(0, 460), 640)); // Bottow
+
+    level.player1Location = new Vector(center(640, 32 - 50), 480 - 34 - 20);
+    level.player2Location = new Vector(center(640, 32 + 50), 480 - 34 - 20);
 
     createGatePair(
         {
@@ -32,7 +32,7 @@ export function get(): LevelDefinition {
         {
             id: "bottomright",
             direction: GateDirection.Right,
-            location: new Vector(640 - 34, 480 - 64)
+            location: new Vector(640 - 34, 480 - 64 - 20)
         }, level.gates);
 
     createGatePair(
@@ -44,7 +44,7 @@ export function get(): LevelDefinition {
         {
             id: "bottomleft",
             direction: GateDirection.Left,
-            location: new Vector(0, 480 - 64)
+            location: new Vector(0, 480 - 64 - 20)
         }, level.gates);
 
     let spawn = new EnemySpawnDefinition();
@@ -55,8 +55,12 @@ export function get(): LevelDefinition {
     return level;
 }
 
-function createPlatform(location: Vector, length: number): Rectangle {
+function createStonePlatform(location: Vector, length: number): Rectangle {
     return new Rectangle(location.x, location.y, length, 20);
+}
+
+function createWoodPlatform(location: Vector, length: number): Rectangle {
+    return new Rectangle(location.x, location.y, length, 16);
 }
 
 interface IGateDefinition {

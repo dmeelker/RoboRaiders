@@ -42,20 +42,31 @@ export class PlayerEntity extends Entity {
     private _animations: PlayerAnimation;
     private _activeAnimation: AnimationInstance = null!;
 
-    public constructor(location: Vector, player: Player, gameContext: IGameContext) {
+    public constructor(location: Vector, player: Player, index: number, gameContext: IGameContext) {
         super(location, new Size(32, 34), gameContext);
         this._availableWeapons = [new PistolWeapon(), new MachineGunWeapon(), new ShotgunWeapon(gameContext)];
         this._weapon = new ShotgunWeapon(gameContext);
         this._player = player;
 
-        this._animations = {
-            standLeft: gameContext.resources.animations.player1StandLeft,
-            standRight: gameContext.resources.animations.player1StandRight,
-            walkLeft: gameContext.resources.animations.player1WalkLeft,
-            walkRight: gameContext.resources.animations.player1WalkRight,
-            jumpLeft: gameContext.resources.animations.player1JumpLeft,
-            jumpRight: gameContext.resources.animations.player1JumpRight
-        };
+        if (index == 0) {
+            this._animations = {
+                standLeft: gameContext.resources.animations.player1StandLeft,
+                standRight: gameContext.resources.animations.player1StandRight,
+                walkLeft: gameContext.resources.animations.player1WalkLeft,
+                walkRight: gameContext.resources.animations.player1WalkRight,
+                jumpLeft: gameContext.resources.animations.player1JumpLeft,
+                jumpRight: gameContext.resources.animations.player1JumpRight
+            };
+        } else {
+            this._animations = {
+                standLeft: gameContext.resources.animations.player2StandLeft,
+                standRight: gameContext.resources.animations.player2StandRight,
+                walkLeft: gameContext.resources.animations.player2WalkLeft,
+                walkRight: gameContext.resources.animations.player2WalkRight,
+                jumpLeft: gameContext.resources.animations.player2JumpLeft,
+                jumpRight: gameContext.resources.animations.player2JumpRight
+            };
+        }
 
         this._activeAnimation = this._animations.standLeft.newInstance();
 
@@ -81,7 +92,7 @@ export class PlayerEntity extends Entity {
         for (let prize of prizes) {
             if (prize.bounds.overlaps(this.bounds)) {
                 prize.markDisposable();
-                this._player.addPoint();
+                this.context.addPoint();
                 this.randomWeapon();
             }
         }

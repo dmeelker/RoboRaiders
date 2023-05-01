@@ -1,17 +1,16 @@
-import { Resources } from "../Main";
-import { InputProvider } from "../input/InputProvider";
+import { Inputs, Resources } from "../Main";
 import { FrameTime } from "./FrameTime";
 import { Viewport } from "./Viewport";
 
 export abstract class Screen {
     protected readonly _viewport: Viewport;
     protected readonly _resources: Resources;
-    protected readonly _input: InputProvider;
+    protected readonly _inputs: Inputs;
 
-    public constructor(viewport: Viewport, resources: Resources, input: InputProvider) {
+    public constructor(viewport: Viewport, resources: Resources, inputs: Inputs) {
         this._viewport = viewport;
         this._resources = resources;
-        this._input = input;
+        this._inputs = inputs;
     }
 
     public activate(_time: FrameTime): void { }
@@ -21,7 +20,7 @@ export abstract class Screen {
     public abstract render(): void;
 
     protected get viewport(): Viewport { return this._viewport; }
-    protected get input(): InputProvider { return this._input; }
+    protected get inputs(): Inputs { return this._inputs; }
     protected get resources(): Resources { return this._resources; }
 }
 

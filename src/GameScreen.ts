@@ -3,7 +3,7 @@ import { FrameTime } from "./utilities/FrameTime";
 import { Screen } from "./utilities/ScreenManager";
 
 export class GameScreen extends Screen {
-    private _game = new Game(this.viewport, this.resources, this.input);
+    private _game = new Game(this.viewport, this.resources, this.inputs);
 
     public activate(time: FrameTime): void {
         this._game.initialize(time);

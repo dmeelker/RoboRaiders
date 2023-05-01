@@ -5,10 +5,14 @@ import { IGameContext } from "../Game";
 import { Entity } from "./Entity";
 
 export class PriceEntity extends Entity {
+    public static size = new Size(32, 26);
     private _renderOffset = Vector.zero;
+    private _image: ImageBitmap;
 
     public constructor(location: Vector, gameContext: IGameContext) {
-        super(location, new Size(20, 20), gameContext);
+        super(location, PriceEntity.size, gameContext);
+        this._image = gameContext.resources.images.crate;
+
     }
 
     public update(time: FrameTime) {
@@ -16,10 +20,12 @@ export class PriceEntity extends Entity {
     }
 
     public render(viewport: Viewport) {
-        viewport.context.fillStyle = "#00000066";
-        viewport.context.fillRect(Math.floor(this.location.x + this._renderOffset.x + 1), Math.floor(this.location.y + this._renderOffset.y + 1), this.size.width, this.size.height);
 
-        viewport.context.fillStyle = "gold";
-        viewport.context.fillRect(Math.floor(this.location.x + this._renderOffset.x), Math.floor(this.location.y + this._renderOffset.y), this.size.width, this.size.height);
+        viewport.context.drawImage(this._image, Math.floor(this.location.x + this._renderOffset.x), Math.floor(this.location.y + this._renderOffset.y));
+        // viewport.context.fillStyle = "#00000066";
+        // viewport.context.fillRect(Math.floor(this.location.x + this._renderOffset.x + 1), Math.floor(this.location.y + this._renderOffset.y + 1), this.size.width, this.size.height);
+
+        // viewport.context.fillStyle = "gold";
+        // viewport.context.fillRect(Math.floor(this.location.x + this._renderOffset.x), Math.floor(this.location.y + this._renderOffset.y), this.size.width, this.size.height);
     }
 }
