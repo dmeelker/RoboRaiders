@@ -1,5 +1,6 @@
 import { FrameTime } from "../../utilities/FrameTime";
 import { randomInt } from "../../utilities/Random";
+import { Timer } from "../../utilities/Timer";
 import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
@@ -12,6 +13,8 @@ export class ShotgunWeapon extends Weapon {
     private readonly _size: Size;
     private _lastFireTime = 0;
     private _fireInterval = 1000;
+    private _offset = Vector.zero;
+    private _recoilTimer?: Timer;
 
     public constructor(context: IGameContext) {
         super();
@@ -20,9 +23,19 @@ export class ShotgunWeapon extends Weapon {
         this._size = new Size(this._image.width, this._image.height);
     }
 
+    public update(time: FrameTime): void {
+        if (this._recoilTimer) {
+            this._recoilTimer.update(time, () => {
+                this._offset = Vector.zero;
+            });
+        }
+    }
+
     public fire(location: Vector, direction: Vector, context: IGameContext, time: FrameTime): void {
         if (time.currentTime - this._lastFireTime >= this._fireInterval) {
             this._lastFireTime = time.currentTime;
+            this._offset = new Vector(-4, 2);
+            this._recoilTimer = Timer.createOneOff(100, time);
         } else {
             return;
         }
@@ -39,12 +52,12 @@ export class ShotgunWeapon extends Weapon {
     }
 
     public render(location: Vector, direction: Vector, viewport: Viewport): void {
-        viewport.context.fillStyle = "gray";
+        //viewport.context.fillStyle = "gray";
 
         if (direction.x > 0) {
-            viewport.context.drawImage(this._image, location.x, location.y);
+            viewport.context.drawImage(this._image, location.x + this._offset.x, location.y + this._offset.y);
         } else {
-            viewport.context.translate(location.x, location.y);
+            viewport.context.translate(location.x + (this._offset.x * -1), location.y + this._offset.y);
             viewport.context.scale(-1, 1);
             viewport.context.drawImage(this._image, 0, 0);
             viewport.context.resetTransform();

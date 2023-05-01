@@ -17,6 +17,7 @@ import { InputProvider } from "./input/InputProvider";
 
 export interface ImageResources {
     crate: ImageBitmap,
+    machinegun: ImageBitmap,
     shotgun: ImageBitmap,
     levels: LevelBackdrops
 }
@@ -99,6 +100,7 @@ class Main {
         const imageLoader = new ImageLoader("assets/gfx");
         let images = {
             crate: await imageLoader.load("crate.png"),
+            machinegun: await imageLoader.load("weapons/machinegun.png"),
             shotgun: await imageLoader.load("weapons/shotgun.png"),
             levels: {
                 level1: await imageLoader.load("levels/level1.png"),
@@ -117,7 +119,7 @@ class Main {
             player2WalkLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player2_walk_left.png"), 4, 1),
             player2JumpLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player2_jump_left.png"), 1, 1),
         };
-        console.log(images);
+
         const soundLoader = new AudioLoader("assets/sounds");
         let audio = {
             fire: await soundLoader.load("fire.wav")
@@ -138,8 +140,6 @@ class Main {
             player2WalkLeft: new AnimationDefinition(images.player2WalkLeft, 150),
             player2JumpLeft: new AnimationDefinition(images.player2JumpLeft, 1),
         };
-
-        console.log(animations);
 
         this._resources = new Resources(images, audio, animations);
     }
