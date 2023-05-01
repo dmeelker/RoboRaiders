@@ -11,14 +11,14 @@ export class PistolWeapon extends Weapon {
     private _fireInterval = 300;
 
     public fire(location: Vector, direction: Vector, context: IGameContext, time: FrameTime): void {
-        if (time.currentTime - this._lastFireTime >= this._fireInterval) {
-            this._lastFireTime = time.currentTime;
-        } else {
+        if (this.timeSinceLastFire(time) < this._fireInterval)
             return;
-        }
+
+        this._lastFireTime = time.currentTime;
 
         let offset = direction.x > 0 ? new Vector(this._size.width, 0) : new Vector(this._size.width * -1, 0);
         let projectile = new ProjectileEntity(location.add(offset), direction.toUnit().multiplyScalar(600), time, context);
+        projectile.power = 2;
         context.entityManager.add(projectile);
     }
 
@@ -31,4 +31,6 @@ export class PistolWeapon extends Weapon {
             viewport.context.fillRect(location.x - this._size.width, location.y, this._size.width, this._size.height);
         }
     }
+
+    private timeSinceLastFire(time: FrameTime) { return time.currentTime - this._lastFireTime; }
 }

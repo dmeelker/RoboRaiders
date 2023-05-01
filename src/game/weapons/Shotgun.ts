@@ -8,7 +8,6 @@ import { ProjectileEntity } from "../entities/Projectile";
 import { Weapon } from "./Weapon";
 
 export class ShotgunWeapon extends Weapon {
-    private readonly _context: IGameContext;
     private readonly _image: ImageBitmap;
     private readonly _size: Size;
     private _lastFireTime = 0;
@@ -18,7 +17,6 @@ export class ShotgunWeapon extends Weapon {
 
     public constructor(context: IGameContext) {
         super();
-        this._context = context;
         this._image = context.resources.images.shotgun;
         this._size = new Size(this._image.width, this._image.height);
     }
@@ -32,13 +30,12 @@ export class ShotgunWeapon extends Weapon {
     }
 
     public fire(location: Vector, direction: Vector, context: IGameContext, time: FrameTime): void {
-        if (time.currentTime - this._lastFireTime >= this._fireInterval) {
-            this._lastFireTime = time.currentTime;
-            this._offset = new Vector(-4, 2);
-            this._recoilTimer = Timer.createOneOff(100, time);
-        } else {
-            return;
-        }
+        if (this.timeSinceLastFire(time) < this._fireInterval)
+            return
+
+        this._lastFireTime = time.currentTime;
+        this._offset = new Vector(-4, 2);
+        this._recoilTimer = Timer.createOneOff(100, time);
 
         for (let i = 0; i < 8; i++) {
             let speed = randomInt(600, 800);
@@ -48,12 +45,9 @@ export class ShotgunWeapon extends Weapon {
             projectile.maxAge = randomInt(250, 350);
             context.entityManager.add(projectile);
         }
-
     }
 
     public render(location: Vector, direction: Vector, viewport: Viewport): void {
-        //viewport.context.fillStyle = "gray";
-
         if (direction.x > 0) {
             viewport.context.drawImage(this._image, location.x + this._offset.x, location.y + this._offset.y);
         } else {
@@ -67,4 +61,6 @@ export class ShotgunWeapon extends Weapon {
     private getSpreadVector(direction: Vector) {
         return Vector.fromDegreeAngle(direction.angleInDegrees + randomInt(-4, 4));
     }
+
+    private timeSinceLastFire(time: FrameTime) { return time.currentTime - this._lastFireTime; }
 }

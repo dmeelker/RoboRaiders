@@ -34,7 +34,7 @@ export class MachineGunWeapon extends Weapon {
             return;
 
         this._lastFireTime = time.currentTime;
-        this._offset = new Vector(Math.sign(direction.x) * randomInt(1, 3), randomInt(-1, 1));
+        this._offset = new Vector(randomInt(1, 3), randomInt(-1, 1));
         this._recoilTimer = Timer.createOneOff(50, time);
 
         let offset = direction.x > 0 ? new Vector(this._size.width, 0) : new Vector(this._size.width * -1, 0);
@@ -44,25 +44,17 @@ export class MachineGunWeapon extends Weapon {
     }
 
     public render(location: Vector, direction: Vector, viewport: Viewport): void {
-        let offset = new Vector(Math.sign(direction.x) * -2, 0);
+        let offset = new Vector(-2, 0);
         offset = offset.add(this._offset);
 
         if (direction.x > 0) {
             viewport.context.drawImage(this._image, location.x + offset.x, location.y + offset.y);
         } else {
-            viewport.context.translate(location.x + offset.x, location.y + offset.y);
+            viewport.context.translate(location.x + (offset.x * -1), location.y + offset.y);
             viewport.context.scale(-1, 1);
             viewport.context.drawImage(this._image, 0, 0);
             viewport.context.resetTransform();
         }
-
-        // viewport.context.fillStyle = "gray";
-
-        // if (direction.x > 0) {
-        //     viewport.context.fillRect(location.x, location.y, this._size.width, this._size.height);
-        // } else {
-        //     viewport.context.fillRect(location.x - this._size.width, location.y, this._size.width, this._size.height);
-        // }
     }
 
     private getSpreadVector(direction: Vector) {
