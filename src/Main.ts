@@ -4,7 +4,6 @@ import { Size } from "./utilities/Trig";
 import { Viewport } from "./utilities/Viewport";
 import * as Dom from "./utilities/Dom";
 import * as Align from "./utilities/Align";
-import * as WindowActiveMonitor from "./utilities/WindowActiveMonitor";
 import { ScreenManager } from "./utilities/ScreenManager";
 import { GameScreen } from "./GameScreen";
 import { createPlayer1InputProvider } from "./input/InputConfiguration";
@@ -49,8 +48,6 @@ class Main {
     }
 
     public async initialize() {
-        WindowActiveMonitor.initialize();
-
         await this.loadResources();
 
         this._viewport = new Viewport(new Size(640, 480), this._container);
