@@ -7,9 +7,18 @@ import { ProjectileEntity } from "../entities/Projectile";
 import { Weapon } from "./Weapon";
 
 export class ShotgunWeapon extends Weapon {
-    private readonly _size = new Size(18, 5);
+    private readonly _context: IGameContext;
+    private readonly _image: ImageBitmap;
+    private readonly _size: Size;
     private _lastFireTime = 0;
     private _fireInterval = 1000;
+
+    public constructor(context: IGameContext) {
+        super();
+        this._context = context;
+        this._image = context.resources.images.shotgun;
+        this._size = new Size(this._image.width, this._image.height);
+    }
 
     public fire(location: Vector, direction: Vector, context: IGameContext, time: FrameTime): void {
         if (time.currentTime - this._lastFireTime >= this._fireInterval) {
@@ -33,13 +42,16 @@ export class ShotgunWeapon extends Weapon {
         viewport.context.fillStyle = "gray";
 
         if (direction.x > 0) {
-            viewport.context.fillRect(location.x, location.y, this._size.width, this._size.height);
+            viewport.context.drawImage(this._image, location.x, location.y);
         } else {
-            viewport.context.fillRect(location.x - this._size.width, location.y, this._size.width, this._size.height);
+            viewport.context.translate(location.x, location.y);
+            viewport.context.scale(-1, 1);
+            viewport.context.drawImage(this._image, 0, 0);
+            viewport.context.resetTransform();
         }
     }
 
     private getSpreadVector(direction: Vector) {
-        return Vector.fromDegreeAngle(direction.angleInDegrees + randomInt(-3, 3));
+        return Vector.fromDegreeAngle(direction.angleInDegrees + randomInt(-4, 4));
     }
 }

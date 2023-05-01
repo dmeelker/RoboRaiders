@@ -1,6 +1,7 @@
+import { AnimationDefinition, AnimationInstance } from "../../utilities/Animation";
 import { FrameTime } from "../../utilities/FrameTime";
 import { randomArrayElement } from "../../utilities/Random";
-import { Size, Vector } from "../../utilities/Trig";
+import { Point, Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 import { CollisionContext, PhyicalObject } from "../Physics";
@@ -18,6 +19,15 @@ export enum Facing {
     Right,
 }
 
+export interface PlayerAnimation {
+    standLeft: AnimationDefinition,
+    standRight: AnimationDefinition,
+    walkLeft: AnimationDefinition,
+    walkRight: AnimationDefinition,
+    jumpLeft: AnimationDefinition,
+    jumpRight: AnimationDefinition,
+}
+
 export class PlayerEntity extends Entity {
     private readonly _player: Player;
     public physics: PhyicalObject;
@@ -27,11 +37,27 @@ export class PlayerEntity extends Entity {
     private _jumpStart = 0;
     private _jumping = false;
     private _dead = false;
-    private _availableWeapons = [new PistolWeapon(), new MachineGunWeapon(), new ShotgunWeapon()];
+    private _availableWeapons: Array<Weapon>;
+
+    private _animations: PlayerAnimation;
+    private _activeAnimation: AnimationInstance = null!;
 
     public constructor(location: Vector, player: Player, gameContext: IGameContext) {
-        super(location, new Size(32, 32), gameContext);
+        super(location, new Size(32, 34), gameContext);
+        this._availableWeapons = [new PistolWeapon(), new MachineGunWeapon(), new ShotgunWeapon(gameContext)];
+        this._weapon = new ShotgunWeapon(gameContext);
         this._player = player;
+
+        this._animations = {
+            standLeft: gameContext.resources.animations.player1StandLeft,
+            standRight: gameContext.resources.animations.player1StandRight,
+            walkLeft: gameContext.resources.animations.player1WalkLeft,
+            walkRight: gameContext.resources.animations.player1WalkRight,
+            jumpLeft: gameContext.resources.animations.player1JumpLeft,
+            jumpRight: gameContext.resources.animations.player1JumpRight
+        };
+
+        this._activeAnimation = this._animations.standLeft.newInstance();
 
         this.physics = new PhyicalObject(
             this,
@@ -59,6 +85,24 @@ export class PlayerEntity extends Entity {
                 this.randomWeapon();
             }
         }
+
+        if (this.physics.velocity.y != 0) {
+            let animation = this.facing == Facing.Left ? this._animations.jumpLeft : this._animations.jumpRight;
+            this.setAnimation(animation);
+        } else if (this.physics.velocity.x == 0) {
+            let standAnimation = this.facing == Facing.Left ? this._animations.standLeft : this._animations.standRight;
+            this.setAnimation(standAnimation);
+        } else if (this.physics.velocity.x != 0) {
+            let animation = this.facing == Facing.Left ? this._animations.walkLeft : this._animations.walkRight;
+            this.setAnimation(animation);
+        }
+    }
+
+    private setAnimation(animation: AnimationDefinition) {
+        if (this._activeAnimation.definition == animation) {
+            return;
+        }
+        this._activeAnimation = animation.newInstance();
     }
 
     private randomWeapon() {
@@ -94,7 +138,7 @@ export class PlayerEntity extends Entity {
             this.physics.velocity.y = -jumpSpeed;
         } else {
             const timeSinceJump = time.currentTime - this._jumpStart;
-            if (timeSinceJump > 150) {
+            if (timeSinceJump > 170) {
                 if (timeSinceJump < 200) {
                     this.physics.velocity.y = -jumpSpeed;
                 }
@@ -116,10 +160,11 @@ export class PlayerEntity extends Entity {
     }
 
     public render(viewport: Viewport) {
-        viewport.context.fillStyle = "green";
-        viewport.context.fillRect(Math.floor(this.location.x), Math.floor(this.location.y), this.size.width, this.size.height);
-
+        //viewport.context.fillStyle = "green";
+        //viewport.context.fillRect(Math.floor(this.location.x), Math.floor(this.location.y), this.size.width, this.size.height);
+        this._activeAnimation.render(viewport.context, new Point(Math.floor(this.location.x), Math.floor(this.location.y)));
         this._weapon.render(this.weaponLocation, this.lookVector, viewport);
+
     }
 
     private get weaponLocation() { return this.centerLocation.add(this._facing == Facing.Right ? this._weaponOffset : this._weaponOffset.mirrorX()); }

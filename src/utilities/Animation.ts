@@ -34,6 +34,8 @@ export class AnimationInstance {
     public render(context: CanvasRenderingContext2D, location: ILocation) {
         context.drawImage(this.getImage(), location.x, location.y);
     }
+
+    public get definition() { return this._definition; }
 }
 
 export class AnimationRepository {

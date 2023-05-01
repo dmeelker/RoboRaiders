@@ -11,17 +11,34 @@ import { Keyboard } from "./input/Keyboard";
 import { GamepadPoller } from "./input/GamepadPoller";
 import { ImageLoader } from "./utilities/ImagesLoader";
 import { AudioLoader } from "./utilities/AudioLoader";
+import { SpriteSheetLoader } from "./utilities/SpriteSheetLoader";
+import { AnimationDefinition } from "./utilities/Animation";
 
 export interface ImageResources {
-    apple: ImageBitmap;
+    shotgun: ImageBitmap,
+    player1StandRight: Array<ImageBitmap>;
+    player1WalkRight: Array<ImageBitmap>;
+    player1JumpRight: Array<ImageBitmap>;
 }
 
 export interface AudioResources {
     fire: HTMLAudioElement;
 }
 
+export interface AnimationResources {
+    player1StandRight: AnimationDefinition,
+    player1WalkRight: AnimationDefinition,
+    player1JumpRight: AnimationDefinition,
+    player1StandLeft: AnimationDefinition,
+    player1WalkLeft: AnimationDefinition,
+    player1JumpLeft: AnimationDefinition
+}
+
 export class Resources {
-    public constructor(public readonly images: ImageResources, public readonly audio: AudioResources) { }
+    public constructor(
+        public readonly images: ImageResources,
+        public readonly audio: AudioResources,
+        public readonly animations: AnimationResources) { }
 }
 
 class Main {
@@ -60,15 +77,34 @@ class Main {
     private async loadResources() {
         const imageLoader = new ImageLoader("assets/gfx");
         let images = {
-            apple: await imageLoader.load("red.png"),
-        };
+            shotgun: await imageLoader.load("weapons/shotgun.png"),
+            player1StandRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player1_stand_right.png"), 1, 1),
+            player1WalkRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player1_walk_right.png"), 4, 1),
+            player1JumpRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player1_jump_right.png"), 1, 1),
 
+            player1StandLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player1_stand_left.png"), 1, 1),
+            player1WalkLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player1_walk_left.png"), 4, 1),
+            player1JumpLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player1_jump_left.png"), 1, 1),
+        };
+        console.log(images);
         const soundLoader = new AudioLoader("assets/sounds");
         let audio = {
             fire: await soundLoader.load("fire.wav")
         };
 
-        this._resources = new Resources(images, audio);
+        let animations = {
+            player1StandRight: new AnimationDefinition(images.player1StandRight, 1),
+            player1WalkRight: new AnimationDefinition(images.player1WalkRight, 150),
+            player1JumpRight: new AnimationDefinition(images.player1JumpRight, 1),
+
+            player1StandLeft: new AnimationDefinition(images.player1StandLeft, 1),
+            player1WalkLeft: new AnimationDefinition(images.player1WalkLeft, 150),
+            player1JumpLeft: new AnimationDefinition(images.player1JumpLeft, 1),
+        };
+
+        console.log(animations);
+
+        this._resources = new Resources(images, audio, animations);
     }
 
     private requestAnimationFrame() {
