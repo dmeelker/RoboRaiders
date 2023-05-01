@@ -4,7 +4,7 @@ import { Viewport } from "../../utilities/Viewport";
 import { Entity } from "./Entity";
 
 export class EntityManager {
-    private readonly _entities = new Array<Entity>();
+    private _entities = new Array<Entity>();
 
     public add(entity: Entity) {
         this._entities.push(entity);
@@ -12,6 +12,10 @@ export class EntityManager {
 
     public remove(entity: Entity) {
         this._entities.splice(this._entities.indexOf(entity), 1);
+    }
+
+    public clear() {
+        this._entities = [];
     }
 
     public update(time: FrameTime) {

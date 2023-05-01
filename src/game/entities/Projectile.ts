@@ -9,9 +9,13 @@ import { Entity } from "./Entity";
 export class ProjectileEntity extends Entity {
     public physics: PhyicalObject;
     public power = 1;
+    private _creationTime = 0;
+    public maxAge?: number;
 
-    public constructor(location: Vector, velocity: Vector, gameContext: IGameContext) {
+    public constructor(location: Vector, velocity: Vector, time: FrameTime, gameContext: IGameContext) {
         super(location, new Size(4, 4), gameContext);
+
+        this._creationTime = time.currentTime;
 
         this.physics = new PhyicalObject(
             this,
@@ -22,6 +26,11 @@ export class ProjectileEntity extends Entity {
     }
 
     public update(time: FrameTime) {
+        if (this.maxAge && time.currentTime - this._creationTime > this.maxAge) {
+            this.markDisposable();
+            return;
+        }
+
         this.physics.update(time);
 
         if (this.physics.lastCollisions.length > 0) {

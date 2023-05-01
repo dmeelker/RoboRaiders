@@ -1,17 +1,15 @@
 import { Resources } from "../Main";
 import { InputProvider, Keys } from "../input/InputProvider";
 import { FrameTime } from "../utilities/FrameTime";
-import { randomArrayElement, randomInt, randomLocation } from "../utilities/Random";
+import { randomArrayElement, randomInt } from "../utilities/Random";
 import { Size, Vector } from "../utilities/Trig";
 import { Viewport } from "../utilities/Viewport";
 import { Level, LevelDefinition } from "./Level";
 import { Player } from "./Player";
-import { EnemyEntity } from "./entities/Enemy";
 import { EntityManager } from "./entities/EntityManager";
 import { EntitySpawner } from "./entities/EntitySpawner";
-import { Gate, GateDirection } from "./entities/Gate";
+import { Gate } from "./entities/Gate";
 import { PriceEntity as PrizeEntity } from "./entities/PrizeEntity";
-import { ProjectileEntity } from "./entities/Projectile";
 import * as Level1 from "./levels/Level1";
 
 export interface IGameContext {
@@ -35,6 +33,11 @@ export class Game implements IGameContext {
         this._viewport = viewport;
         this._resources = resources;
         this._input = input;
+    }
+
+    public reset(time: FrameTime) {
+        this._entities.clear();
+        this.initialize(time);
     }
 
     public initialize(_time: FrameTime) {
@@ -106,6 +109,10 @@ export class Game implements IGameContext {
         if (this._prize.disposed) {
             this.updateScoreLabel();
             this.spawnPrize();
+        }
+
+        if (this._player.entity.dead) {
+            this.reset(time);
         }
 
         this._entities.update(time);
