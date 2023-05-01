@@ -4,6 +4,7 @@ import { Size } from "./utilities/Trig";
 import { Viewport } from "./utilities/Viewport";
 import * as Dom from "./utilities/Dom";
 import * as Align from "./utilities/Align";
+import * as WindowActiveMonitor from "./utilities/WindowActiveMonitor";
 import { ScreenManager } from "./utilities/ScreenManager";
 import { GameScreen } from "./GameScreen";
 import { createPlayer1InputProvider } from "./input/InputConfiguration";
@@ -48,6 +49,8 @@ class Main {
     }
 
     public async initialize() {
+        WindowActiveMonitor.initialize();
+
         await this.loadResources();
 
         this._viewport = new Viewport(new Size(640, 480), this._container);
@@ -78,7 +81,11 @@ class Main {
     private update(time: number): void {
         let frameTime = new FrameTime(time, time - this._lastFrameTime);
 
-        this._screenManager.update(frameTime);
+        if (document.hasFocus() && !document.hidden) {
+            this._screenManager.update(frameTime);
+        } else {
+            document.title = `Paused`;
+        }
         this._screenManager.render();
 
         this._keyboard.nextFrame();
