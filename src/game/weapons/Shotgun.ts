@@ -23,7 +23,7 @@ export class ShotgunWeapon extends Weapon {
             let offset = direction.x > 0 ? new Vector(this._size.width, 0) : new Vector(this._size.width * -1, 0);
             let velocity = this.getSpreadVector(direction).toUnit().multiplyScalar(speed);
             let projectile = new ProjectileEntity(location.add(offset), velocity, time, context);
-            projectile.maxAge = 300;
+            projectile.maxAge = randomInt(250, 350);
             context.entityManager.add(projectile);
         }
 

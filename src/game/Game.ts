@@ -89,7 +89,7 @@ export class Game implements IGameContext {
 
     public update(time: FrameTime) {
         if (this.input.isButtonDown(Keys.A)) {
-            this._player.entity.jump(time);
+            this._player.entity.jump();
         } else {
             this._player.entity.stopJump();
         }

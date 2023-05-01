@@ -18,7 +18,7 @@ export class PistolWeapon extends Weapon {
         }
 
         let offset = direction.x > 0 ? new Vector(this._size.width, 0) : new Vector(this._size.width * -1, 0);
-        let projectile = new ProjectileEntity(location.add(offset), direction.toUnit().multiplyScalar(500), time, context);
+        let projectile = new ProjectileEntity(location.add(offset), direction.toUnit().multiplyScalar(600), time, context);
         context.entityManager.add(projectile);
     }
 

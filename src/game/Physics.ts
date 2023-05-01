@@ -41,7 +41,7 @@ export class PhyicalObject {
 
     public update(time: FrameTime) {
         if (this.gravity) {
-            this.velocity = this.velocity.add(new Vector(0, time.calculateMovement(800)));
+            this.velocity = this.velocity.add(new Vector(0, time.calculateMovement(1200)));
         }
 
         this._onGround = false;

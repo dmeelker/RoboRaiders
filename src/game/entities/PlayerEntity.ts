@@ -23,7 +23,7 @@ export class PlayerEntity extends Entity {
     public physics: PhyicalObject;
     private _facing = Facing.Left;
     private _weaponOffset = new Vector(2, -1);
-    private _weapon: Weapon = new ShotgunWeapon();
+    private _weapon: Weapon = new PistolWeapon();
     private _jumpStart = 0;
     private _jumping = false;
     private _dead = false;
@@ -40,7 +40,9 @@ export class PlayerEntity extends Entity {
     }
 
     public update(time: FrameTime) {
+        this.updateJump(time);
         this.physics.update(time);
+        this.physics.gravity = !this._jumping;
 
         let enemies = this.context.entityManager.getOfType(EnemyEntity);
         for (let enemy of enemies) {
@@ -72,21 +74,35 @@ export class PlayerEntity extends Entity {
         this._weapon.fire(this.weaponLocation, this.lookVector, this.context, time);
     }
 
-    public jump(time: FrameTime) {
-        if (this.physics.onGround) {
-            this._jumpStart = time.currentTime;
-            this._jumping = true;
-            this.physics.velocity.y = -350;
-        } else if (this._jumping) {
-            if (time.currentTime - this._jumpStart > 100) {
-                this.physics.velocity.y += -150;
-                this._jumping = false;
-            }
-        }
+    public jump() {
+        this._jumping = true;
     }
 
     public stopJump() {
         this._jumping = false;
+    }
+
+    private updateJump(time: FrameTime) {
+        if (!this._jumping) {
+            return;
+        }
+
+        const jumpSpeed = 400;
+
+        if (this.physics.onGround) {
+            this._jumpStart = time.currentTime;
+            this.physics.velocity.y = -jumpSpeed;
+        } else {
+            const timeSinceJump = time.currentTime - this._jumpStart;
+            if (timeSinceJump > 150) {
+                if (timeSinceJump < 200) {
+                    this.physics.velocity.y = -jumpSpeed;
+                }
+                else {
+                    this._jumping = false;
+                }
+            }
+        }
     }
 
     public moveLeft() {
