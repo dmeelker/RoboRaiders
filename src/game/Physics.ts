@@ -28,6 +28,8 @@ export class PhyicalObject {
     public velocity: Vector = Vector.zero;
     public entityFilter?: EntityCollisionFilter;
     public gravity = true;
+    public gravityModifier = 1.0;
+    public terminalVelocity = 600;
     private readonly _context: CollisionContext;
     private _onGround = false;
     private _lastCollisions = new Array<CollisionResult>();
@@ -41,7 +43,10 @@ export class PhyicalObject {
 
     public update(time: FrameTime) {
         if (this.gravity) {
-            this.velocity = this.velocity.add(new Vector(0, time.calculateMovement(1200)));
+            this.velocity = this.velocity.add(new Vector(0, time.calculateMovement(1200 * this.gravityModifier)));
+            if (this.velocity.y > this.terminalVelocity) {
+                this.velocity.y = this.terminalVelocity;
+            }
         }
 
         this._onGround = false;

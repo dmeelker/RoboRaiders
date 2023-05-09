@@ -35,7 +35,10 @@ export class PlayerEntity extends Entity {
     private _weaponOffset = new Vector(0, 0);
     private _weapon: Weapon = new PistolWeapon();
     private _jumpStart = 0;
+    private _jumpButtonDown = false;
     private _jumping = false;
+    private _jumpPower = 0;
+
     private _dead = false;
     private _availableWeapons: Array<Weapon>;
 
@@ -80,7 +83,7 @@ export class PlayerEntity extends Entity {
         this._weapon.update(time);
         this.updateJump(time);
         this.physics.update(time);
-        this.physics.gravity = !this._jumping;
+        //this.physics.gravity = !this._jumping;
 
         let enemies = this.context.entityManager.getOfType(EnemyEntity);
         for (let enemy of enemies) {
@@ -131,32 +134,42 @@ export class PlayerEntity extends Entity {
     }
 
     public jump() {
-        this._jumping = true;
+        this._jumpButtonDown = true;
     }
 
     public stopJump() {
-        this._jumping = false;
+        this._jumpButtonDown = false;
     }
 
     private updateJump(time: FrameTime) {
-        if (!this._jumping) {
-            return;
+        if (this.physics.velocity.y > 0) {
+            this.physics.gravityModifier = 1.5;
+        } else {
+            this.physics.gravityModifier = 1;
         }
 
-        const jumpSpeed = 400;
+        const jumpSpeed = 550;
+        const maxJumpLength = 250;
 
-        if (this.physics.onGround) {
+        if (this._jumpButtonDown && this.physics.onGround) {
+            console.log("Jump start");
+            this._jumping = true;
+            this._jumpPower = jumpSpeed * 0.5;
             this._jumpStart = time.currentTime;
             this.physics.velocity.y = -jumpSpeed;
-        } else {
+            console.log(this._jumpPower);
+        }
+        else if (this._jumping) {
             const timeSinceJump = time.currentTime - this._jumpStart;
-            if (timeSinceJump > 170) {
-                if (timeSinceJump < 200) {
-                    this.physics.velocity.y = -jumpSpeed;
-                }
-                else {
-                    this._jumping = false;
-                }
+            if (timeSinceJump >= maxJumpLength || !this._jumpButtonDown) {
+                console.log("Jump stop");
+                this.physics.velocity.y *= 0.5;
+                this._jumping = false;
+            } else {
+                this._jumpPower -= time.calculateMovement(70);
+
+                this.physics.velocity.y -= time.calculateMovement(this._jumpPower);
+                console.log(this._jumpPower);
             }
         }
     }
