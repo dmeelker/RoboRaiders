@@ -36,8 +36,8 @@ export class PlayerEntity extends Entity {
     private _weapon: Weapon = new PistolWeapon();
     private _jumpStart = 0;
     private _jumpButtonDown = false;
+    private _jumpButtonDownTime = 0;
     private _jumping = false;
-    private _jumpPower = 0;
 
     private _dead = false;
     private _availableWeapons: Array<Weapon>;
@@ -83,7 +83,6 @@ export class PlayerEntity extends Entity {
         this._weapon.update(time);
         this.updateJump(time);
         this.physics.update(time);
-        //this.physics.gravity = !this._jumping;
 
         let enemies = this.context.entityManager.getOfType(EnemyEntity);
         for (let enemy of enemies) {
@@ -133,8 +132,9 @@ export class PlayerEntity extends Entity {
         this._weapon.fire(this.weaponLocation, this.lookVector, this.context, time);
     }
 
-    public jump() {
+    public jump(time: FrameTime) {
         this._jumpButtonDown = true;
+        this._jumpButtonDownTime = time.currentTime;
     }
 
     public stopJump() {
@@ -148,30 +148,33 @@ export class PlayerEntity extends Entity {
             this.physics.gravityModifier = 1;
         }
 
-        const jumpSpeed = 550;
+        const jumpSpeed = 500;
         const maxJumpLength = 250;
 
-        if (this._jumpButtonDown && this.physics.onGround) {
-            console.log("Jump start");
+        if (!this._jumping && this.timeSinceJumpButtonDown(time) < 50 && this.timeSinceGrounded(time) < 100) {
             this._jumping = true;
-            this._jumpPower = jumpSpeed * 0.5;
             this._jumpStart = time.currentTime;
             this.physics.velocity.y = -jumpSpeed;
-            console.log(this._jumpPower);
         }
         else if (this._jumping) {
             const timeSinceJump = time.currentTime - this._jumpStart;
             if (timeSinceJump >= maxJumpLength || !this._jumpButtonDown) {
-                console.log("Jump stop");
                 this.physics.velocity.y *= 0.5;
                 this._jumping = false;
             } else {
-                this._jumpPower -= time.calculateMovement(70);
-
-                this.physics.velocity.y -= time.calculateMovement(this._jumpPower);
-                console.log(this._jumpPower);
+                let boostPower = 1000 * (1 - (timeSinceJump / maxJumpLength));
+                this.physics.velocity.y -= time.calculateMovement(boostPower);
+                //console.log(boostPower + " - " + time.calculateMovement(boostPower));
             }
         }
+    }
+
+    private timeSinceJumpButtonDown(time: FrameTime) {
+        return time.currentTime - this._jumpButtonDownTime;
+    }
+
+    private timeSinceGrounded(time: FrameTime) {
+        return time.currentTime - this.physics.onGroundTime;
     }
 
     public moveLeft() {

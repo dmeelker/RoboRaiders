@@ -20,7 +20,7 @@ export class Player {
 
     private processInput(time: FrameTime) {
         if (this._input.isButtonDown(Keys.A)) {
-            this.entity.jump();
+            this.entity.jump(time);
         } else {
             this.entity.stopJump();
         }

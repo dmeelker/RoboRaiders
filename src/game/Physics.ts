@@ -32,6 +32,7 @@ export class PhyicalObject {
     public terminalVelocity = 600;
     private readonly _context: CollisionContext;
     private _onGround = false;
+    private _onGroundTime = 0;
     private _lastCollisions = new Array<CollisionResult>();
 
     public constructor(entity: Entity, velocity: Vector, context: CollisionContext, entityFilter?: EntityCollisionFilter) {
@@ -101,6 +102,7 @@ export class PhyicalObject {
                             this.velocity.y = 0;
                             newY = collision.bounds.y - this.height;
                             this._onGround = true;
+                            this._onGroundTime = time.currentTime;
                         }
                         break;
                     }
@@ -209,6 +211,7 @@ export class PhyicalObject {
     public get width() { return this.entity.size.width; }
     public get height() { return this.entity.size.height; }
     public get onGround() { return this._onGround; }
+    public get onGroundTime() { return this._onGroundTime; }
 
     public get lastCollisions() { return this._lastCollisions; }
 }
