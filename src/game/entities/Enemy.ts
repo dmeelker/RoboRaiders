@@ -8,11 +8,12 @@ import { Facing } from "./PlayerEntity";
 
 export class EnemyEntity extends Entity {
     public physics: PhyicalObject;
-    private _hitpoints = 10;
+    public hitpoints = 10;
     private _facing = Facing.Left;
+    public speed = 200;
 
-    public constructor(location: Vector, gameContext: IGameContext) {
-        super(location, new Size(32, 32), gameContext);
+    public constructor(location: Vector, size: Size, gameContext: IGameContext) {
+        super(location, size, gameContext);
 
         this.physics = new PhyicalObject(
             this, Vector.zero,
@@ -33,18 +34,12 @@ export class EnemyEntity extends Entity {
         }
     }
 
-    public jump() {
-        if (this.physics.onGround) {
-            this.physics.velocity.y = -300;
-        }
-    }
-
     public moveLeft() {
-        this.physics.velocity.x = -200;
+        this.physics.velocity.x = -this.speed;
     }
 
     public moveRight() {
-        this.physics.velocity.x = 200;
+        this.physics.velocity.x = this.speed;
     }
 
     private turn() {
@@ -57,8 +52,8 @@ export class EnemyEntity extends Entity {
     }
 
     public hit(power: number) {
-        this._hitpoints -= power;
-        if (this._hitpoints <= 0) {
+        this.hitpoints -= power;
+        if (this.hitpoints <= 0) {
             this.markDisposable();
         }
     }

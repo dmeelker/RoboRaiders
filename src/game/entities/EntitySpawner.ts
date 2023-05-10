@@ -1,5 +1,5 @@
 import { FrameTime } from "../../utilities/FrameTime";
-import { chance, randomInt } from "../../utilities/Random";
+import { chance, randomArrayElement, randomInt } from "../../utilities/Random";
 import { Timer } from "../../utilities/Timer";
 import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
@@ -27,9 +27,37 @@ export class EntitySpawner extends Entity {
     }
 
     public spawnEnemy() {
-        let enemy = new EnemyEntity(this.centerLocation, this.context);
+        let enemy = this.createRandomEnemy(this.centerLocation);
         enemy.facing = this.randomFacing();
+
+        console.log(enemy.size);
         this.context.entityManager.add(enemy);
+    }
+
+    private createRandomEnemy(location: Vector) {
+        let factories = [(l) => this.createBasicEnemy(l), (l) => this.createFastEnemy(l), (l) => this.createLargeEnemy(l)];
+        return randomArrayElement(factories)(location);
+    }
+
+    private createBasicEnemy(location: Vector) {
+        let enemy = new EnemyEntity(location, new Size(32, 32), this.context);
+        enemy.hitpoints = 10;
+        enemy.speed = 200;
+        return enemy;
+    }
+
+    private createFastEnemy(location: Vector) {
+        let enemy = new EnemyEntity(location, new Size(24, 24), this.context);
+        enemy.hitpoints = 5;
+        enemy.speed = 300;
+        return enemy;
+    }
+
+    private createLargeEnemy(location: Vector) {
+        let enemy = new EnemyEntity(location, new Size(45, 45), this.context);
+        enemy.hitpoints = 15;
+        enemy.speed = 150;
+        return enemy;
     }
 
     private randomFacing(): Facing {
