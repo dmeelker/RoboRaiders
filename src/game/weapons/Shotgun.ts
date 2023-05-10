@@ -11,7 +11,7 @@ export class ShotgunWeapon extends Weapon {
     private readonly _image: ImageBitmap;
     private readonly _size: Size;
     private _lastFireTime = 0;
-    private _fireInterval = 1000;
+    private _fireInterval = 800;
     private _offset = Vector.zero;
     private _recoilTimer?: Timer;
 

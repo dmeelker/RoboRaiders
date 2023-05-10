@@ -5,17 +5,23 @@ import { GateDirection } from "./entities/Gate";
 export class LevelDefinition {
     public backdropImage = "";
     public blocks = new Array<Rectangle>();
-    public gates = new Array<GateDefinition>();
+    public gates = new Array<GatePair>();
     public spawns = new Array<EnemySpawnDefinition>();
     public player1Location = new Vector(0, 0);
     public player2Location = new Vector(0, 0);
 }
 
+export class GatePair {
+    public constructor(
+        public entrance: GateDefinition,
+        public exit: GateDefinition) {
+    }
+}
+
 export class GateDefinition {
-    public id = "";
-    public location = Vector.zero;
-    public direction = GateDirection.Left;
-    public matchingGateId = "";
+    public constructor(
+        public location = Vector.zero,
+        public direction = GateDirection.Left) { }
 }
 
 export class EnemySpawnDefinition {
@@ -38,12 +44,6 @@ export class Level {
         for (let block of blocks) {
             this._blocks.push(block);
         }
-        // this._blocks.push(new Rectangle(0, 40, 22, 10));
-        // this._blocks.push(new Rectangle(200 - 22, 40, 22, 10));
-
-        // this._blocks.push(new Rectangle(50, 100, 100, 10));
-        // this._blocks.push(new Rectangle(0, 150, 50, 10));
-        // this._blocks.push(new Rectangle(150, 150, 50, 10));
 
         this._itemSpawnAreas = this.determineItemSpawnAreas();
     }

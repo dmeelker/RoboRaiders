@@ -1,9 +1,11 @@
 import { FrameTime } from "../../utilities/FrameTime";
+import { between } from "../../utilities/Math";
 import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 import { EnemyEntity } from "./Enemy";
 import { Entity } from "./Entity";
+import { PlayerEntity } from "./PlayerEntity";
 
 export enum GateDirection {
     Left,
@@ -12,20 +14,26 @@ export enum GateDirection {
 
 export class Gate extends Entity {
     private _direction: GateDirection;
+    private _entrance: boolean;
     public _matchingGate?: Gate;
 
-    public constructor(location: Vector, direction: GateDirection, context: IGameContext) {
+    public constructor(location: Vector, direction: GateDirection, entrance: boolean, context: IGameContext) {
         super(location, new Size(32 + 2, 32 * 2), context);
 
+        this._entrance = entrance;
         this._direction = direction;
     }
 
     public update(_time: FrameTime) {
+        if (!this._entrance) {
+            return;
+        }
+
         let enemies = this.context.entityManager.getOfType(EnemyEntity);
         // let players = this.context.entityManager.getOfType(PlayerEntity);
 
         for (let enemy of enemies) {
-            if (this.bounds.containsRect(enemy.bounds)) {
+            if (this.entityOnEdge(enemy)) {
                 this.moveEntity(enemy);
             }
         }
@@ -35,6 +43,16 @@ export class Gate extends Entity {
         //         this.moveEntity(player);
         //     }
         // }
+    }
+
+    private entityOnEdge(entity: Entity): boolean {
+        if (this._direction == GateDirection.Left) {
+            return entity.location.x == this.location.x && between(entity.location.y, this.location.y, this.location.y + this.bounds.height);
+        } else if (this._direction == GateDirection.Right) {
+            return entity.location.x + entity.size.width == this.location.x + this.size.width && between(entity.location.y, this.location.y, this.location.y + this.bounds.height);
+        }
+
+        return false;
     }
 
     private moveEntity(entity: Entity) {

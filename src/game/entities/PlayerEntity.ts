@@ -33,7 +33,7 @@ export class PlayerEntity extends Entity {
     public physics: PhyicalObject;
     private _facing = Facing.Left;
     private _weaponOffset = new Vector(0, 0);
-    private _weapon: Weapon = new PistolWeapon();
+    private _weapon: Weapon;
     private _jumpStart = 0;
     private _jumpButtonDown = false;
     private _jumpButtonDownTime = 0;
@@ -47,8 +47,8 @@ export class PlayerEntity extends Entity {
 
     public constructor(location: Vector, player: Player, index: number, gameContext: IGameContext) {
         super(location, new Size(32, 34), gameContext);
-        this._availableWeapons = [new PistolWeapon(), new MachineGunWeapon(gameContext), new ShotgunWeapon(gameContext)];
-        this._weapon = new ShotgunWeapon(gameContext);
+        this._availableWeapons = [new PistolWeapon(gameContext), new MachineGunWeapon(gameContext), new ShotgunWeapon(gameContext)];
+        this._weapon = new PistolWeapon(gameContext);
         this._player = player;
 
         if (index == 0) {

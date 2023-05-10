@@ -3,7 +3,7 @@ import { FrameTime } from "../utilities/FrameTime";
 import { randomArrayElement, randomInt } from "../utilities/Random";
 import { Size, Vector } from "../utilities/Trig";
 import { Viewport } from "../utilities/Viewport";
-import { Level, LevelDefinition } from "./Level";
+import { GateDefinition, Level, LevelDefinition } from "./Level";
 import { Player } from "./Player";
 import { EntityManager } from "./entities/EntityManager";
 import { EntitySpawner } from "./entities/EntitySpawner";
@@ -69,25 +69,23 @@ export class Game implements IGameContext {
             this._entities.add(new EntitySpawner(spawn.location, spawn.size, this));
         }
 
-        let gates = new Map<string, Gate>();
         for (let g of level.gates) {
-            gates.set(g.id, new Gate(g.location, g.direction, this));
-        }
+            let entrance = this.createGate(g.entrance, true);
+            let exit = this.createGate(g.exit, false);
 
-        for (let g of level.gates) {
-            let g1 = gates.get(g.id)!;
-            let g2 = gates.get(g.matchingGateId)!;
+            entrance._matchingGate = exit;
 
-            g1._matchingGate = g2;
-            g2._matchingGate = g1;
-
-            this._entities.add(g1);
-            this._entities.add(g2);
+            this._entities.add(entrance);
+            this._entities.add(exit);
         }
 
         this._players = [
             new Player(level.player1Location.clone(), this._inputs.player1, 0, this),
             new Player(level.player2Location.clone(), this._inputs.player2, 1, this)];
+    }
+
+    private createGate(definition: GateDefinition, entrance: boolean): Gate {
+        return new Gate(definition.location, definition.direction, entrance, this);
     }
 
     private spawnPrize() {
