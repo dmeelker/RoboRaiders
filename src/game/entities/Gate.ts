@@ -4,7 +4,6 @@ import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 import { EnemyEntity } from "./Enemy";
 import { Entity } from "./Entity";
-import { PlayerEntity } from "./PlayerEntity";
 
 export enum GateDirection {
     Left,
@@ -47,7 +46,7 @@ export class Gate extends Entity {
         entity.location = this._matchingGate.location.add(exitOffset).add(entranceOffset);
     }
 
-    public render(viewport: Viewport) {
+    public render(_viewport: Viewport) {
         // viewport.context.fillStyle = "orange";
         // viewport.context.fillRect(this.location.x, this.location.y, this.size.width, this.size.height);
     }
