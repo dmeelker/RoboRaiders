@@ -29,7 +29,7 @@ export class MachineGunWeapon extends Weapon {
         }
     }
 
-    public fire(location: Vector, direction: Vector, context: IGameContext, time: FrameTime): void {
+    public fireContinually(location: Vector, direction: Vector, context: IGameContext, time: FrameTime): void {
         if (this.timeSinceLastFire(time) < this._fireInterval)
             return;
 

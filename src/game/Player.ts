@@ -6,7 +6,6 @@ import { PlayerEntity } from "./entities/PlayerEntity";
 
 export class Player {
     private _entity: PlayerEntity;
-    // private _score = 0;
     private readonly _input: InputProvider;
 
     public constructor(location: Vector, input: InputProvider, index: number, context: IGameContext) {
@@ -19,14 +18,16 @@ export class Player {
     }
 
     private processInput(time: FrameTime) {
-        if (this._input.isButtonDown(Keys.A)) {
+        if (this._input.wasButtonPressedInFrame(Keys.A)) {
             this.entity.jump(time);
-        } else {
+        } else if (!this._input.isButtonDown(Keys.A)) {
             this.entity.stopJump();
         }
 
-        if (this._input.isButtonDown(Keys.B)) {
-            this.entity.fire(time);
+        if (this._input.wasButtonPressedInFrame(Keys.B)) {
+            this.entity.fireShot(time);
+        } else if (this._input.isButtonDown(Keys.B)) {
+            this.entity.fireContinually(time);
         }
 
         if (this._input.isButtonDown(Keys.MoveLeft)) {
@@ -38,10 +39,5 @@ export class Player {
         }
     }
 
-    // public addPoint() {
-    //     this._score++;
-    // }
-
-    // public get score() { return this._score; }
     public get entity() { return this._entity; }
 }

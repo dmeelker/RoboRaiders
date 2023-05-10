@@ -128,8 +128,12 @@ export class PlayerEntity extends Entity {
         this.markDisposable();
     }
 
-    public fire(time: FrameTime) {
-        this._weapon.fire(this.weaponLocation, this.lookVector, this.context, time);
+    public fireShot(time: FrameTime) {
+        this._weapon.fireSingleShot(this.weaponLocation, this.lookVector, this.context, time);
+    }
+
+    public fireContinually(time: FrameTime) {
+        this._weapon.fireContinually(this.weaponLocation, this.lookVector, this.context, time);
     }
 
     public jump(time: FrameTime) {

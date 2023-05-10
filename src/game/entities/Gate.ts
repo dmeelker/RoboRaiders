@@ -48,7 +48,7 @@ export class Gate extends Entity {
     }
 
     public render(viewport: Viewport) {
-        //viewport.context.fillStyle = "orange";
-        //viewport.context.fillRect(this.location.x, this.location.y, this.size.width, this.size.height);
+        // viewport.context.fillStyle = "orange";
+        // viewport.context.fillRect(this.location.x, this.location.y, this.size.width, this.size.height);
     }
 }

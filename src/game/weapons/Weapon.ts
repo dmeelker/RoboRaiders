@@ -6,6 +6,7 @@ import { IGameContext } from "../Game";
 export abstract class Weapon {
     public update(time: FrameTime): void { }
 
-    public abstract fire(location: Vector, direction: Vector, context: IGameContext, time: FrameTime): void;
+    public fireSingleShot(location: Vector, direction: Vector, context: IGameContext, time: FrameTime): void { }
+    public fireContinually(location: Vector, direction: Vector, context: IGameContext, time: FrameTime): void { }
     public abstract render(location: Vector, direction: Vector, viewport: Viewport): void;
 }
