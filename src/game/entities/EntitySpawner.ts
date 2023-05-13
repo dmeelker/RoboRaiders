@@ -44,21 +44,48 @@ export class EntitySpawner extends Entity {
     }
 
     private static createBasicEnemy(location: Vector, context: IGameContext) {
-        let enemy = new EnemyEntity(location, new Size(32, 32), context);
+        let animations = {
+            standLeft: context.resources.animations.runnerBotStandLeft,
+            standRight: context.resources.animations.runnerBotStandRight,
+            walkLeft: context.resources.animations.runnerBotWalkLeft,
+            walkRight: context.resources.animations.runnerBotWalkRight,
+            jumpLeft: context.resources.animations.runnerBotJumpLeft,
+            jumpRight: context.resources.animations.runnerBotJumpRight
+        };
+
+        let enemy = new EnemyEntity(location, animations, context);
         enemy.hitpoints = 10;
         enemy.speed = 200;
         return enemy;
     }
 
     private static createFastEnemy(location: Vector, context: IGameContext) {
-        let enemy = new EnemyEntity(location, new Size(24, 24), context);
+        let animations = {
+            standLeft: context.resources.animations.runnerBotStandLeft,
+            standRight: context.resources.animations.runnerBotStandRight,
+            walkLeft: context.resources.animations.runnerBotWalkLeft,
+            walkRight: context.resources.animations.runnerBotWalkRight,
+            jumpLeft: context.resources.animations.runnerBotJumpLeft,
+            jumpRight: context.resources.animations.runnerBotJumpRight
+        };
+
+        let enemy = new EnemyEntity(location, animations, context);
         enemy.hitpoints = 5;
         enemy.speed = 300;
         return enemy;
     }
 
     private static createLargeEnemy(location: Vector, context: IGameContext) {
-        let enemy = new EnemyEntity(location, new Size(45, 45), context);
+        let animations = {
+            standLeft: context.resources.animations.runnerBotStandLeft,
+            standRight: context.resources.animations.runnerBotStandRight,
+            walkLeft: context.resources.animations.runnerBotWalkLeft,
+            walkRight: context.resources.animations.runnerBotWalkRight,
+            jumpLeft: context.resources.animations.runnerBotJumpLeft,
+            jumpRight: context.resources.animations.runnerBotJumpRight
+        };
+
+        let enemy = new EnemyEntity(location, animations, context);
         enemy.hitpoints = 15;
         enemy.speed = 150;
         return enemy;

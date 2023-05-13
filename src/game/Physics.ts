@@ -1,5 +1,5 @@
 import { FrameTime } from "../utilities/FrameTime";
-import { Rectangle, Size, Vector } from "../utilities/Trig";
+import { Rectangle, Vector } from "../utilities/Trig";
 import { Level } from "./Level";
 import { Entity } from "./entities/Entity";
 import { EntityManager } from "./entities/EntityManager";

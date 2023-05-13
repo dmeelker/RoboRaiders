@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "convertAssets": "node convertAssets.js",
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "npm run convertAssets && tsc && vite build",
     "preview": "vite preview"
   },
   "devDependencies": {

@@ -5,7 +5,6 @@ import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 import { EnemyEntity } from "./Enemy";
 import { Entity } from "./Entity";
-import { PlayerEntity } from "./PlayerEntity";
 
 export enum GateDirection {
     Left,

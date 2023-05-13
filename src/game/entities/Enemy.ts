@@ -1,8 +1,9 @@
 import { FrameTime } from "../../utilities/FrameTime";
-import { Size, Vector } from "../../utilities/Trig";
+import { Point, Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 import { Axis, CollisionContext, PhyicalObject } from "../Physics";
+import { ActorAnimations, ActorAnimator } from "./ActorAnimations";
 import { Entity } from "./Entity";
 import { Facing } from "./PlayerEntity";
 
@@ -11,9 +12,11 @@ export class EnemyEntity extends Entity {
     public hitpoints = 10;
     private _facing = Facing.Left;
     public speed = 200;
+    private _animator: ActorAnimator;
 
-    public constructor(location: Vector, size: Size, gameContext: IGameContext) {
-        super(location, size, gameContext);
+    public constructor(location: Vector, animations: ActorAnimations, gameContext: IGameContext) {
+        super(location, new Size(animations.standLeft.frames[0].width, animations.standLeft.frames[0].height), gameContext);
+        this._animator = new ActorAnimator(animations);
 
         this.physics = new PhyicalObject(
             this, Vector.zero,
@@ -32,6 +35,8 @@ export class EnemyEntity extends Entity {
         if (this.physics.lastCollisions.filter(c => c.axis == Axis.X && !c.passable).length > 0) {
             this.turn();
         }
+
+        this._animator.update(this.physics, this.facing);
     }
 
     public moveLeft() {
@@ -47,8 +52,10 @@ export class EnemyEntity extends Entity {
     }
 
     public render(viewport: Viewport) {
-        viewport.context.fillStyle = "yellow";
-        viewport.context.fillRect(Math.floor(this.location.x), Math.floor(this.location.y), this.size.width, this.size.height);
+        this._animator.activeAnimation.render(viewport.context, new Point(Math.floor(this.location.x), Math.floor(this.location.y)));
+
+        //viewport.context.fillStyle = "yellow";
+        //viewport.context.fillRect(Math.floor(this.location.x), Math.floor(this.location.y), this.size.width, this.size.height);
     }
 
     public hit(power: number) {
