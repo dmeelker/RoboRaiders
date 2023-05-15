@@ -134,6 +134,10 @@ export class Vector implements ILocation {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }
 
+    public distanceTo(other: ILocation) {
+        return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
+    }
+
     public add(vector: Vector) {
         return new Vector(this.x + vector.x, this.y + vector.y);
     }

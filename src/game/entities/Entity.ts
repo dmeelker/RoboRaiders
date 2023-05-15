@@ -1,5 +1,5 @@
 import { FrameTime } from "../../utilities/FrameTime";
-import { Rectangle, Size, Vector } from "../../utilities/Trig";
+import { ILocation, Rectangle, Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 
@@ -30,8 +30,13 @@ export class Entity {
         this._location = newLocation;
     }
 
+    public centerOn(center: ILocation) {
+        this._location = new Vector(center.x - (this._size.width / 2), center.y - (this._size.height / 2));
+    }
+
     public get location() { return this._location; }
     public get size() { return this._size; }
+    public set size(size: Size) { this._size = size; }
     public get width() { return this._size.width; }
     public get height() { return this._size.height; }
     public get bounds() { return new Rectangle(this._location.x, this._location.y, this._size.width, this._size.height); }

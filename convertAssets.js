@@ -23,11 +23,13 @@ convert("runner-robot", "JumpRight", "runner_bot_jump_right");
 
 convert("crate", null, "crate");
 
-convert("weapons/pistol", null, "weapons/pistol");
-convert("weapons/machinegun", null, "weapons/machinegun");
-convert("weapons/shotgun", null, "weapons/shotgun");
+convert("weapons/pistol");
+convert("weapons/machinegun");
+convert("weapons/shotgun");
+convert("weapons/rpg_grenade");
 
 function convert(fileName, tag, outputName) {
+    outputName ??= fileName;
     let tagSegment = tag ? `--frame-tag ${tag}` : "";
 
     console.log(`Converting ${fileName} [${tag}]`);

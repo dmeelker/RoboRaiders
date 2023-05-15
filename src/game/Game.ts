@@ -1,5 +1,6 @@
 import { Inputs, Resources } from "../Main";
 import { FrameTime } from "../utilities/FrameTime";
+import { Color, Projectile, ProjectileRange, ProjectileSystem } from "../utilities/Projectiles";
 import { randomArrayElement, randomInt } from "../utilities/Random";
 import { Size, Vector } from "../utilities/Trig";
 import { Viewport } from "../utilities/Viewport";
@@ -12,6 +13,7 @@ import { PriceEntity, PriceEntity as PrizeEntity } from "./entities/PrizeEntity"
 import * as Level1 from "./levels/Level1";
 
 export interface IGameContext {
+    get time(): FrameTime;
     get resources(): Resources;
     get level(): Level;
     get entityManager(): EntityManager;
@@ -23,6 +25,8 @@ export class Game implements IGameContext {
     private readonly _resources: Resources;
     private readonly _inputs: Inputs;
     private readonly _entities = new EntityManager();
+    private readonly _projectiles = new ProjectileSystem();
+    private _time: FrameTime = null!;
     private _level: Level = null!;
     private _backdropImage: ImageBitmap = null!;
 
@@ -43,7 +47,8 @@ export class Game implements IGameContext {
         this.initialize(time);
     }
 
-    public initialize(_time: FrameTime) {
+    public initialize(time: FrameTime) {
+        this._time = time;
         this.loadLevel(Level1.get());
 
         for (let player of this._players) {
@@ -99,6 +104,8 @@ export class Game implements IGameContext {
     }
 
     public update(time: FrameTime) {
+        this._time = time;
+
         for (let player of this._players) {
             player.update(time);
         }
@@ -112,7 +119,15 @@ export class Game implements IGameContext {
             this.reset(time);
         }
 
+        let projectile = new Projectile(new Vector(100, 100), new Color(255, 0, 0, 100), time);
+        projectile.sizeRange = new ProjectileRange(2, 10);
+        projectile.timeToLive = 1000;
+
+        projectile.velocity = new Vector(100, 0);
+        this._projectiles.add(projectile);
+
         this._entities.update(time);
+        this._projectiles.update(time);
     }
 
     private updateScoreLabel() {
@@ -131,10 +146,12 @@ export class Game implements IGameContext {
         //this._level.render(this.viewport);
 
         this._entities.render(this.viewport);
+        this._projectiles.render(this.viewport);
     }
 
     private get viewport(): Viewport { return this._viewport; }
 
+    public get time() { return this._time; }
     public get resources() { return this._resources; }
     public get level() { return this._level; }
     public get entityManager() { return this._entities; }
