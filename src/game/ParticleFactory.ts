@@ -96,3 +96,21 @@ export function createExplosion(particleSystem: ParticleSystem, location: Vector
     particleSystem.addEmitter(emitterGroup);
     return emitterGroup;
 }
+
+export function createSparkEmitter(particleSystem: ParticleSystem, location: Vector, direction: Vector, time: FrameTime): Emitter {
+    let emitter = new Emitter(location, time, particleSystem);
+    emitter.interval = 100;
+    emitter.timeToLive = 100;
+    emitter.count = new NumberRange(10, 20);
+
+    emitter.settings.fromColor = new Color(255, 238, 158, 255);
+    emitter.settings.toColor = new Color(150, 0, 0, 255);
+    emitter.settings.angle = new NumberRange(direction.angleInDegrees - 12, direction.angleInDegrees + 12);
+    emitter.settings.velocity = new NumberRange(150, 200);
+    emitter.settings.size = 2
+    emitter.settings.timeToLive = new NumberRange(200, 300);
+    emitter.settings.gravity = new Vector(0, 100);
+
+    particleSystem.addEmitter(emitter);
+    return emitter;
+}

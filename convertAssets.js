@@ -29,6 +29,10 @@ convert("weapons/shotgun");
 convert("weapons/rpg");
 convert("weapons/rpg_grenade");
 
+convert("weapons/railgun");
+convert("weapons/railgun_loaded");
+convert("weapons/dart");
+
 function convert(fileName, tag, outputName) {
     outputName ??= fileName;
     let tagSegment = tag ? `--frame-tag ${tag}` : "";

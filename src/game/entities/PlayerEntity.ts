@@ -8,6 +8,7 @@ import { CollisionContext, PhyicalObject } from "../Physics";
 import { Player } from "../Player";
 import { MachineGunWeapon } from "../weapons/MachineGun";
 import { PistolWeapon } from "../weapons/Pistol";
+import { RailgunWeapon } from "../weapons/Railgun";
 import { RpgWeapon } from "../weapons/Rpg";
 import { ShotgunWeapon } from "../weapons/Shotgun";
 import { Weapon } from "../weapons/Weapon";
@@ -48,8 +49,8 @@ export class PlayerEntity extends Entity {
 
     public constructor(location: Vector, _player: Player, index: number, gameContext: IGameContext) {
         super(location, new Size(32, 34), gameContext);
-        this._availableWeapons = [new PistolWeapon(gameContext), new MachineGunWeapon(gameContext), new ShotgunWeapon(gameContext), new RpgWeapon(gameContext)];
-        this._weapon = new RpgWeapon(gameContext);
+        this._availableWeapons = [new PistolWeapon(gameContext), new MachineGunWeapon(gameContext), new ShotgunWeapon(gameContext), new RpgWeapon(gameContext), new RailgunWeapon(gameContext)];
+        this._weapon = new PistolWeapon(gameContext);
 
         if (index == 0) {
             this._animations = {

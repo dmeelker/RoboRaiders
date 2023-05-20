@@ -37,6 +37,8 @@ export class ColorRange {
     }
 }
 
+export type ParticleCallback = (particle: Particle) => void;
+
 export class ProjectileSettings {
     public angle: NumberRange = new NumberRange(0, 0);
     public velocity: NumberRange = new NumberRange(1, 1);
@@ -47,6 +49,7 @@ export class ProjectileSettings {
     public fromColor: Color = Color.white;
     public toColor: Color = Color.white;
     public gravity: Vector = Vector.zero;
+    public callback?: ParticleCallback;
 
     public set color(color: Color) {
         this.fromColor = color;
@@ -109,6 +112,10 @@ export class Emitter implements IEmitter {
             particle.sizeRange = new NumberRange(Math.min(minSize, maxSize), Math.max(minSize, maxSize));
 
             particle.colorRange = new ColorRange(this.settings.fromColor, this.settings.toColor);
+
+            if (this.settings.callback) {
+                this.settings.callback(particle);
+            }
 
             this._system.add(particle);
         }
