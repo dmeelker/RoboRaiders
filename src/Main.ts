@@ -25,6 +25,8 @@ export interface ImageResources {
     railgun: ImageBitmap,
     railgunLoaded: ImageBitmap,
     dart: ImageBitmap,
+    gravityGrenadeUnarmed: ImageBitmap,
+    gravityGrenadeArmed: ImageBitmap,
 
     levels: LevelBackdrops
 }
@@ -122,6 +124,8 @@ class Main {
             railgun: await imageLoader.load("weapons/railgun.png"),
             railgunLoaded: await imageLoader.load("weapons/railgun_loaded.png"),
             dart: await imageLoader.load("weapons/dart.png"),
+            gravityGrenadeUnarmed: await imageLoader.load("weapons/gravity_grenade_unarmed.png"),
+            gravityGrenadeArmed: await imageLoader.load("weapons/gravity_grenade_armed.png"),
 
             levels: {
                 level1: await imageLoader.load("levels/level1.png"),

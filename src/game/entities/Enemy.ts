@@ -13,6 +13,7 @@ export class EnemyEntity extends Entity {
     private _facing = Facing.Left;
     public speed = 200;
     private _animator: ActorAnimator;
+    public gravityOverride?: Vector;
 
     public constructor(location: Vector, animations: ActorAnimations, gameContext: IGameContext) {
         super(location, new Size(animations.standLeft.frames[0].width, animations.standLeft.frames[0].height), gameContext);
@@ -29,6 +30,8 @@ export class EnemyEntity extends Entity {
         } else {
             this.moveRight();
         }
+
+        this.physics.gravityVector = this.gravityOverride || PhyicalObject.defaultGravity;
 
         this.physics.update(time);
 

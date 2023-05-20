@@ -10,6 +10,7 @@ import { Player } from "./Player";
 import { EntityManager } from "./entities/EntityManager";
 import { EntitySpawner } from "./entities/EntitySpawner";
 import { Gate } from "./entities/Gate";
+import { GravityGrenadeEntity } from "./entities/GravityGrenade";
 import { PriceEntity, PriceEntity as PrizeEntity } from "./entities/PrizeEntity";
 import * as Level1 from "./levels/Level1";
 
@@ -122,6 +123,7 @@ export class Game implements IGameContext {
         }
 
         this._entities.update(time);
+        GravityGrenadeEntity.updateGravityPull(this);
         this._projectiles.update(time);
     }
 

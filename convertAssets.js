@@ -33,6 +33,9 @@ convert("weapons/railgun");
 convert("weapons/railgun_loaded");
 convert("weapons/dart");
 
+convert("weapons/gravity_grenade", "Unarmed", "weapons/gravity_grenade_unarmed");
+convert("weapons/gravity_grenade", "Armed", "weapons/gravity_grenade_armed");
+
 function convert(fileName, tag, outputName) {
     outputName ??= fileName;
     let tagSegment = tag ? `--frame-tag ${tag}` : "";

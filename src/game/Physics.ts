@@ -24,12 +24,15 @@ export class CollisionContext {
 }
 
 export class PhyicalObject {
+    public static readonly defaultGravity = new Vector(0, 1200);
     public entity: Entity;
     public velocity: Vector = Vector.zero;
     public entityFilter?: EntityCollisionFilter;
     public gravity = true;
+    public gravityVector = PhyicalObject.defaultGravity;
     public gravityModifier = 1.0;
     public terminalVelocity = 600;
+    public groundDrag = 0;
     private readonly _context: CollisionContext;
     private _onGround = false;
     private _onGroundTime = 0;
@@ -44,7 +47,7 @@ export class PhyicalObject {
 
     public update(time: FrameTime) {
         if (this.gravity) {
-            this.velocity = this.velocity.add(new Vector(0, time.calculateMovement(1200 * this.gravityModifier)));
+            this.velocity = this.velocity.add(time.scaleVector(this.gravityVector.multiplyScalar(this.gravityModifier)));
             if (this.velocity.y > this.terminalVelocity) {
                 this.velocity.y = this.terminalVelocity;
             }
@@ -123,6 +126,14 @@ export class PhyicalObject {
             }
 
             this.entity.location.y = newY;
+        }
+
+        if (this.onGround) {
+            this.velocity.x -= time.calculateMovement(Math.sign(this.velocity.x) * this.groundDrag);
+
+            if (this.velocity.x < 1 && this.velocity.x > -1) {
+                this.velocity.x = 0;
+            }
         }
     }
 

@@ -114,3 +114,25 @@ export function createSparkEmitter(particleSystem: ParticleSystem, location: Vec
     particleSystem.addEmitter(emitter);
     return emitter;
 }
+
+export function createSingularityEmitter(particleSystem: ParticleSystem, location: Vector, radius: number, time: FrameTime): Emitter {
+    let emitter = new Emitter(location, time, particleSystem);
+    emitter.interval = 100;
+    emitter.count = new NumberRange(10, 30);
+
+    emitter.settings.fromColor = new Color(200, 200, 200, 255);
+    emitter.settings.toColor = new Color(100, 100, 100, 255);
+
+    emitter.settings.size = 2;
+    emitter.settings.timeToLive = new NumberRange(150, 250);
+
+    emitter.settings.callback = (particle) => {
+        let angle = Math.random() * 360;
+        particle.location = location.add(Vector.fromDegreeAngle(angle).multiplyScalar(radius));
+
+        particle.velocity = location.subtract(particle.location).toUnit().multiplyScalar(300);
+    };
+
+    particleSystem.addEmitter(emitter);
+    return emitter;
+}
