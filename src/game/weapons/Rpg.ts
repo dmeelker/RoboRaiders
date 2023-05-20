@@ -1,24 +1,25 @@
 import { FrameTime } from "../../utilities/FrameTime";
-import { randomInt } from "../../utilities/Random";
 import { Timer } from "../../utilities/Timer";
 import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 import { MissileEntity } from "../entities/Missile";
-import { ProjectileEntity } from "../entities/Projectile";
 import { Weapon } from "./Weapon";
 
 export class RpgWeapon extends Weapon {
     private readonly _image: ImageBitmap;
+    private readonly _grenadeImage: ImageBitmap;
     private readonly _size: Size;
-    private _lastFireTime = 0;
+    private _lastFireTime = -10000;
     private _fireInterval = 1500;
     private _offset = Vector.zero;
     private _recoilTimer?: Timer;
+    private _loaded = true;
 
     public constructor(context: IGameContext) {
         super();
-        this._image = context.resources.images.shotgun;
+        this._image = context.resources.images.rpg;
+        this._grenadeImage = context.resources.images.rpgGrenade;
         this._size = new Size(this._image.width, this._image.height);
     }
 
@@ -28,10 +29,12 @@ export class RpgWeapon extends Weapon {
                 this._offset = Vector.zero;
             });
         }
+
+        this._loaded = this.loaded(time);
     }
 
     public fireSingleShot(location: Vector, direction: Vector, context: IGameContext, time: FrameTime): void {
-        if (this.timeSinceLastFire(time) < this._fireInterval)
+        if (!this._loaded)
             return
 
         this._lastFireTime = time.currentTime;
@@ -45,15 +48,23 @@ export class RpgWeapon extends Weapon {
     }
 
     public render(location: Vector, direction: Vector, viewport: Viewport): void {
+        let offset = new Vector(-14, 0).add(this._offset);
+
         if (direction.x > 0) {
-            viewport.context.drawImage(this._image, location.x + this._offset.x, location.y + this._offset.y);
+            viewport.context.translate(location.x + offset.x, location.y + offset.y);
         } else {
-            viewport.context.translate(location.x + (this._offset.x * -1), location.y + this._offset.y);
+            viewport.context.translate(location.x + (offset.x * -1), location.y + offset.y);
             viewport.context.scale(-1, 1);
-            viewport.context.drawImage(this._image, 0, 0);
-            viewport.context.resetTransform();
         }
+        viewport.context.drawImage(this._image, 0, 0);
+
+        if (this._loaded) {
+            viewport.context.drawImage(this._grenadeImage, this._image.width, 2);
+        }
+
+        viewport.context.resetTransform();
     }
 
     private timeSinceLastFire(time: FrameTime) { return time.currentTime - this._lastFireTime; }
+    private loaded(time: FrameTime) { return this.timeSinceLastFire(time) > this._fireInterval; }
 }

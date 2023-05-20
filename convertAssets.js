@@ -26,6 +26,7 @@ convert("crate", null, "crate");
 convert("weapons/pistol");
 convert("weapons/machinegun");
 convert("weapons/shotgun");
+convert("weapons/rpg");
 convert("weapons/rpg_grenade");
 
 function convert(fileName, tag, outputName) {

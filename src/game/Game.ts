@@ -1,10 +1,11 @@
 import { Inputs, Resources } from "../Main";
 import { FrameTime } from "../utilities/FrameTime";
-import { Color, Projectile, ProjectileRange, ProjectileSystem } from "../utilities/Projectiles";
+import { Color, ColorRange, Particle, NumberRange, ParticleSystem, Emitter, EmitterGroup, ParticleShape } from "../utilities/Particles";
 import { randomArrayElement, randomInt } from "../utilities/Random";
 import { Size, Vector } from "../utilities/Trig";
 import { Viewport } from "../utilities/Viewport";
 import { GateDefinition, Level, LevelDefinition } from "./Level";
+import { createExplosion } from "./ParticleFactory";
 import { Player } from "./Player";
 import { EntityManager } from "./entities/EntityManager";
 import { EntitySpawner } from "./entities/EntitySpawner";
@@ -17,6 +18,7 @@ export interface IGameContext {
     get resources(): Resources;
     get level(): Level;
     get entityManager(): EntityManager;
+    get particleSystem(): ParticleSystem;
     addPoint(): void;
 }
 
@@ -25,7 +27,7 @@ export class Game implements IGameContext {
     private readonly _resources: Resources;
     private readonly _inputs: Inputs;
     private readonly _entities = new EntityManager();
-    private readonly _projectiles = new ProjectileSystem();
+    private readonly _projectiles = new ParticleSystem();
     private _time: FrameTime = null!;
     private _level: Level = null!;
     private _backdropImage: ImageBitmap = null!;
@@ -119,13 +121,6 @@ export class Game implements IGameContext {
             this.reset(time);
         }
 
-        let projectile = new Projectile(new Vector(100, 100), new Color(255, 0, 0, 100), time);
-        projectile.sizeRange = new ProjectileRange(2, 10);
-        projectile.timeToLive = 1000;
-
-        projectile.velocity = new Vector(100, 0);
-        this._projectiles.add(projectile);
-
         this._entities.update(time);
         this._projectiles.update(time);
     }
@@ -155,4 +150,5 @@ export class Game implements IGameContext {
     public get resources() { return this._resources; }
     public get level() { return this._level; }
     public get entityManager() { return this._entities; }
+    public get particleSystem() { return this._projectiles; }
 }

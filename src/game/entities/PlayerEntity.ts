@@ -48,7 +48,7 @@ export class PlayerEntity extends Entity {
 
     public constructor(location: Vector, _player: Player, index: number, gameContext: IGameContext) {
         super(location, new Size(32, 34), gameContext);
-        this._availableWeapons = [new PistolWeapon(gameContext), new MachineGunWeapon(gameContext), new ShotgunWeapon(gameContext)];
+        this._availableWeapons = [new PistolWeapon(gameContext), new MachineGunWeapon(gameContext), new ShotgunWeapon(gameContext), new RpgWeapon(gameContext)];
         this._weapon = new RpgWeapon(gameContext);
 
         if (index == 0) {

@@ -3,12 +3,13 @@ import { interpolate } from "../../utilities/Math";
 import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
+import { createExplosion } from "../ParticleFactory";
 import { EnemyEntity } from "./Enemy";
 import { Entity } from "./Entity";
 
 export class ExplosionEntity extends Entity {
     private readonly _creationTime: number;
-    private _radius = 1;
+    private _radius = 70;
     private readonly _lifetime = 150;
 
     public constructor(centerLocation: Vector, time: FrameTime, context: IGameContext) {
@@ -16,7 +17,9 @@ export class ExplosionEntity extends Entity {
 
         this._creationTime = time.currentTime;
         this.centerOn(centerLocation);
-        this.setRadius(0);
+        this.setRadius(70);
+
+        createExplosion(context.particleSystem, centerLocation, time);
     }
 
     public update(_time: FrameTime) {
@@ -27,8 +30,8 @@ export class ExplosionEntity extends Entity {
             return;
         }
 
-        let radius = interpolate(1, 70, age / this._lifetime);
-        this.setRadius(radius);
+        //let radius = interpolate(1, 70, age / this._lifetime);
+        //this.setRadius(this._radius);
         this.causeDamage();
     }
 
@@ -43,11 +46,11 @@ export class ExplosionEntity extends Entity {
     }
 
     public render(viewport: Viewport) {
-        viewport.context.fillStyle = "red";
+        // viewport.context.fillStyle = "red";
 
-        viewport.context.beginPath();
-        viewport.context.arc(Math.floor(this.centerLocation.x), Math.floor(this.centerLocation.y), this._radius, 0, 2 * Math.PI);
-        viewport.context.fill();
+        // viewport.context.beginPath();
+        // viewport.context.arc(Math.floor(this.centerLocation.x), Math.floor(this.centerLocation.y), this._radius, 0, 2 * Math.PI);
+        // viewport.context.fill();
     }
 
     private setRadius(radius: number) {
