@@ -60,6 +60,8 @@ export interface AnimationResources {
     runnerBotWalkLeft: AnimationDefinition,
     runnerBotJumpRight: AnimationDefinition,
     runnerBotJumpLeft: AnimationDefinition
+    runnerBotHitRight: AnimationDefinition,
+    runnerBotHitLeft: AnimationDefinition
 }
 
 export class Resources {
@@ -150,6 +152,8 @@ class Main {
             runnerBotWalkLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("runner_bot_walk_left.png"), 4, 1),
             runnerBotJumpRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("runner_bot_jump_right.png"), 1, 1),
             runnerBotJumpLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("runner_bot_jump_left.png"), 1, 1),
+            runnerBotHitRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("runner_bot_hit_right.png"), 1, 1),
+            runnerBotHitLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("runner_bot_hit_left.png"), 1, 1),
         };
 
         const soundLoader = new AudioLoader("assets/sounds");
@@ -178,6 +182,8 @@ class Main {
             runnerBotWalkLeft: new AnimationDefinition(images.runnerBotWalkLeft, 150),
             runnerBotJumpRight: new AnimationDefinition(images.runnerBotJumpRight, 1),
             runnerBotJumpLeft: new AnimationDefinition(images.runnerBotJumpLeft, 1),
+            runnerBotHitRight: new AnimationDefinition(images.runnerBotHitRight, 1),
+            runnerBotHitLeft: new AnimationDefinition(images.runnerBotHitLeft, 1),
         };
 
         this._resources = new Resources(images, audio, animations);

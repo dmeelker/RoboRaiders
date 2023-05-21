@@ -10,7 +10,7 @@ import { Facing } from "./PlayerEntity";
 
 export class EntitySpawner extends Entity {
     private _timer: Timer = null!;
-    public interval = 5000;
+    public interval = 2500;
 
     public constructor(location: Vector, size: Size, context: IGameContext) {
         super(location, size, context);
@@ -50,7 +50,9 @@ export class EntitySpawner extends Entity {
             walkLeft: context.resources.animations.runnerBotWalkLeft,
             walkRight: context.resources.animations.runnerBotWalkRight,
             jumpLeft: context.resources.animations.runnerBotJumpLeft,
-            jumpRight: context.resources.animations.runnerBotJumpRight
+            jumpRight: context.resources.animations.runnerBotJumpRight,
+            hitLeft: context.resources.animations.runnerBotHitLeft,
+            hitRight: context.resources.animations.runnerBotHitRight,
         };
 
         let enemy = new EnemyEntity(location, animations, context);
@@ -66,7 +68,9 @@ export class EntitySpawner extends Entity {
             walkLeft: context.resources.animations.runnerBotWalkLeft,
             walkRight: context.resources.animations.runnerBotWalkRight,
             jumpLeft: context.resources.animations.runnerBotJumpLeft,
-            jumpRight: context.resources.animations.runnerBotJumpRight
+            jumpRight: context.resources.animations.runnerBotJumpRight,
+            hitLeft: context.resources.animations.runnerBotHitLeft,
+            hitRight: context.resources.animations.runnerBotHitRight,
         };
 
         let enemy = new EnemyEntity(location, animations, context);
@@ -82,7 +86,9 @@ export class EntitySpawner extends Entity {
             walkLeft: context.resources.animations.runnerBotWalkLeft,
             walkRight: context.resources.animations.runnerBotWalkRight,
             jumpLeft: context.resources.animations.runnerBotJumpLeft,
-            jumpRight: context.resources.animations.runnerBotJumpRight
+            jumpRight: context.resources.animations.runnerBotJumpRight,
+            hitLeft: context.resources.animations.runnerBotHitLeft,
+            hitRight: context.resources.animations.runnerBotHitRight,
         };
 
         let enemy = new EnemyEntity(location, animations, context);

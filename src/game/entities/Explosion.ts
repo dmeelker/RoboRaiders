@@ -40,7 +40,7 @@ export class ExplosionEntity extends Entity {
         for (let enemy of enemies) {
             let distance = enemy.location.distanceTo(this.centerLocation);
             if (distance < this._radius) {
-                enemy.hit(20);
+                enemy.hit(20, this.centerLocation.subtract(enemy.centerLocation));
             }
         }
     }

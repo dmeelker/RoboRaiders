@@ -25,7 +25,7 @@ export class AnimationInstance {
         this._creationTime = Date.now();
     }
 
-    public getImage(): CanvasImageSource {
+    public getImage(): ImageBitmap {
         const age = Date.now() - this._creationTime;
         const frame = Math.floor(age / this._definition.speed) % this._definition.frames.length;
         return this._definition.frames[frame];

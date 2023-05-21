@@ -9,6 +9,14 @@ export interface ActorAnimations {
     walkRight: AnimationDefinition,
     jumpLeft: AnimationDefinition,
     jumpRight: AnimationDefinition,
+    hitLeft?: AnimationDefinition,
+    hitRight?: AnimationDefinition,
+}
+
+export interface IActor {
+    physics: PhyicalObject;
+    facing: Facing;
+    timeSinceLastHit: number;
 }
 
 export class ActorAnimator {
@@ -20,15 +28,24 @@ export class ActorAnimator {
         this._activeAnimation = this._animations.standLeft.newInstance();
     }
 
-    public update(physics: PhyicalObject, facing: Facing) {
-        if (physics.velocity.y != 0) {
-            let animation = facing == Facing.Left ? this._animations.jumpLeft : this._animations.jumpRight;
+    public update(actor: IActor) {
+        if (actor.timeSinceLastHit < 100) {
+            let animation = actor.facing == Facing.Left ? this._animations.hitLeft : this._animations.hitRight;
+
+            if (animation) {
+                this.setAnimation(animation);
+                return;
+            }
+        }
+
+        if (actor.physics.velocity.y != 0) {
+            let animation = actor.facing == Facing.Left ? this._animations.jumpLeft : this._animations.jumpRight;
             this.setAnimation(animation);
-        } else if (physics.velocity.x == 0) {
-            let standAnimation = facing == Facing.Left ? this._animations.standLeft : this._animations.standRight;
+        } else if (actor.physics.velocity.x == 0) {
+            let standAnimation = actor.facing == Facing.Left ? this._animations.standLeft : this._animations.standRight;
             this.setAnimation(standAnimation);
-        } else if (physics.velocity.x != 0) {
-            let animation = facing == Facing.Left ? this._animations.walkLeft : this._animations.walkRight;
+        } else if (actor.physics.velocity.x != 0) {
+            let animation = actor.facing == Facing.Left ? this._animations.walkLeft : this._animations.walkRight;
             this.setAnimation(animation);
         }
     }

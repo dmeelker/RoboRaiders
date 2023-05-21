@@ -1,10 +1,11 @@
-import { Size, Vector } from "./Trig";
+import { Rectangle, Size, Vector } from "./Trig";
 import * as Dom from "./Dom";
 import { FrameTime } from "./FrameTime";
 import { randomInt } from "./Random";
 
 export class Viewport {
     private readonly _size: Size;
+    private readonly _bounds: Rectangle;
     private readonly _parentElement;
     private _element: HTMLElement;
     private readonly _canvas: HTMLCanvasElement;
@@ -14,6 +15,7 @@ export class Viewport {
 
     public constructor(size: Size, element: HTMLElement) {
         this._size = size;
+        this._bounds = new Rectangle(0, 0, size.width, size.height);
         this._parentElement = element;
 
         this._element = document.createElement("div");
@@ -58,6 +60,11 @@ export class Viewport {
 
     public get context() { return this._canvasContext; }
     public get uiElement() { return this._uiElement; }
+    public get bounds() { return this._bounds; }
+
+    public containsRectangle(rectangle: Rectangle) {
+        return this._bounds.containsRect(rectangle);
+    }
 }
 
 class Shaker {

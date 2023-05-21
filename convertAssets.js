@@ -20,6 +20,8 @@ convert("runner-robot", "WalkLeft", "runner_bot_walk_left");
 convert("runner-robot", "WalkRight", "runner_bot_walk_right");
 convert("runner-robot", "JumpLeft", "runner_bot_jump_left");
 convert("runner-robot", "JumpRight", "runner_bot_jump_right");
+convert("runner-robot", "HitRight", "runner_bot_hit_right");
+convert("runner-robot", "HitLeft", "runner_bot_hit_left");
 
 convert("crate", null, "crate");
 

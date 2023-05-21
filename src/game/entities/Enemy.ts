@@ -1,9 +1,12 @@
 import { FrameTime } from "../../utilities/FrameTime";
+import { clamp } from "../../utilities/Math";
+import { randomInt } from "../../utilities/Random";
 import { Point, Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 import { Axis, CollisionContext, PhyicalObject } from "../Physics";
 import { ActorAnimations, ActorAnimator } from "./ActorAnimations";
+import { CorpseEntity } from "./Corpse";
 import { Entity } from "./Entity";
 import { Facing } from "./PlayerEntity";
 
@@ -14,6 +17,8 @@ export class EnemyEntity extends Entity {
     public speed = 200;
     private _animator: ActorAnimator;
     public gravityOverride?: Vector;
+    private _lastHitTime = -1000;
+    private _renderOffset = new Vector(0, 0);
 
     public constructor(location: Vector, animations: ActorAnimations, gameContext: IGameContext) {
         super(location, new Size(animations.standLeft.frames[0].width, animations.standLeft.frames[0].height), gameContext);
@@ -39,7 +44,11 @@ export class EnemyEntity extends Entity {
             this.turn();
         }
 
-        this._animator.update(this.physics, this.facing);
+        this._animator.update({
+            physics: this.physics,
+            facing: this.facing,
+            timeSinceLastHit: this.timeSinceLastHit
+        });
     }
 
     public moveLeft() {
@@ -55,17 +64,30 @@ export class EnemyEntity extends Entity {
     }
 
     public render(viewport: Viewport) {
-        this._animator.activeAnimation.render(viewport.context, new Point(Math.floor(this.location.x), Math.floor(this.location.y)));
+        let location = this.location.add(this._renderOffset);
+        this._animator.activeAnimation.render(viewport.context, new Point(Math.floor(location.x), Math.floor(location.y)));
 
         //viewport.context.fillStyle = "yellow";
         //viewport.context.fillRect(Math.floor(this.location.x), Math.floor(this.location.y), this.size.width, this.size.height);
     }
 
-    public hit(power: number) {
+    public hit(power: number, vector: Vector | null = null) {
+        if (this.disposable)
+            return;
+
         this.hitpoints -= power;
+        this._lastHitTime = this.context.time.currentTime;
+
         if (this.hitpoints <= 0) {
-            this.markDisposable();
+            this.die(vector);
         }
+    }
+
+    private die(vector: Vector | null = null) {
+        let direction = vector?.toUnit() ?? Vector.fromDegreeAngle(randomInt(0, 360));
+        let corpseVector = direction.multiplyScalar(randomInt(200, 300));
+        this.context.entityManager.add(new CorpseEntity(this.location, corpseVector, this._animator.activeAnimation.getImage(), this.context));
+        this.markDisposable();
     }
 
     public get facing() { return this._facing; }
@@ -81,4 +103,6 @@ export class EnemyEntity extends Entity {
                 return Vector.right;
         }
     }
+
+    private get timeSinceLastHit() { return this.context.time.currentTime - this._lastHitTime; }
 }

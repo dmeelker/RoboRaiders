@@ -112,7 +112,11 @@ export class PlayerEntity extends Entity {
             }
         }
 
-        this._animator.update(this.physics, this.facing);
+        this._animator.update({
+            physics: this.physics,
+            facing: this.facing,
+            timeSinceLastHit: 0
+        });
 
         if (time.currentTime - this._weaponEquipTime < 1000) {
             Dom.position(this._weaponNameLabel, new Point(this.centerLocation.x - (this._weaponNameLabel.clientWidth / 2), this.location.y - this._weaponNameLabel.clientHeight));

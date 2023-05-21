@@ -40,7 +40,7 @@ export class ProjectileEntity extends Entity {
         let hitEnemies = this.physics.lastCollisions.filter(c => c.entity instanceof EnemyEntity).map(c => c.entity as EnemyEntity);
 
         for (let enemy of hitEnemies) {
-            enemy.hit(this.power);
+            enemy.hit(this.power, this.physics.velocity);
         }
     }
 
