@@ -123,7 +123,12 @@ export class PlayerEntity extends Entity {
     }
 
     private randomWeapon() {
-        this._weapon = randomArrayElement(this._availableWeapons);
+        let originalWeapon = this._weapon;
+
+        while (this._weapon == originalWeapon) {
+            this._weapon = randomArrayElement(this._availableWeapons);
+        }
+
         this._weaponEquipTime = this.context.time.currentTime;
         this._weaponNameLabel.innerText = this._weapon.name;
     }
@@ -213,5 +218,9 @@ export class PlayerEntity extends Entity {
             case Facing.Right:
                 return Vector.right;
         }
+    }
+
+    protected onDispose(_time: FrameTime): void {
+        this._weaponNameLabel.remove();
     }
 }
