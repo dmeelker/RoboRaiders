@@ -146,8 +146,8 @@ class Main {
             player2WalkLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player2_walk_left.png"), 4, 1),
             player2JumpLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player2_jump_left.png"), 1, 1),
 
-            runnerBotStandRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("runner_bot_stand_right.png"), 4, 1),
-            runnerBotStandLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("runner_bot_stand_left.png"), 4, 1),
+            runnerBotStandRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("runner_bot_stand_right.png"), 1, 1),
+            runnerBotStandLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("runner_bot_stand_left.png"), 1, 1),
             runnerBotWalkRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("runner_bot_walk_right.png"), 4, 1),
             runnerBotWalkLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("runner_bot_walk_left.png"), 4, 1),
             runnerBotJumpRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("runner_bot_jump_right.png"), 1, 1),
