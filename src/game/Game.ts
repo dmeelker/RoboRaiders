@@ -48,6 +48,7 @@ export class Game implements IGameContext {
 
     public reset(time: FrameTime) {
         this._entities.clear();
+        this._projectiles.clear();
         this.initialize(time);
     }
 
@@ -89,8 +90,10 @@ export class Game implements IGameContext {
         }
 
         this._players = [
-            new Player(level.player1Location.clone(), this._inputs.player1, 0, this),
-            new Player(level.player2Location.clone(), this._inputs.player2, 1, this)];
+            new Player(level.player1Location.clone(), this._inputs.player1, 0, this)];
+        // this._players = [
+        //     new Player(level.player1Location.clone(), this._inputs.player1, 0, this),
+        //     new Player(level.player2Location.clone(), this._inputs.player2, 1, this)];
     }
 
     private createGate(definition: GateDefinition, entrance: boolean): Gate {

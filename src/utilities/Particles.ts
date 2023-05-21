@@ -232,6 +232,11 @@ export class ParticleSystem {
     private _particles: Particle[] = [];
     private _emitters: IEmitter[] = [];
 
+    public clear() {
+        this._particles = [];
+        this._emitters = [];
+    }
+
     public add(particle: Particle) {
         this._particles.push(particle);
     }
