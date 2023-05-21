@@ -17,6 +17,8 @@ import { ActorAnimations, ActorAnimator } from "./ActorAnimations";
 import { EnemyEntity } from "./Enemy";
 import { Entity } from "./Entity";
 import { PriceEntity } from "./PrizeEntity";
+import * as Dom from "../../utilities/Dom";
+import * as Align from "../../utilities/Align";
 
 export enum Facing {
     Left,
@@ -37,10 +39,13 @@ export class PlayerEntity extends Entity {
     private _facing = Facing.Left;
     private _weaponOffset = new Vector(0, 0);
     private _weapon: Weapon;
+    private _weaponEquipTime = 0;
+    private _weaponNameLabel: HTMLDivElement;
     private _jumpStart = 0;
     private _jumpButtonDown = false;
     private _jumpButtonDownTime = 0;
     private _jumping = false;
+
 
     private _dead = false;
     private _availableWeapons: Array<Weapon>;
@@ -51,7 +56,12 @@ export class PlayerEntity extends Entity {
     public constructor(location: Vector, _player: Player, index: number, gameContext: IGameContext) {
         super(location, new Size(32, 34), gameContext);
         this._availableWeapons = [new PistolWeapon(gameContext), new MachineGunWeapon(gameContext), new ShotgunWeapon(gameContext), new RpgWeapon(gameContext), new RailgunWeapon(gameContext), new GravityGrenadeWeapon(gameContext)];
-        this._weapon = new PistolWeapon(gameContext);
+        this._weapon = new RpgWeapon(gameContext);
+
+        this._weaponNameLabel = document.createElement("div");
+        this._weaponNameLabel.className = "weapon-label";
+        Dom.setVisible(this._weaponNameLabel, false);
+        gameContext.viewport.uiElement.appendChild(this._weaponNameLabel);
 
         if (index == 0) {
             this._animations = {
@@ -103,10 +113,19 @@ export class PlayerEntity extends Entity {
         }
 
         this._animator.update(this.physics, this.facing);
+
+        if (time.currentTime - this._weaponEquipTime < 1000) {
+            Dom.position(this._weaponNameLabel, new Point(this.centerLocation.x - (this._weaponNameLabel.clientWidth / 2), this.location.y - this._weaponNameLabel.clientHeight));
+            Dom.setVisible(this._weaponNameLabel, true);
+        } else {
+            Dom.setVisible(this._weaponNameLabel, false);
+        }
     }
 
     private randomWeapon() {
         this._weapon = randomArrayElement(this._availableWeapons);
+        this._weaponEquipTime = this.context.time.currentTime;
+        this._weaponNameLabel.innerText = this._weapon.name;
     }
 
     private die() {

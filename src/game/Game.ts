@@ -20,6 +20,7 @@ export interface IGameContext {
     get level(): Level;
     get entityManager(): EntityManager;
     get particleSystem(): ParticleSystem;
+    get viewport(): Viewport;
     addPoint(): void;
 }
 
@@ -146,11 +147,10 @@ export class Game implements IGameContext {
         this._projectiles.render(this.viewport);
     }
 
-    private get viewport(): Viewport { return this._viewport; }
-
     public get time() { return this._time; }
     public get resources() { return this._resources; }
     public get level() { return this._level; }
     public get entityManager() { return this._entities; }
     public get particleSystem() { return this._projectiles; }
+    public get viewport() { return this._viewport; }
 }

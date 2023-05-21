@@ -8,6 +8,7 @@ import { ProjectileEntity } from "../entities/Projectile";
 import { Weapon } from "./Weapon";
 
 export class ShotgunWeapon extends Weapon {
+    public get name(): string { return "Shotgun" }
     private readonly _image: ImageBitmap;
     private readonly _size: Size;
     private _lastFireTime = 0;

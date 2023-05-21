@@ -8,6 +8,7 @@ import { RailgunDartEntity } from "../entities/RailgunDart";
 import { Weapon } from "./Weapon";
 
 export class RailgunWeapon extends Weapon {
+    public get name(): string { return "Railgun" }
     private readonly _image: ImageBitmap;
     private readonly _imageLoaded: ImageBitmap;
     private readonly _size: Size;

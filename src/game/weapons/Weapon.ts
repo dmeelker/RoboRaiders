@@ -4,6 +4,7 @@ import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 
 export abstract class Weapon {
+    public abstract get name(): string;
     public update(_time: FrameTime): void { }
 
     public fireSingleShot(_location: Vector, _direction: Vector, _context: IGameContext, _time: FrameTime): void { }

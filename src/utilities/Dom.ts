@@ -1,5 +1,9 @@
 import { Point, Size } from "./Trig";
 
+export function setVisible(element: HTMLElement, visible: boolean) {
+    element.style.display = visible ? "block" : "none";
+}
+
 export function setSize(element: HTMLElement, size: Size) {
     element.style.width = size.width + "px";
     element.style.height = size.height + "px";

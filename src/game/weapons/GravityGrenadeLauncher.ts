@@ -8,6 +8,7 @@ import { MissileEntity } from "../entities/Missile";
 import { Weapon } from "./Weapon";
 
 export class GravityGrenadeWeapon extends Weapon {
+    public get name(): string { return "Singularity grenades" }
     private readonly _image: ImageBitmap;
     private readonly _size: Size;
     private _lastFireTime = -10000;

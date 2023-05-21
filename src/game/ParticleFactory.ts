@@ -136,3 +136,23 @@ export function createSingularityEmitter(particleSystem: ParticleSystem, locatio
     particleSystem.addEmitter(emitter);
     return emitter;
 }
+
+export function createSmokeTrailEmitter(particleSystem: ParticleSystem, location: Vector, time: FrameTime): Emitter {
+    let emitter = new Emitter(location, time, particleSystem);
+    emitter.interval = 10;
+    emitter.count = new NumberRange(2, 5);
+
+    emitter.settings.shape = ParticleShape.Square;
+    emitter.settings.fromColor = new Color(128, 128, 128, 255);
+    emitter.settings.toColor = new Color(50, 50, 50, 0);
+
+    emitter.settings.angle = new NumberRange(0, 360);
+    emitter.settings.velocity = new NumberRange(10, 25);
+    emitter.settings.gravity = new Vector(0, -60);
+    emitter.settings.minSize = new NumberRange(1, 1);
+    emitter.settings.minSize = new NumberRange(6, 8);
+    emitter.settings.timeToLive = new NumberRange(300, 700);
+
+    particleSystem.addEmitter(emitter);
+    return emitter;
+}

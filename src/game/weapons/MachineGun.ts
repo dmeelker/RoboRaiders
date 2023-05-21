@@ -8,6 +8,7 @@ import { ProjectileEntity } from "../entities/Projectile";
 import { Weapon } from "./Weapon";
 
 export class MachineGunWeapon extends Weapon {
+    public get name(): string { return "Machine gun" }
     private readonly _image: ImageBitmap;
     private readonly _size = new Size(18, 5);
     private _offset = Vector.zero;

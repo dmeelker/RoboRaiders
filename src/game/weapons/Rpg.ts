@@ -7,6 +7,7 @@ import { MissileEntity } from "../entities/Missile";
 import { Weapon } from "./Weapon";
 
 export class RpgWeapon extends Weapon {
+    public get name(): string { return "RPG" }
     private readonly _image: ImageBitmap;
     private readonly _grenadeImage: ImageBitmap;
     private readonly _size: Size;
@@ -42,8 +43,7 @@ export class RpgWeapon extends Weapon {
         this._recoilTimer = Timer.createOneOff(100, time);
 
         let offset = direction.x > 0 ? new Vector(this._size.width, 0) : new Vector(this._size.width * -1, 0);
-        let velocity = direction.toUnit().multiplyScalar(600);
-        let projectile = new MissileEntity(location.add(offset), velocity, time, context);
+        let projectile = new MissileEntity(location.add(offset), direction.toUnit(), time, context);
         context.entityManager.add(projectile);
     }
 
