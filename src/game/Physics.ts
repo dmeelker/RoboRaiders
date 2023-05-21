@@ -137,7 +137,7 @@ export class PhyicalObject {
         }
     }
 
-    private readonly _collisionGranularity = 7;
+    private readonly _collisionGranularity = 5;
 
     private getTopCollisionPoints(location: Vector): Array<Vector> {
         return this.getPointsToCheck(new Vector(Math.floor(location.x), Math.floor(location.y - 1)), new Vector(this._collisionGranularity, 0), this.width);
