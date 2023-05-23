@@ -10,7 +10,7 @@ import { Facing } from "./PlayerEntity";
 
 export class EntitySpawner extends Entity {
     private _timer: Timer = null!;
-    public interval = 2500;
+    public interval = 4000;
 
     public constructor(location: Vector, size: Size, context: IGameContext) {
         super(location, size, context);

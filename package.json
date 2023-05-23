@@ -6,7 +6,7 @@
   "scripts": {
     "convertAssets": "node convertAssets.js",
     "dev": "vite",
-    "build": "npm run convertAssets && tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
