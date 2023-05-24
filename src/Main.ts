@@ -28,12 +28,13 @@ export interface ImageResources {
     gravityGrenadeUnarmed: ImageBitmap,
     gravityGrenadeArmed: ImageBitmap,
 
-    levels: LevelBackdrops
+    levels: { [id: string]: LevelImages };
 }
 
-export interface LevelBackdrops {
-    level1: ImageBitmap;
-    level1Collisions: ImageBitmap;
+export interface LevelImages {
+    backdrop: ImageBitmap;
+    overlay: ImageBitmap;
+    metadata: ImageBitmap;
 }
 
 export interface AudioResources {
@@ -131,8 +132,7 @@ class Main {
             gravityGrenadeArmed: await imageLoader.load("weapons/gravity_grenade_armed.png"),
 
             levels: {
-                level1: await imageLoader.load("levels/level1.png"),
-                level1Collisions: await imageLoader.load("levels/level1-collisions.png"),
+                level1: await this.loadLevelImages("level1", imageLoader),
             },
 
             player1StandRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player1_stand_right.png"), 1, 1),
@@ -190,6 +190,14 @@ class Main {
         };
 
         this._resources = new Resources(images, audio, animations);
+    }
+
+    private async loadLevelImages(name: string, imageLoader: ImageLoader): Promise<LevelImages> {
+        return {
+            backdrop: await imageLoader.load(`levels/${name}_background.png`),
+            overlay: await imageLoader.load(`levels/${name}_overlay.png`),
+            metadata: await imageLoader.load(`levels/${name}_metadata.png`)
+        }
     }
 
     private requestAnimationFrame() {

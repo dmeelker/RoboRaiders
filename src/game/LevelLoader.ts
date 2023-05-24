@@ -1,4 +1,5 @@
-import { ImageBlockScanner } from "../utilities/ImageBlockScanner";
+import { Color } from "../utilities/Color";
+import { Block, ImageBlockScanner } from "../utilities/ImageBlockScanner";
 import { Rectangle, Size } from "../utilities/Trig";
 import { Game } from "./Game";
 import { GateDefinition, Level, LevelDefinition } from "./Level";
@@ -13,18 +14,21 @@ export class LevelLoader {
     }
 
     public loadLevel(level: LevelDefinition) {
-        let collisionImage = this._game.resources.images.levels.level1Collisions;
-        let backdropImage = this._game.resources.images.levels.level1;
+        let images = this._game.resources.images.levels[level.name];
 
-        if (level.backdropImage == "level1") {
-            backdropImage = this._game.resources.images.levels.level1;
-            collisionImage = this._game.resources.images.levels.level1Collisions;
-        }
+        // let collisionImage = this._game.resources.images.levels.level1Collisions;
+        // let backdropImage = this._game.resources.images.levels.level1;
 
-        let blocks = this.loadBlocks(collisionImage);
-        this._game.setLevel(new Level(new Size(640, 480), blocks), backdropImage);
+        // if (level.backdropImage == "level1") {
+        //     backdropImage = this._game.resources.images.levels.level1;
+        //     collisionImage = this._game.resources.images.levels.level1Collisions;
+        // }
+        let blocks = new ImageBlockScanner().loadBlocks(images.metadata);
+        let collisionBlocks = this.loadCollisionBlocks(blocks);
 
-        this.loadSpawns(level);
+        this._game.setLevel(new Level(new Size(640, 480), collisionBlocks), images.backdrop, images.overlay);
+
+        this.loadSpawns(level, blocks);
         this.loadGates(level);
     }
 
@@ -40,15 +44,16 @@ export class LevelLoader {
         }
     }
 
-    private loadSpawns(level: LevelDefinition) {
-        for (let spawn of level.spawns) {
-            this._game.entityManager.add(new EntitySpawner(spawn.location, spawn.size, this._game));
+    private loadSpawns(level: LevelDefinition, blocks: Block[]) {
+        let rects = blocks.filter(b => b.color.equals(new Color(255, 0, 0, 255))).map(b => b.rectangle);
+
+        for (let spawn of rects) {
+            this._game.entityManager.add(new EntitySpawner(spawn.location.toVector(), spawn.size, this._game));
         }
     }
 
-    private loadBlocks(image: ImageBitmap): Rectangle[] {
-        let blocks = new ImageBlockScanner().loadBlocks(image);
-        return blocks.map(b => b.rectangle);
+    private loadCollisionBlocks(blocks: Block[]): Rectangle[] {
+        return blocks.filter(b => b.color.equals(new Color(255, 0, 110, 255))).map(b => b.rectangle);
     }
 
     private createGate(definition: GateDefinition, entrance: boolean): Gate {

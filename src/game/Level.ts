@@ -3,10 +3,8 @@ import { Viewport } from "../utilities/Viewport";
 import { GateDirection } from "./entities/Gate";
 
 export class LevelDefinition {
-    public backdropImage = "";
-    public collisionImage = "";
+    public name = "";
     public gates = new Array<GatePair>();
-    public spawns = new Array<EnemySpawnDefinition>();
     public player1Location = new Vector(0, 0);
     public player2Location = new Vector(0, 0);
 }
@@ -22,11 +20,6 @@ export class GateDefinition {
     public constructor(
         public location = Vector.zero,
         public direction = GateDirection.Left) { }
-}
-
-export class EnemySpawnDefinition {
-    public location = Vector.zero;
-    public size = new Size(10, 10);
 }
 
 export class Level {
@@ -77,3 +70,4 @@ export class Level {
     public get bounds() { return this._bounds; }
     public get itemSpawnAreas() { return this._itemSpawnAreas; }
 }
+

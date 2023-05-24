@@ -38,10 +38,29 @@ convert("weapons/dart");
 convert("weapons/gravity_grenade", "Unarmed", "weapons/gravity_grenade_unarmed");
 convert("weapons/gravity_grenade", "Armed", "weapons/gravity_grenade_armed");
 
+convertLevel("level1");
+
 function convert(fileName, tag, outputName) {
     outputName ??= fileName;
     let tagSegment = tag ? `--frame-tag ${tag}` : "";
 
     console.log(`Converting ${fileName} [${tag}]`);
     execSync(`aseprite -b ${tagSegment} assets/${fileName}.aseprite  --sheet public/assets/gfx/${outputName}.png --scale 2`);
+}
+
+function convertLevel(fileName) {
+    fileName = "levels/" + fileName;
+    convertBackground(fileName, fileName + "_background");
+    extractLayer(fileName, fileName + "_overlay", "Overlay");
+    extractLayer(fileName, fileName + "_metadata", "Metadata");
+}
+
+function extractLayer(fileName, outputName, layer) {
+    console.log(`Converting ${fileName} [${layer}]`);
+    execSync(`aseprite -b assets/${fileName}.aseprite --layer ${layer} --save-as  public/assets/gfx/${outputName}.png`);
+}
+
+function convertBackground(fileName, outputName) {
+    console.log(`Converting ${fileName}`);
+    execSync(`aseprite -b assets/${fileName}.aseprite --ignore-layer Overlay --ignore-layer Metadata --save-as public/assets/gfx/${outputName}.png`);
 }

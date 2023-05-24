@@ -36,6 +36,7 @@ export class Game implements IGameContext {
     private _time: FrameTime = null!;
     private _level: Level = null!;
     private _backdropImage: ImageBitmap = null!;
+    private _overlayImage: ImageBitmap = null!;
 
     private _score = 0;
     private _players: Array<Player> = null!;
@@ -130,6 +131,8 @@ export class Game implements IGameContext {
 
         this._entities.render(this.viewport);
         this._projectiles.render(this.viewport);
+
+        this.viewport.context.drawImage(this._overlayImage, 0, 0);
     }
 
     public get time() { return this._time; }
@@ -139,8 +142,9 @@ export class Game implements IGameContext {
     public get particleSystem() { return this._projectiles; }
     public get viewport() { return this._viewport; }
 
-    public setLevel(level: Level, backdrop: ImageBitmap) {
+    public setLevel(level: Level, backdrop: ImageBitmap, overlay: ImageBitmap) {
         this._level = level;
         this._backdropImage = backdrop;
+        this._overlayImage = overlay;
     }
 }

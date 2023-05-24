@@ -15,7 +15,7 @@ class Slice {
     }
 }
 
-class Block {
+export class Block {
     public color: Color;
     public rectangle: Rectangle;
 

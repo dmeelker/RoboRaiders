@@ -1,13 +1,11 @@
 import { center } from "../../utilities/Align";
 import { Size, Vector } from "../../utilities/Trig";
-import { EnemySpawnDefinition, GateDefinition, GatePair, LevelDefinition } from "../Level";
+import { GateDefinition, GatePair, LevelDefinition } from "../Level";
 import { GateDirection } from "../entities/Gate";
 
 export function get(): LevelDefinition {
-    //640, 480
     let level = new LevelDefinition();
-    level.backdropImage = "level1";
-    level.collisionImage = "level1-collisions";
+    level.name = "level1";
 
     level.player1Location = new Vector(center(640, 32 - 50), 480 - 34 - 20);
     level.player2Location = new Vector(center(640, 32 + 50), 480 - 34 - 20);
@@ -25,11 +23,6 @@ export function get(): LevelDefinition {
         // Top right
         new GateDefinition(new Vector(640 - 34, 0), GateDirection.Right)
     ));
-
-    let spawn = new EnemySpawnDefinition();
-    spawn.location = new Vector(center(640, 100), 0);
-    spawn.size = new Size(100, 20);
-    level.spawns.push(spawn);
 
     return level;
 }
