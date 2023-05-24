@@ -39,13 +39,9 @@ export class Level {
         this._size = size;
         this._bounds = new Rectangle(0, 0, size.width, size.height);
 
-        this.createLevelBoundaries();
-
-        for (let block of blocks) {
-            this._blocks.push(block);
-        }
-
+        this._blocks = [...blocks];
         this._itemSpawnAreas = this.determineItemSpawnAreas();
+        this.createLevelBoundaries();
     }
 
     private createLevelBoundaries() {
