@@ -1,5 +1,5 @@
 import { center } from "../../utilities/Align";
-import { Rectangle, Size, Vector } from "../../utilities/Trig";
+import { Size, Vector } from "../../utilities/Trig";
 import { EnemySpawnDefinition, GateDefinition, GatePair, LevelDefinition } from "../Level";
 import { GateDirection } from "../entities/Gate";
 
@@ -8,18 +8,6 @@ export function get(): LevelDefinition {
     let level = new LevelDefinition();
     level.backdropImage = "level1";
     level.collisionImage = "level1-collisions";
-
-    level.blocks.push(createStonePlatform(new Vector(151, 150), 336)); // Upper
-
-    level.blocks.push(createWoodPlatform(new Vector(0, 250), 100));
-    level.blocks.push(createWoodPlatform(new Vector(640 - 100, 250), 100));
-
-    level.blocks.push(createStonePlatform(new Vector(151, 350), 336)); // Middle
-
-    level.blocks.push(createStonePlatform(new Vector(0, 64), 100));
-    level.blocks.push(createStonePlatform(new Vector(640 - 100, 64), 100));
-
-    level.blocks.push(createStonePlatform(new Vector(0, 460), 640)); // Bottow
 
     level.player1Location = new Vector(center(640, 32 - 50), 480 - 34 - 20);
     level.player2Location = new Vector(center(640, 32 + 50), 480 - 34 - 20);
@@ -44,12 +32,4 @@ export function get(): LevelDefinition {
     level.spawns.push(spawn);
 
     return level;
-}
-
-function createStonePlatform(location: Vector, length: number): Rectangle {
-    return new Rectangle(location.x, location.y, length, 20);
-}
-
-function createWoodPlatform(location: Vector, length: number): Rectangle {
-    return new Rectangle(location.x, location.y, length, 16);
 }

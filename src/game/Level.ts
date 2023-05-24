@@ -5,7 +5,6 @@ import { GateDirection } from "./entities/Gate";
 export class LevelDefinition {
     public backdropImage = "";
     public collisionImage = "";
-    public blocks = new Array<Rectangle>();
     public gates = new Array<GatePair>();
     public spawns = new Array<EnemySpawnDefinition>();
     public player1Location = new Vector(0, 0);
