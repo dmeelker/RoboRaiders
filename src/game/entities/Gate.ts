@@ -1,6 +1,6 @@
 import { FrameTime } from "../../utilities/FrameTime";
 import { between } from "../../utilities/Math";
-import { Size, Vector } from "../../utilities/Trig";
+import { Rectangle, Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 import { EnemyEntity } from "./Enemy";
@@ -16,8 +16,8 @@ export class Gate extends Entity {
     private _entrance: boolean;
     public _matchingGate?: Gate;
 
-    public constructor(location: Vector, direction: GateDirection, entrance: boolean, context: IGameContext) {
-        super(location, new Size(32 + 2, 32 * 2), context);
+    public constructor(rect: Rectangle, direction: GateDirection, entrance: boolean, context: IGameContext) {
+        super(rect.location.toVector(), rect.size, context);
 
         this._entrance = entrance;
         this._direction = direction;

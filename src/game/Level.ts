@@ -1,25 +1,10 @@
 import { Rectangle, Size, Vector } from "../utilities/Trig";
 import { Viewport } from "../utilities/Viewport";
-import { GateDirection } from "./entities/Gate";
 
 export class LevelDefinition {
     public name = "";
-    public gates = new Array<GatePair>();
     public player1Location = new Vector(0, 0);
     public player2Location = new Vector(0, 0);
-}
-
-export class GatePair {
-    public constructor(
-        public entrance: GateDefinition,
-        public exit: GateDefinition) {
-    }
-}
-
-export class GateDefinition {
-    public constructor(
-        public location = Vector.zero,
-        public direction = GateDirection.Left) { }
 }
 
 export class Level {
