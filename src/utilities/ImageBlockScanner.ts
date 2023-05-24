@@ -46,8 +46,7 @@ export class ImageBlockScanner {
 
         for (let y = 0; y < imageData.height; y++) {
             for (let x = 0; x < imageData.width; x++) {
-                const index = (y * (imageData.width * 4)) + (x * 4);
-                const color = new Color(imageData.data[index], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3]);
+                const color = this.readColor(imageData, x, y);
 
                 if (color.a > 0) {
                     if (inSlice && !color.equals(sliceColor)) {
@@ -72,6 +71,11 @@ export class ImageBlockScanner {
         }
 
         return slices;
+    }
+
+    private readColor(imageData: ImageData, x: number, y: number): Color {
+        const index = (y * (imageData.width * 4)) + (x * 4);
+        return new Color(imageData.data[index], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3]);
     }
 
     private collectBlocks(slices: Slice[]): Block[] {
