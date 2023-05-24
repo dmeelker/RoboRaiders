@@ -1,20 +1,14 @@
 import { Inputs, Resources } from "../Main";
 import { FrameTime } from "../utilities/FrameTime";
-import { ImageBlockScanner } from "../utilities/ImageBlockScanner";
-import { ColorRange, Particle, NumberRange, ParticleSystem, Emitter, EmitterGroup, ParticleShape } from "../utilities/Particles";
-import { Color } from "../utilities/Color";
+import { ParticleSystem } from "../utilities/Particles";
 import { randomArrayElement, randomInt } from "../utilities/Random";
-import { Rectangle, Size, Vector } from "../utilities/Trig";
+import { Vector } from "../utilities/Trig";
 import { Viewport } from "../utilities/Viewport";
-import { GateDefinition, Level, LevelDefinition } from "./Level";
-import { createExplosion } from "./ParticleFactory";
+import { Level } from "./Level";
 import { Player } from "./Player";
 import { EntityManager } from "./entities/EntityManager";
-import { EntitySpawner } from "./entities/EntitySpawner";
-import { Gate } from "./entities/Gate";
 import { GravityGrenadeEntity } from "./entities/GravityGrenade";
 import { PriceEntity, PriceEntity as PrizeEntity } from "./entities/PrizeEntity";
-import * as Level1 from "./levels/Level1";
 import { LevelLoader } from "./LevelLoader";
 
 export interface IGameContext {
@@ -58,7 +52,7 @@ export class Game implements IGameContext {
 
     public initialize(time: FrameTime) {
         this._time = time;
-        this.loadLevel(Level1.get());
+        this.loadLevel("level1");
 
         for (let player of this._players) {
             this._entities.add(player.entity);
@@ -72,15 +66,16 @@ export class Game implements IGameContext {
         this.updateScoreLabel();
     }
 
-    public loadLevel(level: LevelDefinition) {
+    public loadLevel(level: string) {
         let levelLoader = new LevelLoader(this);
         levelLoader.loadLevel(level);
 
         this._players = [
-            new Player(level.player1Location.clone(), this._inputs.player1, 0, this)];
+            new Player(this._level.playerSpawnLocations[0].clone(), this._inputs.player1, 0, this)];
+
         // this._players = [
-        //     new Player(level.player1Location.clone(), this._inputs.player1, 0, this),
-        //     new Player(level.player2Location.clone(), this._inputs.player2, 1, this)];
+        //     new Player(this._level.playerSpawnLocations[0].clone(), this._inputs.player1, 0, this),
+        //     new Player(this._level.playerSpawnLocations[1].clone(), this._inputs.player2, 1, this)];
     }
 
     private spawnPrize() {

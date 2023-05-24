@@ -1,8 +1,8 @@
 import { Color } from "../utilities/Color";
 import { Block, ImageBlockScanner } from "../utilities/ImageBlockScanner";
-import { Rectangle, Size } from "../utilities/Trig";
+import * as Trig from "../utilities/Trig";
 import { Game } from "./Game";
-import { GateDefinition, Level, LevelDefinition } from "./Level";
+import { Level } from "./Level";
 import { EntitySpawner } from "./entities/EntitySpawner";
 import { Gate, GateDirection } from "./entities/Gate";
 
@@ -13,13 +13,17 @@ export class LevelLoader {
         this._game = game;
     }
 
-    public loadLevel(level: LevelDefinition) {
-        let images = this._game.resources.images.levels[level.name];
+    public loadLevel(level: string) {
+        let images = this._game.resources.images.levels[level];
 
         let blocks = new ImageBlockScanner().loadBlocks(images.metadata);
         let collisionBlocks = this.loadCollisionBlocks(blocks);
+        let playerSpawns = this.loadPlayerSpawnLocations(blocks);
 
-        this._game.setLevel(new Level(new Size(640, 480), collisionBlocks), images.backdrop, images.overlay);
+        this._game.setLevel(
+            new Level(new Trig.Size(640, 480), collisionBlocks, playerSpawns),
+            images.backdrop,
+            images.overlay);
 
         this.loadSpawns(blocks);
         this.loadGates(blocks);
@@ -71,7 +75,28 @@ export class LevelLoader {
         }
     }
 
-    private loadCollisionBlocks(blocks: Block[]): Rectangle[] {
+    private loadCollisionBlocks(blocks: Block[]): Trig.Rectangle[] {
         return blocks.filter(b => b.color.equals(new Color(255, 0, 110, 255))).map(b => b.rectangle);
+    }
+
+    private loadPlayerSpawnLocations(blocks: Block[]): Trig.Vector[] {
+        let player1Location = this.getSingleBlock(new Color(0, 62, 255, 255), blocks);
+        let player2Location = this.getSingleBlock(new Color(0, 118, 255, 255), blocks);
+
+        let locations = new Array<Trig.Vector>();
+        if (player1Location) locations.push(player1Location.rectangle.location.toVector());
+        if (player2Location) locations.push(player2Location.rectangle.location.toVector());
+
+        return locations;
+    }
+
+    private getSingleBlock(color: Color, blocks: Block[]): Block | null {
+        let matches = blocks.filter(b => b.color.equals(color));
+
+        if (matches.length == 1) {
+            return matches[0];
+        }
+
+        return null;
     }
 }

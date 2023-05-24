@@ -1,21 +1,17 @@
 import { Rectangle, Size, Vector } from "../utilities/Trig";
 import { Viewport } from "../utilities/Viewport";
 
-export class LevelDefinition {
-    public name = "";
-    public player1Location = new Vector(0, 0);
-    public player2Location = new Vector(0, 0);
-}
-
 export class Level {
     private _blocks = new Array<Rectangle>();
     private readonly _size: Size;
     private readonly _bounds: Rectangle;
     private readonly _itemSpawnAreas: Array<Rectangle>;
+    private readonly _playerSpawnLocations: Array<Vector>;
 
-    public constructor(size: Size, blocks: Array<Rectangle>) {
+    public constructor(size: Size, blocks: Array<Rectangle>, playerSpawnLocations: Array<Vector>) {
         this._size = size;
         this._bounds = new Rectangle(0, 0, size.width, size.height);
+        this._playerSpawnLocations = playerSpawnLocations;
 
         this._blocks = [...blocks];
         this._itemSpawnAreas = this.determineItemSpawnAreas();
@@ -54,5 +50,6 @@ export class Level {
     public get blocks() { return this._blocks; }
     public get bounds() { return this._bounds; }
     public get itemSpawnAreas() { return this._itemSpawnAreas; }
+    public get playerSpawnLocations() { return this._playerSpawnLocations; }
 }
 
