@@ -1,20 +1,9 @@
+import { Color } from "./Color";
 import { FrameTime } from "./FrameTime";
 import { interpolate } from "./Math";
 import { randomInt } from "./Random";
 import { Vector } from "./Trig";
 import { Viewport } from "./Viewport";
-
-export class Color {
-    public constructor(public r: number, public g: number, public b: number, public a: number) {
-
-    }
-
-    public get cssColor(): string {
-        return `rgba(${this.r}, ${this.g}, ${this.b}, ${this.a})`;
-    }
-
-    public static readonly white = new Color(255, 255, 255, 255);
-}
 
 export class NumberRange {
     public constructor(public min: number, public max: number) { }

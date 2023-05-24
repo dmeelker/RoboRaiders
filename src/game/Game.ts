@@ -1,8 +1,10 @@
 import { Inputs, Resources } from "../Main";
 import { FrameTime } from "../utilities/FrameTime";
-import { Color, ColorRange, Particle, NumberRange, ParticleSystem, Emitter, EmitterGroup, ParticleShape } from "../utilities/Particles";
+import { ImageBlockScanner } from "../utilities/ImageBlockScanner";
+import { ColorRange, Particle, NumberRange, ParticleSystem, Emitter, EmitterGroup, ParticleShape } from "../utilities/Particles";
+import { Color } from "../utilities/Color";
 import { randomArrayElement, randomInt } from "../utilities/Random";
-import { Size, Vector } from "../utilities/Trig";
+import { Rectangle, Size, Vector } from "../utilities/Trig";
 import { Viewport } from "../utilities/Viewport";
 import { GateDefinition, Level, LevelDefinition } from "./Level";
 import { createExplosion } from "./ParticleFactory";
@@ -13,6 +15,7 @@ import { Gate } from "./entities/Gate";
 import { GravityGrenadeEntity } from "./entities/GravityGrenade";
 import { PriceEntity, PriceEntity as PrizeEntity } from "./entities/PrizeEntity";
 import * as Level1 from "./levels/Level1";
+import { LevelLoader } from "./LevelLoader";
 
 export interface IGameContext {
     get time(): FrameTime;
@@ -69,35 +72,14 @@ export class Game implements IGameContext {
     }
 
     public loadLevel(level: LevelDefinition) {
-        this._level = new Level(new Size(640, 480), level.blocks);
-
-        if (level.backdropImage == "level1") {
-            this._backdropImage = this.resources.images.levels.level1;
-        }
-
-        for (let spawn of level.spawns) {
-            this._entities.add(new EntitySpawner(spawn.location, spawn.size, this));
-        }
-
-        for (let g of level.gates) {
-            let entrance = this.createGate(g.entrance, true);
-            let exit = this.createGate(g.exit, false);
-
-            entrance._matchingGate = exit;
-
-            this._entities.add(entrance);
-            this._entities.add(exit);
-        }
+        let levelLoader = new LevelLoader(this);
+        levelLoader.loadLevel(level);
 
         this._players = [
             new Player(level.player1Location.clone(), this._inputs.player1, 0, this)];
         // this._players = [
         //     new Player(level.player1Location.clone(), this._inputs.player1, 0, this),
         //     new Player(level.player2Location.clone(), this._inputs.player2, 1, this)];
-    }
-
-    private createGate(definition: GateDefinition, entrance: boolean): Gate {
-        return new Gate(definition.location, definition.direction, entrance, this);
     }
 
     private spawnPrize() {
@@ -156,4 +138,9 @@ export class Game implements IGameContext {
     public get entityManager() { return this._entities; }
     public get particleSystem() { return this._projectiles; }
     public get viewport() { return this._viewport; }
+
+    public setLevel(level: Level, backdrop: ImageBitmap) {
+        this._level = level;
+        this._backdropImage = backdrop;
+    }
 }

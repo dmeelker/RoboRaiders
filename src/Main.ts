@@ -33,6 +33,7 @@ export interface ImageResources {
 
 export interface LevelBackdrops {
     level1: ImageBitmap;
+    level1Collisions: ImageBitmap;
 }
 
 export interface AudioResources {
@@ -131,7 +132,9 @@ class Main {
 
             levels: {
                 level1: await imageLoader.load("levels/level1.png"),
+                level1Collisions: await imageLoader.load("levels/level1-collisions.png"),
             },
+
             player1StandRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player1_stand_right.png"), 1, 1),
             player1WalkRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player1_walk_right.png"), 4, 1),
             player1JumpRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player1_jump_right.png"), 1, 1),

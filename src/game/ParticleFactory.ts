@@ -1,5 +1,6 @@
 import { FrameTime } from "../utilities/FrameTime";
-import { Color, Emitter, EmitterGroup, IEmitter, NumberRange, ParticleShape, ParticleSystem } from "../utilities/Particles";
+import { Emitter, EmitterGroup, IEmitter, NumberRange, ParticleShape, ParticleSystem } from "../utilities/Particles";
+import { Color } from "../utilities/Color";
 import { Vector } from "../utilities/Trig";
 
 export function createExplosion(particleSystem: ParticleSystem, location: Vector, time: FrameTime): IEmitter {

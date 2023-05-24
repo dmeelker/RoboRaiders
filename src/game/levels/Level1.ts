@@ -7,6 +7,7 @@ export function get(): LevelDefinition {
     //640, 480
     let level = new LevelDefinition();
     level.backdropImage = "level1";
+    level.collisionImage = "level1-collisions";
 
     level.blocks.push(createStonePlatform(new Vector(151, 150), 336)); // Upper
 
