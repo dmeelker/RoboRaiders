@@ -1,8 +1,9 @@
+[x] Increasing level difficulty
+
 - Enemy graphics
 - Game over screen
 - High scores
 - Home screen
-- Increasing level difficulty
 - Weapon unlocks
 - Multiplayer modes
  - Coop

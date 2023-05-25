@@ -18,6 +18,10 @@ export class Player {
     }
 
     private processInput(time: FrameTime) {
+        if (this._entity.dead) {
+            return;
+        }
+
         if (this._input.wasButtonPressedInFrame(Keys.A)) {
             this.entity.jump(time);
         } else if (!this._input.isButtonDown(Keys.A)) {

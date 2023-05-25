@@ -9,6 +9,7 @@ import { GravityGrenadeEntity } from "./entities/GravityGrenade";
 import { BoxEntity } from "./entities/BoxEntity";
 import { LevelLoader } from "./LevelLoader";
 import { BoxSpawner } from "./BoxSpawner";
+import * as Dom from "../utilities/Dom";
 
 export interface IGameContext {
     get time(): FrameTime;
@@ -38,12 +39,25 @@ export class Game implements IGameContext {
     private _players: Array<Player> = null!;
     private _box: BoxEntity = null!;
 
+    private _allPlayersDeadTime = 0;
+    private _allPlayersDead = false;
+
     private _scoreLabel = document.createElement("div");
+    private _gameOverLabel = document.createElement("div");
 
     public constructor(viewport: Viewport, resources: Resources, inputs: Inputs) {
         this._viewport = viewport;
         this._resources = resources;
         this._inputs = inputs;
+
+        this._scoreLabel.className = "ui-label";
+        this._scoreLabel.style.textAlign = "center";
+        this.viewport.uiElement.appendChild(this._scoreLabel);
+
+        this._gameOverLabel.className = "ui-label";
+        this._gameOverLabel.style.textAlign = "center";
+        this._gameOverLabel.innerHTML = "Game Over!";
+        this.viewport.uiElement.appendChild(this._gameOverLabel);
     }
 
     public reset(time: FrameTime) {
@@ -55,17 +69,17 @@ export class Game implements IGameContext {
     public initialize(time: FrameTime) {
         this._startTime = time.currentTime;
         this._time = time;
+
         this.loadLevel("level1");
 
         for (let player of this._players) {
             this._entities.add(player.entity);
         }
+        this._allPlayersDead = false;
+        Dom.hide(this._gameOverLabel);
 
         this.spawnBox();
 
-        this._scoreLabel.className = "ui-label";
-        this._scoreLabel.style.textAlign = "center";
-        this.viewport.uiElement.appendChild(this._scoreLabel);
         this.updateScoreLabel();
     }
 
@@ -97,7 +111,13 @@ export class Game implements IGameContext {
             this.spawnBox();
         }
 
-        if (this._players.filter(p => !p.entity.dead).length == 0) {
+        if (!this._allPlayersDead && this._players.filter(p => !p.entity.dead).length == 0) {
+            this._allPlayersDead = true;
+            this._allPlayersDeadTime = time.currentTime;
+            Dom.show(this._gameOverLabel);
+        }
+
+        if (this._allPlayersDead && time.currentTime - this._allPlayersDeadTime > 3000) {
             this.reset(time);
         }
 
