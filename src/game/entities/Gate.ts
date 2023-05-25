@@ -1,6 +1,6 @@
 import { FrameTime } from "../../utilities/FrameTime";
 import { between } from "../../utilities/Math";
-import { Rectangle, Size, Vector } from "../../utilities/Trig";
+import { Rectangle, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 import { EnemyEntity } from "./Enemy";

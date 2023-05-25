@@ -1,5 +1,4 @@
 import { FrameTime } from "../../utilities/FrameTime";
-import { interpolate } from "../../utilities/Math";
 import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
@@ -30,8 +29,6 @@ export class ExplosionEntity extends Entity {
             return;
         }
 
-        //let radius = interpolate(1, 70, age / this._lifetime);
-        //this.setRadius(this._radius);
         this.causeDamage();
     }
 
@@ -45,13 +42,7 @@ export class ExplosionEntity extends Entity {
         }
     }
 
-    public render(viewport: Viewport) {
-        // viewport.context.fillStyle = "red";
-
-        // viewport.context.beginPath();
-        // viewport.context.arc(Math.floor(this.centerLocation.x), Math.floor(this.centerLocation.y), this._radius, 0, 2 * Math.PI);
-        // viewport.context.fill();
-    }
+    public render(_viewport: Viewport) { }
 
     private setRadius(radius: number) {
         let centerLocation = this.centerLocation;

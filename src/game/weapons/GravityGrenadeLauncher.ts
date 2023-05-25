@@ -1,16 +1,13 @@
 import { FrameTime } from "../../utilities/FrameTime";
-import { Timer } from "../../utilities/Timer";
-import { Size, Vector } from "../../utilities/Trig";
+import { Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 import { GravityGrenadeEntity } from "../entities/GravityGrenade";
-import { MissileEntity } from "../entities/Missile";
 import { Weapon } from "./Weapon";
 
 export class GravityGrenadeWeapon extends Weapon {
     public get name(): string { return "Singularity grenades" }
     private readonly _image: ImageBitmap;
-    private readonly _size: Size;
     private _lastFireTime = -10000;
     private _fireInterval = 1500;
     private _loaded = true;
@@ -18,7 +15,6 @@ export class GravityGrenadeWeapon extends Weapon {
     public constructor(context: IGameContext) {
         super();
         this._image = context.resources.images.gravityGrenadeUnarmed;
-        this._size = new Size(this._image.width, this._image.height);
     }
 
     public update(time: FrameTime): void {

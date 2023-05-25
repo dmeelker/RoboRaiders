@@ -32,13 +32,5 @@ export class PistolWeapon extends Weapon {
             viewport.context.drawImage(this._image, 0, 0);
             viewport.context.resetTransform();
         }
-
-        // viewport.context.fillStyle = "gray";
-
-        // if (direction.x > 0) {
-        //     viewport.context.fillRect(location.x, location.y, this._size.width, this._size.height);
-        // } else {
-        //     viewport.context.fillRect(location.x - this._size.width, location.y, this._size.width, this._size.height);
-        // }
     }
 }

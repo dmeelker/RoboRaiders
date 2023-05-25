@@ -18,7 +18,6 @@ import { EnemyEntity } from "./Enemy";
 import { Entity } from "./Entity";
 import { PriceEntity } from "./PrizeEntity";
 import * as Dom from "../../utilities/Dom";
-import * as Align from "../../utilities/Align";
 
 export enum Facing {
     Left,

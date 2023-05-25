@@ -1,0 +1,18 @@
+- Enemy graphics
+- Game over screen
+- High scores
+- Home screen
+- Increasing level difficulty
+- Weapon unlocks
+- Multiplayer modes
+ - Coop
+ - Competition
+- Level selection
+- More weapons that are difficult to use
+- More levels
+- Extra level elements
+ - Pools of sludge
+ - Moveable elements (doors?)
+- Enemy types
+ - Charger
+ - Flyer

@@ -1,5 +1,4 @@
 import { FrameTime } from "../../utilities/FrameTime";
-import { clamp } from "../../utilities/Math";
 import { randomInt } from "../../utilities/Random";
 import { Point, Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";

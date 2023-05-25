@@ -20,12 +20,6 @@ export class PriceEntity extends Entity {
     }
 
     public render(viewport: Viewport) {
-
         viewport.context.drawImage(this._image, Math.floor(this.location.x + this._renderOffset.x), Math.floor(this.location.y + this._renderOffset.y));
-        // viewport.context.fillStyle = "#00000066";
-        // viewport.context.fillRect(Math.floor(this.location.x + this._renderOffset.x + 1), Math.floor(this.location.y + this._renderOffset.y + 1), this.size.width, this.size.height);
-
-        // viewport.context.fillStyle = "gold";
-        // viewport.context.fillRect(Math.floor(this.location.x + this._renderOffset.x), Math.floor(this.location.y + this._renderOffset.y), this.size.width, this.size.height);
     }
 }
