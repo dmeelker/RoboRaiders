@@ -12,6 +12,8 @@ import { BoxSpawner } from "./BoxSpawner";
 
 export interface IGameContext {
     get time(): FrameTime;
+    get runTime(): number;
+    get difficulty(): number;
     get resources(): Resources;
     get level(): Level;
     get entityManager(): EntityManager;
@@ -26,6 +28,7 @@ export class Game implements IGameContext {
     private readonly _inputs: Inputs;
     private readonly _entities = new EntityManager();
     private readonly _projectiles = new ParticleSystem();
+    private _startTime: number = 0;
     private _time: FrameTime = null!;
     private _level: Level = null!;
     private _backdropImage: ImageBitmap = null!;
@@ -50,6 +53,7 @@ export class Game implements IGameContext {
     }
 
     public initialize(time: FrameTime) {
+        this._startTime = time.currentTime;
         this._time = time;
         this.loadLevel("level1");
 
@@ -129,6 +133,8 @@ export class Game implements IGameContext {
     public get entityManager() { return this._entities; }
     public get particleSystem() { return this._projectiles; }
     public get viewport() { return this._viewport; }
+    public get runTime() { return this._time.currentTime - this._startTime; }
+    public get difficulty() { return Math.min(this._score / 50, 1); }
 
     public setLevel(level: Level, backdrop: ImageBitmap, overlay: ImageBitmap) {
         this._level = level;

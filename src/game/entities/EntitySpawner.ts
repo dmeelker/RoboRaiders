@@ -1,6 +1,6 @@
 import { FrameTime } from "../../utilities/FrameTime";
+import { interpolate } from "../../utilities/Math";
 import { chance, randomArrayElement } from "../../utilities/Random";
-import { Timer } from "../../utilities/Timer";
 import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
@@ -9,38 +9,49 @@ import { Entity } from "./Entity";
 import { Facing } from "./PlayerEntity";
 
 export class EntitySpawner extends Entity {
-    private _timer: Timer = null!;
-    public interval = 4000;
+    private _lastSpawnTime = -10000;
+
+    private get interval() { return interpolate(5000, 2000, this.context.difficulty); }
+    private get timeSinceLastSpawn() { return this.context.time.currentTime - this._lastSpawnTime; }
 
     public constructor(location: Vector, size: Size, context: IGameContext) {
         super(location, size, context);
     }
 
     public update(time: FrameTime) {
-        if (!this._timer) {
-            this._timer = Timer.createRepeating(this.interval, time);
-        }
-
-        this._timer.update(time, () => {
-            this.spawnEnemy();
-        });
+        if (this.timeSinceLastSpawn > this.interval) {
+            this.spawnEnemy(time);
+        };
     }
 
-    public spawnEnemy() {
+    public spawnEnemy(time: FrameTime) {
         let enemy = this.createRandomEnemy(this.centerLocation);
         enemy.facing = this.randomFacing();
 
         this.context.entityManager.add(enemy);
+        this._lastSpawnTime = time.currentTime;
     }
 
     private createRandomEnemy(location: Vector) {
-        let factories = [
-            EntitySpawner.createBasicEnemy,
-            EntitySpawner.createFastEnemy,
-            EntitySpawner.createLargeEnemy
-        ];
+        let factories = this.getAvailableEnemyTypes();
 
         return randomArrayElement(factories)(location, this.context);
+    }
+
+    private getAvailableEnemyTypes() {
+        let availableTypes = [
+            EntitySpawner.createBasicEnemy
+        ];
+
+        if (this.context.difficulty > 0.3) {
+            availableTypes.push(EntitySpawner.createLargeEnemy);
+        }
+
+        if (this.context.difficulty > 0.5) {
+            availableTypes.push(EntitySpawner.createFastEnemy);
+        }
+
+        return availableTypes;
     }
 
     private static createBasicEnemy(location: Vector, context: IGameContext) {
