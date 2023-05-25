@@ -4,15 +4,14 @@ import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 import { Entity } from "./Entity";
 
-export class PriceEntity extends Entity {
+export class BoxEntity extends Entity {
     public static size = new Size(32, 26);
     private _renderOffset = Vector.zero;
     private _image: ImageBitmap;
 
     public constructor(location: Vector, gameContext: IGameContext) {
-        super(location, PriceEntity.size, gameContext);
+        super(location, BoxEntity.size, gameContext);
         this._image = gameContext.resources.images.crate;
-
     }
 
     public update(time: FrameTime) {

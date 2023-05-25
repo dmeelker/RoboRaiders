@@ -1,15 +1,14 @@
 import { Inputs, Resources } from "../Main";
 import { FrameTime } from "../utilities/FrameTime";
 import { ParticleSystem } from "../utilities/Particles";
-import { randomArrayElement, randomInt } from "../utilities/Random";
-import { Vector } from "../utilities/Trig";
 import { Viewport } from "../utilities/Viewport";
 import { Level } from "./Level";
 import { Player } from "./Player";
 import { EntityManager } from "./entities/EntityManager";
 import { GravityGrenadeEntity } from "./entities/GravityGrenade";
-import { PriceEntity, PriceEntity as PrizeEntity } from "./entities/PrizeEntity";
+import { BoxEntity } from "./entities/BoxEntity";
 import { LevelLoader } from "./LevelLoader";
+import { BoxSpawner } from "./BoxSpawner";
 
 export interface IGameContext {
     get time(): FrameTime;
@@ -34,7 +33,7 @@ export class Game implements IGameContext {
 
     private _score = 0;
     private _players: Array<Player> = null!;
-    private _prize: PrizeEntity = null!;
+    private _box: BoxEntity = null!;
 
     private _scoreLabel = document.createElement("div");
 
@@ -58,7 +57,7 @@ export class Game implements IGameContext {
             this._entities.add(player.entity);
         }
 
-        this.spawnPrize();
+        this.spawnBox();
 
         this._scoreLabel.className = "ui-label";
         this._scoreLabel.style.textAlign = "center";
@@ -78,14 +77,8 @@ export class Game implements IGameContext {
         //     new Player(this._level.playerSpawnLocations[1].clone(), this._inputs.player2, 1, this)];
     }
 
-    private spawnPrize() {
-        let area = randomArrayElement(this._level.itemSpawnAreas);
-        let x = randomInt(0, area.width - PriceEntity.size.height);
-
-        let location = new Vector(area.x + x, area.y + area.height - PriceEntity.size.height);
-
-        this._prize = new PrizeEntity(location, this);
-        this._entities.add(this._prize);
+    private spawnBox() {
+        this._box = new BoxSpawner(this).spawn();
     }
 
     public update(time: FrameTime) {
@@ -95,9 +88,9 @@ export class Game implements IGameContext {
             player.update(time);
         }
 
-        if (this._prize.disposed) {
+        if (this._box.disposed) {
             this.updateScoreLabel();
-            this.spawnPrize();
+            this.spawnBox();
         }
 
         if (this._players.filter(p => !p.entity.dead).length == 0) {

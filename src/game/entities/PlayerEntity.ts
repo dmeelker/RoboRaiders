@@ -16,7 +16,7 @@ import { Weapon } from "../weapons/Weapon";
 import { ActorAnimations, ActorAnimator } from "./ActorAnimations";
 import { EnemyEntity } from "./Enemy";
 import { Entity } from "./Entity";
-import { PriceEntity } from "./PrizeEntity";
+import { BoxEntity } from "./BoxEntity";
 import * as Dom from "../../utilities/Dom";
 
 export enum Facing {
@@ -102,10 +102,10 @@ export class PlayerEntity extends Entity {
             }
         }
 
-        let prizes = this.context.entityManager.getOfType(PriceEntity);
-        for (let prize of prizes) {
-            if (prize.bounds.overlaps(this.bounds)) {
-                prize.markDisposable();
+        let boxes = this.context.entityManager.getOfType(BoxEntity);
+        for (let box of boxes) {
+            if (box.bounds.overlaps(this.bounds)) {
+                box.markDisposable();
                 this.context.addPoint();
                 this.randomWeapon();
             }
