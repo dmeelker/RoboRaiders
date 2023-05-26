@@ -1,3 +1,4 @@
+import { setSize } from "../../utilities/Dom";
 import { FrameTime } from "../../utilities/FrameTime";
 import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
@@ -11,10 +12,12 @@ export class ProjectileEntity extends Entity {
     public power = 1;
     private _creationTime = 0;
     public maxAge?: number;
+    private _image: ImageBitmap;
 
     public constructor(location: Vector, velocity: Vector, time: FrameTime, gameContext: IGameContext) {
-        super(location, new Size(4, 4), gameContext);
+        super(location, new Size(gameContext.resources.images.bullet.width, gameContext.resources.images.bullet.height), gameContext);
 
+        this._image = gameContext.resources.images.bullet;
         this._creationTime = time.currentTime;
 
         this.physics = new PhyicalObject(
@@ -45,7 +48,6 @@ export class ProjectileEntity extends Entity {
     }
 
     public render(viewport: Viewport) {
-        viewport.context.fillStyle = "red";
-        viewport.context.fillRect(Math.floor(this.location.x), Math.floor(this.location.y), this.size.width, this.size.height);
+        viewport.context.drawImage(this._image, Math.floor(this.location.x), Math.floor(this.location.y));
     }
 }

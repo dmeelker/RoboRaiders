@@ -45,7 +45,7 @@ export class RailgunWeapon extends Weapon {
         this._offset = new Vector(-4, 2);
         this._recoilTimer = Timer.createOneOff(100, time);
 
-        let offset = direction.x > 0 ? new Vector(this._size.width, 0) : new Vector(this._size.width * -1, 0);
+        let offset = direction.x > 0 ? new Vector(this._size.width, 0) : new Vector(this._size.width * -1, 2);
         let fireLocation = location.add(offset);
         let velocity = direction.toUnit().multiplyScalar(1500);
         let projectile = new RailgunDartEntity(fireLocation, velocity, context);

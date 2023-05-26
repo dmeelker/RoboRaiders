@@ -17,6 +17,7 @@ import { InputProvider } from "./input/InputProvider";
 
 export interface ImageResources {
     crate: ImageBitmap,
+    bullet: ImageBitmap,
     pistol: ImageBitmap,
     machinegun: ImageBitmap,
     shotgun: ImageBitmap,
@@ -120,6 +121,7 @@ class Main {
         const imageLoader = new ImageLoader("assets/gfx");
         let images = {
             crate: await imageLoader.load("crate.png"),
+            bullet: await imageLoader.load("weapons/bullet.png"),
             pistol: await imageLoader.load("weapons/pistol.png"),
             machinegun: await imageLoader.load("weapons/machinegun.png"),
             shotgun: await imageLoader.load("weapons/shotgun.png"),

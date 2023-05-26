@@ -72,7 +72,7 @@ export class MissileEntity extends Entity {
     public render(viewport: Viewport) {
         viewport.context.translate(Math.floor(this.location.x), Math.floor(this.location.y));
 
-        if (this.facing == Facing.Right) {
+        if (this.facing == Facing.Left) {
             viewport.context.scale(-1, 1);
             viewport.context.translate(-this.size.width, 0);
         }

@@ -25,6 +25,7 @@ convert("runner-robot", "HitLeft", "runner_bot_hit_left");
 
 convert("crate", null, "crate");
 
+convert("weapons/bullet");
 convert("weapons/pistol");
 convert("weapons/machinegun");
 convert("weapons/shotgun");

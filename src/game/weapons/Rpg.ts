@@ -42,7 +42,7 @@ export class RpgWeapon extends Weapon {
         this._offset = new Vector(-4, 2);
         this._recoilTimer = Timer.createOneOff(100, time);
 
-        let offset = direction.x > 0 ? new Vector(this._size.width, 0) : new Vector(this._size.width * -1, 0);
+        let offset = direction.x > 0 ? new Vector(this._size.width, -2) : new Vector(this._size.width * -1, 0);
         let projectile = new MissileEntity(location.add(offset), direction.toUnit(), time, context);
         context.entityManager.add(projectile);
     }
@@ -56,12 +56,12 @@ export class RpgWeapon extends Weapon {
             viewport.context.translate(location.x + (offset.x * -1), location.y + offset.y);
             viewport.context.scale(-1, 1);
         }
-        viewport.context.drawImage(this._image, 0, 0);
 
         if (this._loaded) {
-            viewport.context.drawImage(this._grenadeImage, this._image.width, 2);
+            viewport.context.drawImage(this._grenadeImage, this._image.width - 8, 0);
         }
 
+        viewport.context.drawImage(this._image, 0, 0);
         viewport.context.resetTransform();
     }
 
