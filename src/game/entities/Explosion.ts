@@ -19,6 +19,7 @@ export class ExplosionEntity extends Entity {
         this.setRadius(70);
 
         createExplosion(context.particleSystem, centerLocation, time);
+        context.viewport.shakeHeavy(time);
     }
 
     public update(_time: FrameTime) {
