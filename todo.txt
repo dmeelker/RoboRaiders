@@ -1,7 +1,7 @@
 [x] Increasing level difficulty
+[x] Game over screen
 
 - Enemy graphics
-- Game over screen
 - High scores
 - Home screen
 - Weapon unlocks

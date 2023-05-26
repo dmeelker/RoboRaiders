@@ -1,6 +1,6 @@
 import { AnimationDefinition } from "../../utilities/Animation";
 import { FrameTime } from "../../utilities/FrameTime";
-import { randomArrayElement } from "../../utilities/Random";
+import { randomArrayElement, randomInt } from "../../utilities/Random";
 import { Point, Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
@@ -18,6 +18,7 @@ import { EnemyEntity } from "./Enemy";
 import { Entity } from "./Entity";
 import { BoxEntity } from "./BoxEntity";
 import * as Dom from "../../utilities/Dom";
+import { CorpseEntity } from "./Corpse";
 
 export enum Facing {
     Left,
@@ -138,6 +139,8 @@ export class PlayerEntity extends Entity {
 
     private die() {
         this._dead = true;
+        let corpseVector = Vector.fromDegreeAngle(randomInt(0, 360)).multiplyScalar(randomInt(200, 300));
+        this.context.entityManager.add(new CorpseEntity(this.location, corpseVector, this._animator.activeAnimation.getImage(), this.context));
         this.markDisposable();
     }
 
