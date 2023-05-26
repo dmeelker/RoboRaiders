@@ -50,13 +50,14 @@ export class Game implements IGameContext {
         this._resources = resources;
         this._inputs = inputs;
 
-        this._scoreLabel.className = "ui-label";
+        this._scoreLabel.className = "ui-label text-m";
         this._scoreLabel.style.textAlign = "center";
         this.viewport.uiElement.appendChild(this._scoreLabel);
 
-        this._gameOverLabel.className = "ui-label";
+        this._gameOverLabel.className = "ui-label text-l";
         this._gameOverLabel.style.textAlign = "center";
         this._gameOverLabel.innerHTML = "Game Over!";
+        Dom.center(this._gameOverLabel);
         this.viewport.uiElement.appendChild(this._gameOverLabel);
     }
 
@@ -69,6 +70,7 @@ export class Game implements IGameContext {
     public initialize(time: FrameTime) {
         this._startTime = time.currentTime;
         this._time = time;
+        this._score = 0;
 
         this.loadLevel("level1");
 

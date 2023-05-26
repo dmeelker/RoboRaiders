@@ -28,6 +28,13 @@ export function position(element: HTMLElement, location: Point) {
     element.style.top = location.y + "px";
 }
 
+export function center(element: HTMLElement) {
+    element.style.position = "absolute";
+    element.style.left = "50%";
+    element.style.top = "50%";
+    element.style.transform = "translate(-50%, -50%)";
+}
+
 export function clear(element: HTMLElement) {
     while (element.lastElementChild) {
         element.removeChild(element.lastElementChild);
