@@ -74,6 +74,15 @@ export interface AnimationResources {
     rollerBotJumpLeft: AnimationDefinition,
     rollerBotHitRight: AnimationDefinition,
     rollerBotHitLeft: AnimationDefinition,
+
+    fastBotStandRight: AnimationDefinition,
+    fastBotStandLeft: AnimationDefinition,
+    fastBotWalkRight: AnimationDefinition,
+    fastBotWalkLeft: AnimationDefinition,
+    fastBotJumpRight: AnimationDefinition,
+    fastBotJumpLeft: AnimationDefinition,
+    fastBotHitRight: AnimationDefinition,
+    fastBotHitLeft: AnimationDefinition,
 }
 
 export class Resources {
@@ -177,6 +186,15 @@ class Main {
             rollerBotJumpLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("roller_bot_jump_left.png"), 1, 1),
             rollerBotHitRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("roller_bot_hit_right.png"), 1, 1),
             rollerBotHitLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("roller_bot_hit_left.png"), 1, 1),
+
+            fastBotStandRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("fast_bot_stand_right.png"), 1, 1),
+            fastBotStandLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("fast_bot_stand_left.png"), 1, 1),
+            fastBotWalkRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("fast_bot_walk_right.png"), 3, 1),
+            fastBotWalkLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("fast_bot_walk_left.png"), 3, 1),
+            fastBotJumpRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("fast_bot_jump_right.png"), 1, 1),
+            fastBotJumpLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("fast_bot_jump_left.png"), 1, 1),
+            fastBotHitRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("fast_bot_hit_right.png"), 1, 1),
+            fastBotHitLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("fast_bot_hit_left.png"), 1, 1),
         };
 
         const soundLoader = new AudioLoader("assets/sounds");
@@ -216,6 +234,15 @@ class Main {
             rollerBotJumpLeft: new AnimationDefinition(images.rollerBotJumpLeft, 1),
             rollerBotHitRight: new AnimationDefinition(images.rollerBotHitRight, 1),
             rollerBotHitLeft: new AnimationDefinition(images.rollerBotHitLeft, 1),
+
+            fastBotStandRight: new AnimationDefinition(images.fastBotStandRight, 1),
+            fastBotStandLeft: new AnimationDefinition(images.fastBotStandLeft, 1),
+            fastBotWalkRight: new AnimationDefinition(images.fastBotWalkRight, 180),
+            fastBotWalkLeft: new AnimationDefinition(images.fastBotWalkLeft, 180),
+            fastBotJumpRight: new AnimationDefinition(images.fastBotJumpRight, 1),
+            fastBotJumpLeft: new AnimationDefinition(images.fastBotJumpLeft, 1),
+            fastBotHitRight: new AnimationDefinition(images.fastBotHitRight, 1),
+            fastBotHitLeft: new AnimationDefinition(images.fastBotHitLeft, 1),
         };
 
         this._resources = new Resources(images, audio, animations);

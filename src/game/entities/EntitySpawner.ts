@@ -74,14 +74,14 @@ export class EntitySpawner extends Entity {
 
     private static createFastEnemy(location: Vector, context: IGameContext) {
         let animations = {
-            standLeft: context.resources.animations.runnerBotStandLeft,
-            standRight: context.resources.animations.runnerBotStandRight,
-            walkLeft: context.resources.animations.runnerBotWalkLeft,
-            walkRight: context.resources.animations.runnerBotWalkRight,
-            jumpLeft: context.resources.animations.runnerBotJumpLeft,
-            jumpRight: context.resources.animations.runnerBotJumpRight,
-            hitLeft: context.resources.animations.runnerBotHitLeft,
-            hitRight: context.resources.animations.runnerBotHitRight,
+            standLeft: context.resources.animations.fastBotStandLeft,
+            standRight: context.resources.animations.fastBotStandRight,
+            walkLeft: context.resources.animations.fastBotWalkLeft,
+            walkRight: context.resources.animations.fastBotWalkRight,
+            jumpLeft: context.resources.animations.fastBotJumpLeft,
+            jumpRight: context.resources.animations.fastBotJumpRight,
+            hitLeft: context.resources.animations.fastBotHitLeft,
+            hitRight: context.resources.animations.fastBotHitRight,
         };
 
         let enemy = new EnemyEntity(location, animations, context);
