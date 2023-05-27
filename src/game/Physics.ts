@@ -36,6 +36,7 @@ export class PhyicalObject {
     private readonly _context: CollisionContext;
     private _onGround = false;
     private _onGroundTime = 0;
+    private _groundedThisUpdate = false;
     private _lastCollisions = new Array<CollisionResult>();
 
     public constructor(entity: Entity, velocity: Vector, context: CollisionContext, entityFilter?: EntityCollisionFilter) {
@@ -53,7 +54,9 @@ export class PhyicalObject {
             }
         }
 
+        let wasOnGround = this._onGround;
         this._onGround = false;
+        this._groundedThisUpdate = false;
         this._lastCollisions = new Array<CollisionResult>();
 
         if (this.velocity.x != 0) {
@@ -106,6 +109,10 @@ export class PhyicalObject {
                             newY = collision.bounds.y - this.height;
                             this._onGround = true;
                             this._onGroundTime = time.currentTime;
+
+                            if (!wasOnGround) {
+                                this._groundedThisUpdate = true;
+                            }
                         }
                         break;
                     }
@@ -223,6 +230,7 @@ export class PhyicalObject {
     public get height() { return this.entity.size.height; }
     public get onGround() { return this._onGround; }
     public get onGroundTime() { return this._onGroundTime; }
+    public get groundedThisUpdate() { return this._groundedThisUpdate; }
 
     public get lastCollisions() { return this._lastCollisions; }
 }

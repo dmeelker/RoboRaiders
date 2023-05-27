@@ -18,6 +18,7 @@ export class EnemyEntity extends Entity {
     public gravityOverride?: Vector;
     private _lastHitTime = -1000;
     private _renderOffset = new Vector(0, 0);
+    public heavy = false;
 
     public constructor(location: Vector, animations: ActorAnimations, gameContext: IGameContext) {
         super(location, new Size(animations.standLeft.frames[0].width, animations.standLeft.frames[0].height), gameContext);
@@ -38,6 +39,10 @@ export class EnemyEntity extends Entity {
         this.physics.gravityVector = this.gravityOverride || PhyicalObject.defaultGravity;
 
         this.physics.update(time);
+
+        if (this.heavy && this.physics.groundedThisUpdate) {
+            this.context.viewport.shakeLight(time);
+        }
 
         if (this.physics.lastCollisions.filter(c => c.axis == Axis.X && !c.passable).length > 0) {
             this.turn();

@@ -43,15 +43,13 @@ export class EntitySpawner extends Entity {
             EntitySpawner.createBasicEnemy
         ];
 
-        // if (this.context.difficulty > 0.3) {
-        //     availableTypes.push(EntitySpawner.createLargeEnemy);
-        // }
+        if (this.context.difficulty > 0.3) {
+            availableTypes.push(EntitySpawner.createLargeEnemy);
+        }
 
-        // if (this.context.difficulty > 0.5) {
-        //     availableTypes.push(EntitySpawner.createFastEnemy);
-        // }
-
-        availableTypes.push(EntitySpawner.createLargeEnemy);
+        if (this.context.difficulty > 0.5) {
+            availableTypes.push(EntitySpawner.createFastEnemy);
+        }
 
         return availableTypes;
     }
@@ -107,6 +105,7 @@ export class EntitySpawner extends Entity {
         let enemy = new EnemyEntity(location, animations, context);
         enemy.hitpoints = 20;
         enemy.speed = 100;
+        enemy.heavy = true;
         return enemy;
     }
 
