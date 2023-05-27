@@ -41,6 +41,7 @@ export class MachineGunWeapon extends Weapon {
         let offset = direction.x > 0 ? new Vector(this._size.width, 0) : new Vector(this._size.width * -1, 0);
         let velocity = this.getSpreadVector(direction).toUnit().multiplyScalar(600);
         let projectile = new ProjectileEntity(location.add(offset), velocity, time, context);
+        projectile.power = 1;
         context.entityManager.add(projectile);
     }
 

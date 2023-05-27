@@ -19,7 +19,7 @@ export class PistolWeapon extends Weapon {
     public fireSingleShot(location: Vector, direction: Vector, context: IGameContext, time: FrameTime): void {
         let offset = direction.x > 0 ? new Vector(this._size.width, 3) : new Vector(this._size.width * -1, 3);
         let projectile = new ProjectileEntity(location.add(offset), direction.toUnit().multiplyScalar(600), time, context);
-        projectile.power = 2;
+        projectile.power = 1;
         context.entityManager.add(projectile);
     }
 

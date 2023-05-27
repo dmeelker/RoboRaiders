@@ -64,7 +64,16 @@ export interface AnimationResources {
     runnerBotJumpRight: AnimationDefinition,
     runnerBotJumpLeft: AnimationDefinition
     runnerBotHitRight: AnimationDefinition,
-    runnerBotHitLeft: AnimationDefinition
+    runnerBotHitLeft: AnimationDefinition,
+
+    rollerBotStandRight: AnimationDefinition,
+    rollerBotStandLeft: AnimationDefinition,
+    rollerBotWalkRight: AnimationDefinition,
+    rollerBotWalkLeft: AnimationDefinition,
+    rollerBotJumpRight: AnimationDefinition,
+    rollerBotJumpLeft: AnimationDefinition,
+    rollerBotHitRight: AnimationDefinition,
+    rollerBotHitLeft: AnimationDefinition,
 }
 
 export class Resources {
@@ -159,6 +168,15 @@ class Main {
             runnerBotJumpLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("runner_bot_jump_left.png"), 1, 1),
             runnerBotHitRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("runner_bot_hit_right.png"), 1, 1),
             runnerBotHitLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("runner_bot_hit_left.png"), 1, 1),
+
+            rollerBotStandRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("roller_bot_stand_right.png"), 1, 1),
+            rollerBotStandLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("roller_bot_stand_left.png"), 1, 1),
+            rollerBotWalkRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("roller_bot_walk_right.png"), 2, 1),
+            rollerBotWalkLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("roller_bot_walk_left.png"), 2, 1),
+            rollerBotJumpRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("roller_bot_jump_right.png"), 1, 1),
+            rollerBotJumpLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("roller_bot_jump_left.png"), 1, 1),
+            rollerBotHitRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("roller_bot_hit_right.png"), 1, 1),
+            rollerBotHitLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("roller_bot_hit_left.png"), 1, 1),
         };
 
         const soundLoader = new AudioLoader("assets/sounds");
@@ -189,6 +207,15 @@ class Main {
             runnerBotJumpLeft: new AnimationDefinition(images.runnerBotJumpLeft, 1),
             runnerBotHitRight: new AnimationDefinition(images.runnerBotHitRight, 1),
             runnerBotHitLeft: new AnimationDefinition(images.runnerBotHitLeft, 1),
+
+            rollerBotStandRight: new AnimationDefinition(images.rollerBotStandRight, 1),
+            rollerBotStandLeft: new AnimationDefinition(images.rollerBotStandLeft, 1),
+            rollerBotWalkRight: new AnimationDefinition(images.rollerBotWalkRight, 150),
+            rollerBotWalkLeft: new AnimationDefinition(images.rollerBotWalkLeft, 150),
+            rollerBotJumpRight: new AnimationDefinition(images.rollerBotJumpRight, 1),
+            rollerBotJumpLeft: new AnimationDefinition(images.rollerBotJumpLeft, 1),
+            rollerBotHitRight: new AnimationDefinition(images.rollerBotHitRight, 1),
+            rollerBotHitLeft: new AnimationDefinition(images.rollerBotHitLeft, 1),
         };
 
         this._resources = new Resources(images, audio, animations);

@@ -23,6 +23,15 @@ convert("runner-robot", "JumpRight", "runner_bot_jump_right");
 convert("runner-robot", "HitRight", "runner_bot_hit_right");
 convert("runner-robot", "HitLeft", "runner_bot_hit_left");
 
+convert("roller-robot", "StandLeft", "roller_bot_stand_left");
+convert("roller-robot", "StandRight", "roller_bot_stand_right");
+convert("roller-robot", "WalkLeft", "roller_bot_walk_left");
+convert("roller-robot", "WalkRight", "roller_bot_walk_right");
+convert("roller-robot", "JumpLeft", "roller_bot_jump_left");
+convert("roller-robot", "JumpRight", "roller_bot_jump_right");
+convert("roller-robot", "HitRight", "roller_bot_hit_right");
+convert("roller-robot", "HitLeft", "roller_bot_hit_left");
+
 convert("crate", null, "crate");
 
 convert("weapons/bullet");

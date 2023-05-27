@@ -43,13 +43,15 @@ export class EntitySpawner extends Entity {
             EntitySpawner.createBasicEnemy
         ];
 
-        if (this.context.difficulty > 0.3) {
-            availableTypes.push(EntitySpawner.createLargeEnemy);
-        }
+        // if (this.context.difficulty > 0.3) {
+        //     availableTypes.push(EntitySpawner.createLargeEnemy);
+        // }
 
-        if (this.context.difficulty > 0.5) {
-            availableTypes.push(EntitySpawner.createFastEnemy);
-        }
+        // if (this.context.difficulty > 0.5) {
+        //     availableTypes.push(EntitySpawner.createFastEnemy);
+        // }
+
+        availableTypes.push(EntitySpawner.createLargeEnemy);
 
         return availableTypes;
     }
@@ -92,19 +94,19 @@ export class EntitySpawner extends Entity {
 
     private static createLargeEnemy(location: Vector, context: IGameContext) {
         let animations = {
-            standLeft: context.resources.animations.runnerBotStandLeft,
-            standRight: context.resources.animations.runnerBotStandRight,
-            walkLeft: context.resources.animations.runnerBotWalkLeft,
-            walkRight: context.resources.animations.runnerBotWalkRight,
-            jumpLeft: context.resources.animations.runnerBotJumpLeft,
-            jumpRight: context.resources.animations.runnerBotJumpRight,
-            hitLeft: context.resources.animations.runnerBotHitLeft,
-            hitRight: context.resources.animations.runnerBotHitRight,
+            standLeft: context.resources.animations.rollerBotStandLeft,
+            standRight: context.resources.animations.rollerBotStandRight,
+            walkLeft: context.resources.animations.rollerBotWalkLeft,
+            walkRight: context.resources.animations.rollerBotWalkRight,
+            jumpLeft: context.resources.animations.rollerBotJumpLeft,
+            jumpRight: context.resources.animations.rollerBotJumpRight,
+            hitLeft: context.resources.animations.rollerBotHitLeft,
+            hitRight: context.resources.animations.rollerBotHitRight,
         };
 
         let enemy = new EnemyEntity(location, animations, context);
-        enemy.hitpoints = 15;
-        enemy.speed = 150;
+        enemy.hitpoints = 20;
+        enemy.speed = 100;
         return enemy;
     }
 

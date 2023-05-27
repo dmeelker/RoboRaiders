@@ -17,3 +17,5 @@
 - Enemy types
  - Charger
  - Flyer
+- Sound effects
+- Music
