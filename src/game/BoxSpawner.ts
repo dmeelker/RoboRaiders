@@ -38,7 +38,9 @@ export class BoxSpawner {
     private isValidBoxLocation(location: Vector): boolean {
         let boxRect = new Rectangle(location.x, location.y, BoxEntity.size.width, BoxEntity.size.height);
 
-
+        if (this._context.level.blocks.filter(b => b.overlaps(boxRect)).length > 0) {
+            return false;
+        }
 
         for (let player of this._context.entityManager.getOfType(PlayerEntity)) {
             let distance = player.centerLocation.distanceTo(boxRect.center);
