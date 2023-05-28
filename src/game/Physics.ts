@@ -1,5 +1,6 @@
 import { FrameTime } from "../utilities/FrameTime";
 import { Rectangle, Vector } from "../utilities/Trig";
+import { Viewport } from "../utilities/Viewport";
 import { Level } from "./Level";
 import { Entity } from "./entities/Entity";
 import { EntityManager } from "./entities/EntityManager";
@@ -144,6 +145,29 @@ export class PhyicalObject {
         }
     }
 
+    public debugRender(viewport: Viewport) {
+        viewport.context.fillStyle = "green";
+        viewport.context.fillRect(Math.floor(this.entity.location.x), Math.floor(this.entity.location.y), this.width, this.height);
+
+        viewport.context.fillStyle = "red";
+        for (let point of this.getLeftCollisionPoints(this.entity.location)) {
+            viewport.context.fillRect(Math.floor(point.x), Math.floor(point.y), 1, 1);
+        }
+        for (let point of this.getRightCollisionPoints(this.entity.location)) {
+            viewport.context.fillRect(Math.floor(point.x), Math.floor(point.y), 1, 1);
+        }
+
+        viewport.context.fillStyle = "blue";
+
+        for (let point of this.getBottomCollisionPoints(this.entity.location)) {
+            viewport.context.fillRect(Math.floor(point.x), Math.floor(point.y), 1, 1);
+        }
+
+        for (let point of this.getTopCollisionPoints(this.entity.location)) {
+            viewport.context.fillRect(Math.floor(point.x), Math.floor(point.y), 1, 1);
+        }
+    }
+
     private readonly _collisionGranularity = 5;
 
     private getTopCollisionPoints(location: Vector): Array<Vector> {
@@ -173,9 +197,10 @@ export class PhyicalObject {
     }
 
     private getPointsToCheck(start: Vector, step: Vector, length: number): Array<Vector> {
+        length = Math.ceil(length);
         let location = start;
         let result = new Array<Vector>();
-        let steps = Math.floor(length / step.length);
+        let steps = Math.floor((length - 1) / step.length);
 
         for (let i = 0; i <= steps; i++) {
             result.push(location);
