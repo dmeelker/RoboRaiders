@@ -58,6 +58,7 @@ convert("weapons/gravity_grenade", "Unarmed", "weapons/gravity_grenade_unarmed")
 convert("weapons/gravity_grenade", "Armed", "weapons/gravity_grenade_armed");
 
 convertLevel("level1");
+convertLevel("level2");
 
 function convert(fileName, tag, outputName) {
     outputName ??= fileName;

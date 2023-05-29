@@ -27,6 +27,8 @@ export class EntitySpawner extends Entity {
     public spawnEnemy(time: FrameTime) {
         let enemy = this.createRandomEnemy(this.centerLocation);
         enemy.facing = this.randomFacing();
+        enemy.location.x = this.location.y;
+        enemy.location.x = this.centerLocation.x - (enemy.width / 2);
 
         this.context.entityManager.add(enemy);
         this._lastSpawnTime = time.currentTime;
@@ -86,7 +88,7 @@ export class EntitySpawner extends Entity {
 
         let enemy = new EnemyEntity(location, animations, context);
         enemy.hitpoints = 5;
-        enemy.speed = 300;
+        enemy.speed = 250;
         return enemy;
     }
 

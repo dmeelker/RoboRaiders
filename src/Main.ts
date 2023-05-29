@@ -153,6 +153,7 @@ class Main {
 
             levels: {
                 level1: await this.loadLevelImages("level1", imageLoader),
+                level2: await this.loadLevelImages("level2", imageLoader),
             },
 
             player1StandRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player1_stand_right.png"), 1, 1),

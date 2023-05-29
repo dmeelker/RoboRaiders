@@ -72,7 +72,7 @@ export class Game implements IGameContext {
         this._time = time;
         this._score = 0;
 
-        this.loadLevel("level1");
+        this.loadLevel("level2");
 
         for (let player of this._players) {
             this._entities.add(player.entity);
