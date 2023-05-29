@@ -21,6 +21,28 @@ body {
     text-shadow: #12121c 1px 1px 1px;
 }
 
+.highscore {
+    color: gold;
+}
+
+.pulse {
+    animation: pulse 0.2s;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1, 1);
+    }
+
+    100% {
+        transform: scale(1.5, 1.5);
+    }
+}
+
+.text-s {
+    font-size: 1rem;
+}
+
 .text-m {
     font-size: 2rem;
 }

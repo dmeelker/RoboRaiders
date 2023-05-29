@@ -21,7 +21,7 @@ export class LevelLoader {
         let playerSpawns = this.loadPlayerSpawnLocations(blocks);
 
         this._game.setLevel(
-            new Level(new Trig.Size(640, 480), collisionBlocks, playerSpawns),
+            new Level(level, new Trig.Size(640, 480), collisionBlocks, playerSpawns),
             images.backdrop,
             images.overlay);
 

@@ -36,7 +36,18 @@ export function center(element: HTMLElement) {
 }
 
 export function clear(element: HTMLElement) {
-    while (element.lastElementChild) {
-        element.removeChild(element.lastElementChild);
-    }
+    element.innerHTML = "";
+}
+
+export function createDiv(text: string) {
+    let element = document.createElement("div");
+    element.innerHTML = text;
+    return element;
+}
+
+export function setClass(element: HTMLElement, className: string, set: boolean) {
+    if (set)
+        element.classList.add(className);
+    else
+        element.classList.remove(className);
 }

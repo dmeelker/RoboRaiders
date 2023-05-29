@@ -3,12 +3,14 @@ import { Viewport } from "../utilities/Viewport";
 
 export class Level {
     private _blocks = new Array<Rectangle>();
+    public readonly name: string;
     private readonly _size: Size;
     private readonly _bounds: Rectangle;
     private readonly _itemSpawnAreas: Array<Rectangle>;
     private readonly _playerSpawnLocations: Array<Vector>;
 
-    public constructor(size: Size, blocks: Array<Rectangle>, playerSpawnLocations: Array<Vector>) {
+    public constructor(name: string, size: Size, blocks: Array<Rectangle>, playerSpawnLocations: Array<Vector>) {
+        this.name = name;
         this._size = size;
         this._bounds = new Rectangle(0, 0, size.width, size.height);
         this._playerSpawnLocations = playerSpawnLocations;
