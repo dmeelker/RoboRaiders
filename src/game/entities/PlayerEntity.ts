@@ -34,6 +34,8 @@ export interface PlayerAnimation {
     jumpRight: AnimationDefinition,
 }
 
+type WeaponFactory = (gameContext: IGameContext) => Weapon;
+
 export class PlayerEntity extends Entity {
     public physics: PhyicalObject;
     private _facing = Facing.Left;
@@ -48,14 +50,21 @@ export class PlayerEntity extends Entity {
 
 
     private _dead = false;
-    private _availableWeapons: Array<Weapon>;
+    private _availableWeapons: Array<WeaponFactory>;
 
     private _animator: ActorAnimator;
     private _animations: ActorAnimations;
 
     public constructor(location: Vector, _player: Player, index: number, gameContext: IGameContext) {
         super(location, new Size(32, 34), gameContext);
-        this._availableWeapons = [new PistolWeapon(gameContext), new MachineGunWeapon(gameContext), new ShotgunWeapon(gameContext), new RpgWeapon(gameContext), new RailgunWeapon(gameContext), new GravityGrenadeWeapon(gameContext)];
+        this._availableWeapons = [
+            () => new PistolWeapon(gameContext),
+            () => new MachineGunWeapon(gameContext),
+            () => new ShotgunWeapon(gameContext),
+            () => new RpgWeapon(gameContext),
+            () => new RailgunWeapon(gameContext),
+            () => new GravityGrenadeWeapon(gameContext)];
+
         this._weapon = new PistolWeapon(gameContext);
 
         this._weaponNameLabel = document.createElement("div");
@@ -127,12 +136,13 @@ export class PlayerEntity extends Entity {
     }
 
     private randomWeapon() {
-        let originalWeapon = this._weapon;
+        let newWeapon: Weapon;
 
-        while (this._weapon == originalWeapon) {
-            this._weapon = randomArrayElement(this._availableWeapons);
-        }
+        do {
+            newWeapon = randomArrayElement(this._availableWeapons)(this.context);
+        } while (this._weapon.name == newWeapon.name);
 
+        this._weapon = newWeapon;
         this._weaponEquipTime = this.context.time.currentTime;
         this._weaponNameLabel.innerText = this._weapon.name;
     }
