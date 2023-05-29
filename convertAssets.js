@@ -73,6 +73,7 @@ function convertLevel(fileName) {
     convertBackground(fileName, fileName + "_background");
     extractLayer(fileName, fileName + "_overlay", "Overlay");
     extractLayer(fileName, fileName + "_metadata", "Metadata");
+    generateLevelThumbnail(fileName);
 }
 
 function extractLayer(fileName, outputName, layer) {
@@ -83,4 +84,11 @@ function extractLayer(fileName, outputName, layer) {
 function convertBackground(fileName, outputName) {
     console.log(`Converting ${fileName}`);
     execSync(`aseprite -b assets/${fileName}.aseprite --ignore-layer Overlay --ignore-layer Metadata --save-as public/assets/gfx/${outputName}.png`);
+}
+
+function generateLevelThumbnail(fileName) {
+    let outputName = fileName + "_thumbnail";
+    console.log(`Generating ${fileName} [thumbnail]`);
+    execSync(`aseprite -b assets/${fileName}.aseprite --ignore-layer Metadata --scale .5 --save-as public/assets/gfx/${outputName}.png`);
+
 }

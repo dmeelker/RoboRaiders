@@ -1,8 +1,8 @@
 [x] Increasing level difficulty
 [x] Game over screen
+[x] Enemy graphics
+[x] High scores
 
-- Enemy graphics
-- High scores
 - Home screen
 - Weapon unlocks
 - Multiplayer modes

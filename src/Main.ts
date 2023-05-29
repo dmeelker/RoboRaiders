@@ -14,6 +14,8 @@ import { AudioLoader } from "./utilities/AudioLoader";
 import { SpriteSheetLoader } from "./utilities/SpriteSheetLoader";
 import { AnimationDefinition } from "./utilities/Animation";
 import { InputProvider } from "./input/InputProvider";
+import { LevelSelectionScreen } from "./LevelSelectionScreen";
+import { LevelDefinition } from "./game/Levels";
 
 export interface ImageResources {
     crate: ImageBitmap,
@@ -36,6 +38,7 @@ export interface LevelImages {
     backdrop: ImageBitmap;
     overlay: ImageBitmap;
     metadata: ImageBitmap;
+    thumbnail: ImageBitmap;
 }
 
 export interface AudioResources {
@@ -97,10 +100,37 @@ export interface Inputs {
     player2: InputProvider
 }
 
+export interface IScreens {
+    showLevelSelect(time: FrameTime): void;
+    playGame(level: LevelDefinition, time: FrameTime): void;
+}
+
+export class Screens implements IScreens {
+    public readonly screenManager: ScreenManager;
+    public readonly levelSelection: LevelSelectionScreen;
+    public readonly game: GameScreen;
+
+    public constructor(viewport: Viewport, resources: Resources, inputs: Inputs, time: FrameTime) {
+        this.levelSelection = new LevelSelectionScreen(viewport, resources, inputs, this);
+        this.game = new GameScreen(viewport, resources, inputs, this);
+
+        this.screenManager = new ScreenManager(this.levelSelection, time);
+    }
+
+    public showLevelSelect(time: FrameTime) {
+        this.screenManager.changeScreen(this.levelSelection, time);
+    }
+
+    public playGame(level: LevelDefinition, time: FrameTime): void {
+        this.game.loadLevel(level, time);
+        this.screenManager.changeScreen(this.game, time);
+    }
+}
+
 class Main {
     private _container: HTMLElement = null!;
     private _viewport: Viewport = null!;
-    private _screenManager: ScreenManager = null!;
+    private _screens: Screens = null!;
     private _fpsCounter = new FrameCounter();
     private _lastFrameTime = 0;
 
@@ -131,8 +161,7 @@ class Main {
 
         this._viewport = new Viewport(new Size(640, 480), this._container);
 
-        const testScreen = new GameScreen(this._viewport, this._resources, this._inputs);
-        this._screenManager = new ScreenManager(testScreen, new FrameTime(0, 0));
+        this._screens = new Screens(this._viewport, this._resources, this._inputs, new FrameTime(0, 0));
     }
 
     private async loadResources() {
@@ -253,7 +282,8 @@ class Main {
         return {
             backdrop: await imageLoader.load(`levels/${name}_background.png`),
             overlay: await imageLoader.load(`levels/${name}_overlay.png`),
-            metadata: await imageLoader.load(`levels/${name}_metadata.png`)
+            metadata: await imageLoader.load(`levels/${name}_metadata.png`),
+            thumbnail: await imageLoader.load(`levels/${name}_thumbnail.png`),
         }
     }
 
@@ -265,11 +295,11 @@ class Main {
         let frameTime = new FrameTime(time, time - this._lastFrameTime);
 
         if (document.hasFocus() && !document.hidden) {
-            this._screenManager.update(frameTime);
+            this._screens.screenManager.update(frameTime);
         } else {
             document.title = `Paused`;
         }
-        this._screenManager.render();
+        this._screens.screenManager.render();
 
         this._keyboard.nextFrame();
         this._fpsCounter.frame();

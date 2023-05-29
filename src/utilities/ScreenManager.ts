@@ -1,4 +1,4 @@
-import { Inputs, Resources } from "../Main";
+import { IScreens, Inputs, Resources } from "../Main";
 import { FrameTime } from "./FrameTime";
 import { Viewport } from "./Viewport";
 
@@ -6,11 +6,13 @@ export abstract class Screen {
     protected readonly _viewport: Viewport;
     protected readonly _resources: Resources;
     protected readonly _inputs: Inputs;
+    protected readonly _screens: IScreens;
 
-    public constructor(viewport: Viewport, resources: Resources, inputs: Inputs) {
+    public constructor(viewport: Viewport, resources: Resources, inputs: Inputs, screens: IScreens) {
         this._viewport = viewport;
         this._resources = resources;
         this._inputs = inputs;
+        this._screens = screens;
     }
 
     public activate(_time: FrameTime): void { }

@@ -11,6 +11,7 @@ import { LevelLoader } from "./LevelLoader";
 import { BoxSpawner } from "./BoxSpawner";
 import * as Dom from "../utilities/Dom";
 import { Highscores } from "./Highscores";
+import { LevelDefinition } from "./Levels";
 
 export interface IGameContext {
     get time(): FrameTime;
@@ -33,6 +34,7 @@ export class Game implements IGameContext {
     private _startTime: number = 0;
     private _time: FrameTime = null!;
     private _level: Level = null!;
+    private _levelDefinition: LevelDefinition = null!;
     private _backdropImage: ImageBitmap = null!;
     private _overlayImage: ImageBitmap = null!;
 
@@ -56,7 +58,7 @@ export class Game implements IGameContext {
 
         this._scoreLabel.className = "ui-label text-m";
         this._scoreLabel.style.textAlign = "center";
-        this.viewport.uiElement.appendChild(this._scoreLabel);
+
 
         this._gameOverLabel.className = "ui-label text-l";
         this._gameOverLabel.style.textAlign = "center";
@@ -68,31 +70,41 @@ export class Game implements IGameContext {
         this._gameOverPanel.appendChild(this._gameOverLabel);
         this._gameOverPanel.appendChild(this._gameOverScoreLabel);
 
-        Dom.center(this._gameOverPanel);
+
+    }
+
+    public activate(time: FrameTime) {
+        // this._startTime = time.currentTime;
+        // this._time = time;
+        // this._score = 0;
+
+        this.viewport.uiElement.appendChild(this._scoreLabel);
         this.viewport.uiElement.appendChild(this._gameOverPanel);
+        Dom.center(this._gameOverPanel);
+
+        this.reset(time);
+
+        // this.loadLevel("level1");
+
+        // for (let player of this._players) {
+        //     this._entities.add(player.entity);
+        // }
+        // this._allPlayersDead = false;
+
+        // this.spawnBox();
+
+        // this.updateScoreLabel();
     }
 
-    public initialize(time: FrameTime) {
-        this._startTime = time.currentTime;
-        this._time = time;
-        this._score = 0;
-
-        this.loadLevel("level1");
-
-        for (let player of this._players) {
-            this._entities.add(player.entity);
-        }
-        this._allPlayersDead = false;
-        Dom.hide(this._gameOverPanel);
-
-        this.spawnBox();
-
-        this.updateScoreLabel();
+    public deactivate() {
+        this.viewport.uiElement.removeChild(this._scoreLabel);
+        this.viewport.uiElement.removeChild(this._gameOverPanel);
     }
 
-    public loadLevel(level: string) {
+    private loadLevelData(level: LevelDefinition) {
+        this._levelDefinition = level;
         let levelLoader = new LevelLoader(this);
-        levelLoader.loadLevel(level);
+        levelLoader.loadLevel(level.code);
 
         this._players = [
             new Player(this._level.playerSpawnLocations[0].clone(), this._inputs.player1, 0, this)];
@@ -152,10 +164,31 @@ export class Game implements IGameContext {
         this.reset(time);
     }
 
-    public reset(time: FrameTime) {
+    private reset(time: FrameTime) {
+        this.loadLevel(this._levelDefinition, time);
+    }
+
+    public loadLevel(level: LevelDefinition, time: FrameTime) {
         this._entities.clear();
         this._projectiles.clear();
-        this.initialize(time);
+
+        this._startTime = time.currentTime;
+        this._time = time;
+        this._score = 0;
+
+        Dom.hide(this._gameOverPanel);
+        Dom.center(this._gameOverPanel);
+
+        this.loadLevelData(level);
+
+        for (let player of this._players) {
+            this._entities.add(player.entity);
+        }
+        this._allPlayersDead = false;
+
+        this.spawnBox();
+
+        this.updateScoreLabel();
     }
 
     private updateScoreLabel() {
