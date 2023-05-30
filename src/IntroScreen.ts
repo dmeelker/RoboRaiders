@@ -1,4 +1,5 @@
-import { IScreens, Inputs, Resources } from "./Main";
+import { IScreens, Inputs } from "./Main";
+import { Resources } from "./Resources";
 import { FrameTime } from "./utilities/FrameTime";
 import { Screen } from "./utilities/ScreenManager";
 import { Viewport } from "./utilities/Viewport";

@@ -1,4 +1,4 @@
-import { Inputs, Resources } from "../Main";
+import { Inputs } from "../Main";
 import { FrameTime } from "../utilities/FrameTime";
 import { ParticleSystem } from "../utilities/Particles";
 import { Viewport } from "../utilities/Viewport";
@@ -11,6 +11,7 @@ import { LevelLoader } from "./LevelLoader";
 import { BoxSpawner } from "./BoxSpawner";
 import { Highscores } from "./Highscores";
 import { LevelDefinition } from "./Levels";
+import { Resources } from "../Resources";
 
 export interface IGameContext {
     get time(): FrameTime;

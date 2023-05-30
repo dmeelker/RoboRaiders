@@ -1,4 +1,4 @@
-import { IScreens, Inputs, Resources } from "./Main";
+import { IScreens, Inputs } from "./Main";
 import { LevelDefinition, levels } from "./game/Levels";
 import { Keys } from "./input/InputProvider";
 import { FrameTime } from "./utilities/FrameTime";
@@ -8,6 +8,7 @@ import { Rectangle, Vector } from "./utilities/Trig";
 import { Highscores } from "./game/Highscores";
 import { interpolate } from "./utilities/Math";
 import * as Easing from "./utilities/Easing";
+import { Resources } from "./Resources";
 
 export class LevelSelectionScreen extends Screen {
     private readonly _levels = levels;
