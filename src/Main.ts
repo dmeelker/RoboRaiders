@@ -155,6 +155,7 @@ class Main {
     private _inputs: Inputs;
     private _resources: Resources = null!;
 
+    private readonly _fpsLabel: HTMLDivElement = document.getElementById("fps-label");
     public constructor(container: HTMLElement) {
         this._container = container;
 
@@ -326,6 +327,7 @@ class Main {
 
         this._keyboard.nextFrame();
         this._fpsCounter.frame();
+        this._fpsLabel.innerText = `FPS: ${this._fpsCounter.fps}`;
         this._lastFrameTime = time;
 
         this.requestAnimationFrame();

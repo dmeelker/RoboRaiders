@@ -11,8 +11,6 @@ export class FrameCounter {
             this._lastFrameTime = now;
             this._fps = this._counter;
             this._counter = 0;
-
-            document.title = `FPS: ${this._fps}`;
         }
     }
 
