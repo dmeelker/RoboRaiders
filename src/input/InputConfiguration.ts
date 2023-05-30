@@ -8,9 +8,10 @@ export function createPlayer1InputProvider(keyboard: Keyboard, gamepadPoller: Ga
     input.addKeyboardBinding(Keys.MoveRight, "ArrowRight");
     input.addKeyboardBinding(Keys.MoveUp, "ArrowUp");
     input.addKeyboardBinding(Keys.MoveDown, "ArrowDown");
-    input.addKeyboardBinding(Keys.A, "Comma");
-    input.addKeyboardBinding(Keys.B, "Period");
+    input.addKeyboardBinding(Keys.A, "KeyZ");
+    input.addKeyboardBinding(Keys.B, "KeyX");
     input.addKeyboardBinding(Keys.Menu, "Escape");
+    input.addKeyboardBinding(Keys.Select, "Enter");
 
     input.addGamepadBinding(Keys.MoveLeft, 14);
     input.addGamepadBinding(Keys.MoveRight, 15);

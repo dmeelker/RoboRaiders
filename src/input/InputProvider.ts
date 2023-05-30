@@ -8,7 +8,8 @@ export enum Keys {
     MoveDown,
     A,
     B,
-    Menu
+    Menu,
+    Select,
 }
 
 export class InputProvider {

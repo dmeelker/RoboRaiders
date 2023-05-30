@@ -33,7 +33,7 @@ export class LevelSelectionScreen extends Screen {
             this.previousLevel(time);
         } else if (this.inputs.player1.wasButtonPressedInFrame(Keys.MoveRight)) {
             this.nextLevel(time);
-        } else if (this.inputs.player1.wasButtonPressedInFrame(Keys.A)) {
+        } else if (this.inputs.player1.wasButtonPressedInFrame(Keys.A) || this.inputs.player1.wasButtonPressedInFrame(Keys.Select)) {
             this._screens.playGame(this.selectedLevel, time);
         } else if (this.inputs.player1.wasButtonPressedInFrame(Keys.Menu)) {
             this._screens.showIntro(time);
