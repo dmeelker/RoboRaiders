@@ -112,6 +112,7 @@ export interface Inputs {
 }
 
 export interface IScreens {
+    showIntro(time: FrameTime): void;
     showLevelSelect(time: FrameTime, level?: LevelDefinition): void;
     playGame(level: LevelDefinition, time: FrameTime): void;
 }
@@ -127,6 +128,10 @@ export class Screens implements IScreens {
         this.game = new GameScreen(viewport, resources, inputs, this);
         this.intro = new IntroScreen(viewport, resources, inputs, this);
         this.screenManager = new ScreenManager(this.intro, time);
+    }
+
+    public showIntro(time: FrameTime) {
+        this.screenManager.changeScreen(this.intro, time);
     }
 
     public showLevelSelect(time: FrameTime, level?: LevelDefinition) {
@@ -268,6 +273,7 @@ class Main {
             levels: {
                 level1: await this.loadLevelImages("level1", imageLoader),
                 level2: await this.loadLevelImages("level2", imageLoader),
+                level3: await this.loadLevelImages("level3", imageLoader),
             },
 
             player1StandRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player1_stand_right.png")!), 1, 1),

@@ -34,6 +34,8 @@ export class LevelSelectionScreen extends Screen {
             this.nextLevel(time);
         } else if (this.inputs.player1.wasButtonPressedInFrame(Keys.A)) {
             this._screens.playGame(this.selectedLevel, time);
+        } else if (this.inputs.player1.wasButtonPressedInFrame(Keys.Menu)) {
+            this._screens.showIntro(time);
         }
 
         let timeSinceTransitionStart = time.currentTime - this._transitionTime;

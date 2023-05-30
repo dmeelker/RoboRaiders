@@ -6,5 +6,6 @@ export class LevelDefinition {
 
 export const levels = [
     new LevelDefinition("level1", "Temple"),
-    new LevelDefinition("level2", "Prototype")
+    new LevelDefinition("level2", "Prototype"),
+    new LevelDefinition("level3", "Platforms"),
 ];
