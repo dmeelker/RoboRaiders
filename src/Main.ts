@@ -155,7 +155,8 @@ class Main {
     private _inputs: Inputs;
     private _resources: Resources = null!;
 
-    private readonly _fpsLabel: HTMLDivElement = document.getElementById("fps-label");
+    private readonly _fpsLabel: HTMLElement = document.getElementById("fps-label")!;
+
     public constructor(container: HTMLElement) {
         this._container = container;
 
@@ -183,66 +184,132 @@ class Main {
 
     private async loadResources() {
         const imageLoader = new ImageLoader("assets/gfx");
+
+        let imageNames = [
+            "background.png",
+            "crate.png",
+            "weapons/bullet.png",
+            "weapons/pistol.png",
+            "weapons/machinegun.png",
+            "weapons/shotgun.png",
+            "weapons/rpg.png",
+            "weapons/rpg_grenade.png",
+            "weapons/railgun.png",
+            "weapons/railgun_loaded.png",
+            "weapons/dart.png",
+            "weapons/gravity_grenade_unarmed.png",
+            "weapons/gravity_grenade_armed.png",
+
+            "player1_stand_right.png",
+            "player1_walk_right.png",
+            "player1_jump_right.png",
+            "player1_stand_left.png",
+            "player1_walk_left.png",
+            "player1_jump_left.png",
+
+            "player2_stand_right.png",
+            "player2_walk_right.png",
+            "player2_jump_right.png",
+            "player2_stand_left.png",
+            "player2_walk_left.png",
+            "player2_jump_left.png",
+
+            "runner_bot_stand_right.png",
+            "runner_bot_stand_left.png",
+            "runner_bot_walk_right.png",
+            "runner_bot_walk_left.png",
+            "runner_bot_jump_right.png",
+            "runner_bot_jump_left.png",
+            "runner_bot_hit_right.png",
+            "runner_bot_hit_left.png",
+
+            "roller_bot_stand_right.png",
+            "roller_bot_stand_left.png",
+            "roller_bot_walk_right.png",
+            "roller_bot_walk_left.png",
+            "roller_bot_jump_right.png",
+            "roller_bot_jump_left.png",
+            "roller_bot_hit_right.png",
+            "roller_bot_hit_left.png",
+
+            "fast_bot_stand_right.png",
+            "fast_bot_stand_left.png",
+            "fast_bot_walk_right.png",
+            "fast_bot_walk_left.png",
+            "fast_bot_jump_right.png",
+            "fast_bot_jump_left.png",
+            "fast_bot_hit_right.png",
+            "fast_bot_hit_left.png",
+        ];
+
+        let imageTasks = new Map<string, Promise<ImageBitmap>>(); //imageNames.map(name => imageLoader.load(name));
+
+        for (let key of imageNames) {
+            imageTasks.set(key, imageLoader.load(key));
+        }
+
+        await Promise.all(imageTasks.values());
+
         let images = {
-            background: await imageLoader.load("background.png"),
-            crate: await imageLoader.load("crate.png"),
-            bullet: await imageLoader.load("weapons/bullet.png"),
-            pistol: await imageLoader.load("weapons/pistol.png"),
-            machinegun: await imageLoader.load("weapons/machinegun.png"),
-            shotgun: await imageLoader.load("weapons/shotgun.png"),
-            rpg: await imageLoader.load("weapons/rpg.png"),
-            rpgGrenade: await imageLoader.load("weapons/rpg_grenade.png"),
-            railgun: await imageLoader.load("weapons/railgun.png"),
-            railgunLoaded: await imageLoader.load("weapons/railgun_loaded.png"),
-            dart: await imageLoader.load("weapons/dart.png"),
-            gravityGrenadeUnarmed: await imageLoader.load("weapons/gravity_grenade_unarmed.png"),
-            gravityGrenadeArmed: await imageLoader.load("weapons/gravity_grenade_armed.png"),
+            background: await imageTasks.get("background.png")!,
+            crate: await imageTasks.get("crate.png")!,
+            bullet: await imageTasks.get("weapons/bullet.png")!,
+            pistol: await imageTasks.get("weapons/pistol.png")!,
+            machinegun: await imageTasks.get("weapons/machinegun.png")!,
+            shotgun: await imageTasks.get("weapons/shotgun.png")!,
+            rpg: await imageTasks.get("weapons/rpg.png")!,
+            rpgGrenade: await imageTasks.get("weapons/rpg_grenade.png")!,
+            railgun: await imageTasks.get("weapons/railgun.png")!,
+            railgunLoaded: await imageTasks.get("weapons/railgun_loaded.png")!,
+            dart: await imageTasks.get("weapons/dart.png")!,
+            gravityGrenadeUnarmed: await imageTasks.get("weapons/gravity_grenade_unarmed.png")!,
+            gravityGrenadeArmed: await imageTasks.get("weapons/gravity_grenade_armed.png")!,
 
             levels: {
                 level1: await this.loadLevelImages("level1", imageLoader),
                 level2: await this.loadLevelImages("level2", imageLoader),
             },
 
-            player1StandRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player1_stand_right.png"), 1, 1),
-            player1WalkRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player1_walk_right.png"), 4, 1),
-            player1JumpRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player1_jump_right.png"), 1, 1),
-            player1StandLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player1_stand_left.png"), 1, 1),
-            player1WalkLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player1_walk_left.png"), 4, 1),
-            player1JumpLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player1_jump_left.png"), 1, 1),
+            player1StandRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player1_stand_right.png")!), 1, 1),
+            player1WalkRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player1_walk_right.png")!), 4, 1),
+            player1JumpRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player1_jump_right.png")!), 1, 1),
+            player1StandLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player1_stand_left.png")!), 1, 1),
+            player1WalkLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player1_walk_left.png")!), 4, 1),
+            player1JumpLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player1_jump_left.png")!), 1, 1),
 
-            player2StandRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player2_stand_right.png"), 1, 1),
-            player2WalkRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player2_walk_right.png"), 4, 1),
-            player2JumpRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player2_jump_right.png"), 1, 1),
-            player2StandLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player2_stand_left.png"), 1, 1),
-            player2WalkLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player2_walk_left.png"), 4, 1),
-            player2JumpLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("player2_jump_left.png"), 1, 1),
+            player2StandRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player2_stand_right.png")!), 1, 1),
+            player2WalkRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player2_walk_right.png")!), 4, 1),
+            player2JumpRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player2_jump_right.png")!), 1, 1),
+            player2StandLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player2_stand_left.png")!), 1, 1),
+            player2WalkLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player2_walk_left.png")!), 4, 1),
+            player2JumpLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player2_jump_left.png")!), 1, 1),
 
-            runnerBotStandRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("runner_bot_stand_right.png"), 1, 1),
-            runnerBotStandLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("runner_bot_stand_left.png"), 1, 1),
-            runnerBotWalkRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("runner_bot_walk_right.png"), 4, 1),
-            runnerBotWalkLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("runner_bot_walk_left.png"), 4, 1),
-            runnerBotJumpRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("runner_bot_jump_right.png"), 1, 1),
-            runnerBotJumpLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("runner_bot_jump_left.png"), 1, 1),
-            runnerBotHitRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("runner_bot_hit_right.png"), 1, 1),
-            runnerBotHitLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("runner_bot_hit_left.png"), 1, 1),
+            runnerBotStandRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("runner_bot_stand_right.png")!), 1, 1),
+            runnerBotStandLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("runner_bot_stand_left.png")!), 1, 1),
+            runnerBotWalkRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("runner_bot_walk_right.png")!), 4, 1),
+            runnerBotWalkLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("runner_bot_walk_left.png")!), 4, 1),
+            runnerBotJumpRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("runner_bot_jump_right.png")!), 1, 1),
+            runnerBotJumpLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("runner_bot_jump_left.png")!), 1, 1),
+            runnerBotHitRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("runner_bot_hit_right.png")!), 1, 1),
+            runnerBotHitLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("runner_bot_hit_left.png")!), 1, 1),
 
-            rollerBotStandRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("roller_bot_stand_right.png"), 1, 1),
-            rollerBotStandLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("roller_bot_stand_left.png"), 1, 1),
-            rollerBotWalkRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("roller_bot_walk_right.png"), 2, 1),
-            rollerBotWalkLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("roller_bot_walk_left.png"), 2, 1),
-            rollerBotJumpRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("roller_bot_jump_right.png"), 1, 1),
-            rollerBotJumpLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("roller_bot_jump_left.png"), 1, 1),
-            rollerBotHitRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("roller_bot_hit_right.png"), 1, 1),
-            rollerBotHitLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("roller_bot_hit_left.png"), 1, 1),
+            rollerBotStandRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("roller_bot_stand_right.png")!), 1, 1),
+            rollerBotStandLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("roller_bot_stand_left.png")!), 1, 1),
+            rollerBotWalkRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("roller_bot_walk_right.png")!), 2, 1),
+            rollerBotWalkLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("roller_bot_walk_left.png")!), 2, 1),
+            rollerBotJumpRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("roller_bot_jump_right.png")!), 1, 1),
+            rollerBotJumpLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("roller_bot_jump_left.png")!), 1, 1),
+            rollerBotHitRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("roller_bot_hit_right.png")!), 1, 1),
+            rollerBotHitLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("roller_bot_hit_left.png")!), 1, 1),
 
-            fastBotStandRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("fast_bot_stand_right.png"), 1, 1),
-            fastBotStandLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("fast_bot_stand_left.png"), 1, 1),
-            fastBotWalkRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("fast_bot_walk_right.png"), 3, 1),
-            fastBotWalkLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("fast_bot_walk_left.png"), 3, 1),
-            fastBotJumpRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("fast_bot_jump_right.png"), 1, 1),
-            fastBotJumpLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("fast_bot_jump_left.png"), 1, 1),
-            fastBotHitRight: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("fast_bot_hit_right.png"), 1, 1),
-            fastBotHitLeft: await new SpriteSheetLoader().cutSpriteSheet(await imageLoader.load("fast_bot_hit_left.png"), 1, 1),
+            fastBotStandRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("fast_bot_stand_right.png")!), 1, 1),
+            fastBotStandLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("fast_bot_stand_left.png")!), 1, 1),
+            fastBotWalkRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("fast_bot_walk_right.png")!), 3, 1),
+            fastBotWalkLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("fast_bot_walk_left.png")!), 3, 1),
+            fastBotJumpRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("fast_bot_jump_right.png")!), 1, 1),
+            fastBotJumpLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("fast_bot_jump_left.png")!), 1, 1),
+            fastBotHitRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("fast_bot_hit_right.png")!), 1, 1),
+            fastBotHitLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("fast_bot_hit_left.png")!), 1, 1),
         };
 
         const soundLoader = new AudioLoader("assets/sounds");
