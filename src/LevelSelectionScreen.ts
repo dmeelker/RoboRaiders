@@ -73,7 +73,7 @@ export class LevelSelectionScreen extends Screen {
         let levelGraphics = this.resources.images.levels[level.code];
         let thumbnailRect = new Rectangle(centerLocation.x - (levelGraphics.thumbnail.width / 2), 170, levelGraphics.thumbnail.width, levelGraphics.thumbnail.height);
 
-        let shadowRect = thumbnailRect.translate(new Vector(2, 2));
+        let shadowRect = thumbnailRect.translate(new Vector(3, 3));
         this.viewport.context.fillStyle = "#00000088";
         this.viewport.context.fillRect(shadowRect.x, shadowRect.y, shadowRect.width, shadowRect.height);
 
