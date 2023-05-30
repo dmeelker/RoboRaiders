@@ -9,7 +9,6 @@ import { GravityGrenadeEntity } from "./entities/GravityGrenade";
 import { BoxEntity } from "./entities/BoxEntity";
 import { LevelLoader } from "./LevelLoader";
 import { BoxSpawner } from "./BoxSpawner";
-import * as Dom from "../utilities/Dom";
 import { Highscores } from "./Highscores";
 import { LevelDefinition } from "./Levels";
 
@@ -43,62 +42,21 @@ export class Game implements IGameContext {
     private _box: BoxEntity = null!;
     private _highScores = new Highscores();
 
-    private _allPlayersDeadTime = 0;
-    private _allPlayersDead = false;
-
-    private _scoreLabel = document.createElement("div");
-    private _gameOverPanel = document.createElement("div");
-    private _gameOverLabel = document.createElement("div");
-    private _gameOverScoreLabel = document.createElement("div");
+    private _showGameOverScreenTime = 0;
+    private _showGameOverScreen = false;
 
     public constructor(viewport: Viewport, resources: Resources, inputs: Inputs) {
         this._viewport = viewport;
         this._resources = resources;
         this._inputs = inputs;
-
-        this._scoreLabel.className = "ui-label text-m";
-        this._scoreLabel.style.textAlign = "center";
-
-
-        this._gameOverLabel.className = "ui-label text-l";
-        this._gameOverLabel.style.textAlign = "center";
-        this._gameOverLabel.innerHTML = "Game Over!";
-
-        this._gameOverScoreLabel.className = "ui-label text-s";
-        this._gameOverScoreLabel.style.textAlign = "center";
-
-        this._gameOverPanel.appendChild(this._gameOverLabel);
-        this._gameOverPanel.appendChild(this._gameOverScoreLabel);
-
-
     }
 
     public activate(time: FrameTime) {
-        // this._startTime = time.currentTime;
-        // this._time = time;
-        // this._score = 0;
-
-        this.viewport.uiElement.appendChild(this._scoreLabel);
-        this.viewport.uiElement.appendChild(this._gameOverPanel);
-        Dom.center(this._gameOverPanel);
-
         this.reset(time);
-
-        // this.loadLevel("level1");
-
-        // for (let player of this._players) {
-        //     this._entities.add(player.entity);
-        // }
-        // this._allPlayersDead = false;
-
-        // this.spawnBox();
-
-        // this.updateScoreLabel();
     }
 
     public deactivate() {
-        this.viewport.uiElement.removeChild(this._scoreLabel);
-        this.viewport.uiElement.removeChild(this._gameOverPanel);
+
     }
 
     private loadLevelData(level: LevelDefinition) {
@@ -126,37 +84,21 @@ export class Game implements IGameContext {
         }
 
         if (this._box.disposed) {
-            this.updateScoreLabel();
             this.spawnBox();
         }
 
-        if (!this._allPlayersDead && this._players.filter(p => !p.entity.dead).length == 0) {
-            this._allPlayersDead = true;
-            this._allPlayersDeadTime = time.currentTime;
-
-            this.showGameOver(time);
+        if (!this._showGameOverScreen && this._players.filter(p => !p.entity.dead).length == 0) {
+            this._showGameOverScreen = true;
+            this._showGameOverScreenTime = time.currentTime;
         }
 
-        if (this._allPlayersDead && time.currentTime - this._allPlayersDeadTime > 3000) {
+        if (this._showGameOverScreen && time.currentTime - this._showGameOverScreenTime > 3000) {
             this.gameOver(time);
         }
 
         this._entities.update(time);
         GravityGrenadeEntity.updateGravityPull(this);
         this._projectiles.update(time);
-    }
-
-    public showGameOver(time: FrameTime) {
-        let highscore = this._highScores.get(this._level.name);
-
-        if (highscore == null || this._score > highscore) {
-            this._gameOverScoreLabel.innerText = `${this._score} point, new highscore!`;
-        } else {
-            Dom.clear(this._gameOverScoreLabel);
-            this._gameOverScoreLabel.appendChild(Dom.createDiv(`Score: ${this._score}`));
-            this._gameOverScoreLabel.appendChild(Dom.createDiv(`High score: ${highscore}`));
-        }
-        Dom.show(this._gameOverPanel);
     }
 
     private gameOver(time: FrameTime) {
@@ -176,34 +118,18 @@ export class Game implements IGameContext {
         this._time = time;
         this._score = 0;
 
-        Dom.hide(this._gameOverPanel);
-        Dom.center(this._gameOverPanel);
-
         this.loadLevelData(level);
 
         for (let player of this._players) {
             this._entities.add(player.entity);
         }
-        this._allPlayersDead = false;
+        this._showGameOverScreen = false;
 
         this.spawnBox();
-
-        this.updateScoreLabel();
-    }
-
-    private updateScoreLabel() {
-        this._scoreLabel.innerText = this._score.toString();
-
-        this._scoreLabel.classList.add("pulse");
-        let highscore = this._highScores.get(this._level.name);
-        Dom.setClass(this._scoreLabel, "highscore", highscore == undefined || this._score > highscore);
-
-        window.setTimeout(() => this._scoreLabel.classList.remove("pulse"), 200);
     }
 
     public addPoint() {
         this._score++;
-        this.updateScoreLabel();
     }
 
     public render() {
@@ -216,6 +142,25 @@ export class Game implements IGameContext {
         this._projectiles.render(this.viewport);
 
         this.viewport.context.drawImage(this._overlayImage, 0, 0);
+
+        this.renderLabels();
+    }
+
+    private renderLabels() {
+        if (this._showGameOverScreen) {
+            let highscore = this._highScores.get(this._level.name);
+
+            this.resources.fonts.large.renderHCentered(this.viewport, "GAME OVER", 200, this.viewport.width);
+
+            if (highscore == null || this._score > highscore) {
+                this.resources.fonts.small.renderHCentered(this.viewport, `NEW HIGHSCORE ${this._score}!`, 250, this.viewport.width);
+            } else {
+                this.resources.fonts.small.renderHCentered(this.viewport, `SCORE: ${this._score}`, 250, this.viewport.width);
+                this.resources.fonts.small.renderHCentered(this.viewport, `HIGH SCORE: ${highscore}`, 270, this.viewport.width);
+            }
+        } else {
+            this.resources.fonts.default.renderHCentered(this.viewport, this._score.toString(), 10, this.viewport.width);
+        }
     }
 
     public get time() { return this._time; }

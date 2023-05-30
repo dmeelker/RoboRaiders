@@ -16,6 +16,7 @@ import { AnimationDefinition } from "./utilities/Animation";
 import { InputProvider } from "./input/InputProvider";
 import { LevelSelectionScreen } from "./LevelSelectionScreen";
 import { LevelDefinition } from "./game/Levels";
+import { Font } from "./Font";
 
 export interface ImageResources {
     background: ImageBitmap,
@@ -90,11 +91,18 @@ export interface AnimationResources {
     fastBotHitLeft: AnimationDefinition,
 }
 
+export interface Fonts {
+    small: Font;
+    default: Font;
+    large: Font;
+}
+
 export class Resources {
     public constructor(
         public readonly images: ImageResources,
         public readonly audio: AudioResources,
-        public readonly animations: AnimationResources) { }
+        public readonly animations: AnimationResources,
+        public readonly fonts: Fonts) { }
 }
 
 export interface Inputs {
@@ -282,7 +290,13 @@ class Main {
             fastBotHitLeft: new AnimationDefinition(images.fastBotHitLeft, 1),
         };
 
-        this._resources = new Resources(images, audio, animations);
+        let fonts = {
+            small: new Font(await imageLoader.load("font_small.png"), 1),
+            default: new Font(await imageLoader.load("font_default.png"), 2),
+            large: new Font(await imageLoader.load("font_large.png"), 3),
+        };
+
+        this._resources = new Resources(images, audio, animations, fonts);
     }
 
     private async loadLevelImages(name: string, imageLoader: ImageLoader): Promise<LevelImages> {

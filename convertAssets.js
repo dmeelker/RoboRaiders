@@ -60,6 +60,10 @@ convert("weapons/gravity_grenade", "Armed", "weapons/gravity_grenade_armed");
 convertLevel("level1");
 convertLevel("level2");
 
+scale("font", 1, "font_small");
+scale("font", 2, "font_default");
+scale("font", 3, "font_large");
+
 function convert(fileName, tag, outputName) {
     outputName ??= fileName;
     let tagSegment = tag ? `--frame-tag ${tag}` : "";
@@ -90,5 +94,9 @@ function generateLevelThumbnail(fileName) {
     let outputName = fileName + "_thumbnail";
     console.log(`Generating ${fileName} [thumbnail]`);
     execSync(`aseprite -b assets/${fileName}.aseprite --ignore-layer Metadata --scale .5 --save-as public/assets/gfx/${outputName}.png`);
+}
 
+function scale(fileName, scale, outputName) {
+    console.log(`Scaling ${fileName} [${scale}]`);
+    execSync(`aseprite -b assets/${fileName}.aseprite --scale ${scale} --save-as public/assets/gfx/${outputName}.png`);
 }

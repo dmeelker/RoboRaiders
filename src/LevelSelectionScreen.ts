@@ -13,30 +13,14 @@ export class LevelSelectionScreen extends Screen {
     private _selectedLevelIndex = 0;
     private _highscores = new Highscores();
 
-    private _nameLabel = document.createElement("div");
-    private _highscoreLabel = document.createElement("div");
 
     public constructor(viewport: Viewport, resources: Resources, inputs: Inputs, screens: IScreens) {
         super(viewport, resources, inputs, screens);
-
-        this._nameLabel.className = "ui-label text-l";
-        this._nameLabel.style.textAlign = "center";
-
-        this._highscoreLabel.className = "ui-label text-s";
-        this._highscoreLabel.style.textAlign = "center";
     }
 
     public activate(time: FrameTime): void {
         this._highscores.load();
-
-        this.viewport.uiElement.appendChild(this._nameLabel);
-        this.viewport.uiElement.appendChild(this._highscoreLabel);
         this.selectLevel(this._levels[0]);
-    }
-
-    public deactivate(time: FrameTime): void {
-        this.viewport.uiElement.removeChild(this._nameLabel);
-        this.viewport.uiElement.removeChild(this._highscoreLabel);
     }
 
     public update(time: FrameTime): void {
@@ -53,6 +37,14 @@ export class LevelSelectionScreen extends Screen {
 
     public render(): void {
         this.viewport.context.drawImage(this.resources.images.background, 0, 0);
+
+        this.resources.fonts.large.renderHCentered(this.viewport, this.selectedLevel.name.toUpperCase(), 20, this.viewport.width);
+
+
+        let highscore = this._highscores.get(this.selectedLevel.code);
+        if (highscore) {
+            this.resources.fonts.small.renderHCentered(this.viewport, `HIGHSCORE ${highscore}`, 70, this.viewport.width);
+        }
 
         let levelGraphics = this.resources.images.levels[this.selectedLevel.code];
         let thumbnailRect = new Rectangle(Align.center(this.viewport.width, levelGraphics.thumbnail.width), 100, levelGraphics.thumbnail.width, levelGraphics.thumbnail.height);
@@ -82,14 +74,6 @@ export class LevelSelectionScreen extends Screen {
 
     public selectLevel(level: LevelDefinition) {
         this._selectedLevelIndex = this._levels.indexOf(level);
-        this._nameLabel.innerText = this.selectedLevel.name;
-
-        let highscore = this._highscores.get(this.selectedLevel.code);
-        if (highscore) {
-            this._highscoreLabel.innerText = `Highscore: ${highscore}`;
-        } else {
-            this._highscoreLabel.innerText = "";
-        }
     }
 
     private get selectedLevel() {
