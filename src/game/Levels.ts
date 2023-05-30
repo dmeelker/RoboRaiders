@@ -5,6 +5,6 @@ export class LevelDefinition {
 }
 
 export const levels = [
-    new LevelDefinition("level1", "Cave"),
+    new LevelDefinition("level1", "Temple"),
     new LevelDefinition("level2", "Prototype")
 ];

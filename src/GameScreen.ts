@@ -24,7 +24,7 @@ export class GameScreen extends Screen {
         this.viewport.update(time);
 
         if (this.inputs.player1.wasButtonPressedInFrame(Keys.Menu)) {
-            this._screens.showLevelSelect(time);
+            this._screens.showLevelSelect(time, this._game.levelDefinition);
         }
     }
 

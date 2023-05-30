@@ -227,6 +227,8 @@ export class Game implements IGameContext {
     public get runTime() { return this._time.currentTime - this._startTime; }
     public get difficulty() { return Math.min(this._score / 50, 1); }
 
+    public get levelDefinition() { return this._levelDefinition; }
+
     public setLevel(level: Level, backdrop: ImageBitmap, overlay: ImageBitmap) {
         this._level = level;
         this._backdropImage = backdrop;

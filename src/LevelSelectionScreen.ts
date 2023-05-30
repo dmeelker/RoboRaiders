@@ -1,11 +1,11 @@
 import { IScreens, Inputs, Resources } from "./Main";
-import { levels } from "./game/Levels";
+import { LevelDefinition, levels } from "./game/Levels";
 import { Keys } from "./input/InputProvider";
 import { FrameTime } from "./utilities/FrameTime";
 import { Screen } from "./utilities/ScreenManager";
 import { Viewport } from "./utilities/Viewport";
 import * as Align from "./utilities/Align";
-import { Point, Rectangle, Size } from "./utilities/Trig";
+import { Point, Rectangle, Size, Vector } from "./utilities/Trig";
 import { Highscores } from "./game/Highscores";
 
 export class LevelSelectionScreen extends Screen {
@@ -29,7 +29,7 @@ export class LevelSelectionScreen extends Screen {
     public activate(time: FrameTime): void {
         this.viewport.uiElement.appendChild(this._nameLabel);
         this.viewport.uiElement.appendChild(this._highscoreLabel);
-        this.selectLevel(0);
+        this.selectLevel(this._levels[0]);
     }
 
     public deactivate(time: FrameTime): void {
@@ -50,33 +50,32 @@ export class LevelSelectionScreen extends Screen {
     }
 
     public render(): void {
-        //this.viewport.clearCanvas("goldenrod");
         this.viewport.context.drawImage(this.resources.images.background, 0, 0);
 
         let levelGraphics = this.resources.images.levels[this.selectedLevel.code];
         let thumbnailRect = new Rectangle(Align.center(this.viewport.width, levelGraphics.thumbnail.width), 100, levelGraphics.thumbnail.width, levelGraphics.thumbnail.height);
 
-        let outlineRect = thumbnailRect.addBorder(10);
-        this.viewport.context.fillStyle = "black";
-        this.viewport.context.fillRect(outlineRect.x, outlineRect.y, outlineRect.width, outlineRect.height)
+        let shadowRect = thumbnailRect.translate(new Vector(2, 2));
+        this.viewport.context.fillStyle = "#00000088";
+        this.viewport.context.fillRect(shadowRect.x, shadowRect.y, shadowRect.width, shadowRect.height)
 
         this.viewport.context.drawImage(levelGraphics.thumbnail, thumbnailRect.x, thumbnailRect.y);
     }
 
     private previousLevel() {
         if (this._selectedLevelIndex > 0) {
-            this.selectLevel(this._selectedLevelIndex - 1);
+            this.selectLevel(this._levels[this._selectedLevelIndex - 1]);
         }
     }
 
     private nextLevel() {
         if (this._selectedLevelIndex < this._levels.length - 1) {
-            this.selectLevel(this._selectedLevelIndex + 1);
+            this.selectLevel(this._levels[this._selectedLevelIndex + 1]);
         }
     }
 
-    private selectLevel(index: number) {
-        this._selectedLevelIndex = index;
+    public selectLevel(level: LevelDefinition) {
+        this._selectedLevelIndex = this._levels.indexOf(level);
         this._nameLabel.innerText = this.selectedLevel.name;
 
         let highscore = this._highscores.get(this.selectedLevel.code);

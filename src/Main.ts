@@ -103,7 +103,7 @@ export interface Inputs {
 }
 
 export interface IScreens {
-    showLevelSelect(time: FrameTime): void;
+    showLevelSelect(time: FrameTime, level?: LevelDefinition): void;
     playGame(level: LevelDefinition, time: FrameTime): void;
 }
 
@@ -119,8 +119,12 @@ export class Screens implements IScreens {
         this.screenManager = new ScreenManager(this.levelSelection, time);
     }
 
-    public showLevelSelect(time: FrameTime) {
+    public showLevelSelect(time: FrameTime, level?: LevelDefinition) {
         this.screenManager.changeScreen(this.levelSelection, time);
+
+        if (level) {
+            this.levelSelection.selectLevel(level);
+        }
     }
 
     public playGame(level: LevelDefinition, time: FrameTime): void {
