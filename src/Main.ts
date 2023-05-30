@@ -17,6 +17,7 @@ import { InputProvider } from "./input/InputProvider";
 import { LevelSelectionScreen } from "./LevelSelectionScreen";
 import { LevelDefinition } from "./game/Levels";
 import { Font } from "./Font";
+import { IntroScreen } from "./IntroScreen";
 
 export interface ImageResources {
     background: ImageBitmap,
@@ -117,14 +118,15 @@ export interface IScreens {
 
 export class Screens implements IScreens {
     public readonly screenManager: ScreenManager;
+    public readonly intro: IntroScreen;
     public readonly levelSelection: LevelSelectionScreen;
     public readonly game: GameScreen;
 
     public constructor(viewport: Viewport, resources: Resources, inputs: Inputs, time: FrameTime) {
         this.levelSelection = new LevelSelectionScreen(viewport, resources, inputs, this);
         this.game = new GameScreen(viewport, resources, inputs, this);
-
-        this.screenManager = new ScreenManager(this.levelSelection, time);
+        this.intro = new IntroScreen(viewport, resources, inputs, this);
+        this.screenManager = new ScreenManager(this.intro, time);
     }
 
     public showLevelSelect(time: FrameTime, level?: LevelDefinition) {

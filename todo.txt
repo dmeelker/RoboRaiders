@@ -2,13 +2,13 @@
 [x] Game over screen
 [x] Enemy graphics
 [x] High scores
+[x] Level selection
+[x] Home screen
 
-- Home screen
 - Weapon unlocks
 - Multiplayer modes
  - Coop
  - Competition
-- Level selection
 - More weapons that are difficult to use
 - More levels
 - Extra level elements
