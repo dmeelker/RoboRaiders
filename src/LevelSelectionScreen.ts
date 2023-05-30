@@ -27,6 +27,8 @@ export class LevelSelectionScreen extends Screen {
     }
 
     public activate(time: FrameTime): void {
+        this._highscores.load();
+
         this.viewport.uiElement.appendChild(this._nameLabel);
         this.viewport.uiElement.appendChild(this._highscoreLabel);
         this.selectLevel(this._levels[0]);
@@ -65,12 +67,16 @@ export class LevelSelectionScreen extends Screen {
     private previousLevel() {
         if (this._selectedLevelIndex > 0) {
             this.selectLevel(this._levels[this._selectedLevelIndex - 1]);
+        } else {
+            this.selectLevel(this._levels[this._levels.length - 1]);
         }
     }
 
     private nextLevel() {
         if (this._selectedLevelIndex < this._levels.length - 1) {
             this.selectLevel(this._levels[this._selectedLevelIndex + 1]);
+        } else {
+            this.selectLevel(this._levels[0]);
         }
     }
 

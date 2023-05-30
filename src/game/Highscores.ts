@@ -19,7 +19,7 @@ export class Highscores {
         this.save();
     }
 
-    private load() {
+    public load() {
         let scoresString = window.localStorage.getItem("highscores");
 
         if (!scoresString) {
