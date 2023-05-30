@@ -114,7 +114,7 @@ export class ImageBlockScanner {
     }
 
     private findSliceBelow(slice: Slice, slices: Slice[]): Slice | null {
-        let below = slices.filter(s => s.y == slice.y + 1 && s.x == slice.x && s.width == slice.width);
+        let below = slices.filter(s => s.y == slice.y + 1 && s.x == slice.x && s.width == slice.width && s.color.equals(slice.color));
         if (below.length == 0)
             return null;
         return below[0];
