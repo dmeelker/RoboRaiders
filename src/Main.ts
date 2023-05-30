@@ -18,6 +18,8 @@ import { LevelSelectionScreen } from "./LevelSelectionScreen";
 import { LevelDefinition } from "./game/Levels";
 
 export interface ImageResources {
+    background: ImageBitmap,
+
     crate: ImageBitmap,
     bullet: ImageBitmap,
     pistol: ImageBitmap,
@@ -167,6 +169,7 @@ class Main {
     private async loadResources() {
         const imageLoader = new ImageLoader("assets/gfx");
         let images = {
+            background: await imageLoader.load("background.png"),
             crate: await imageLoader.load("crate.png"),
             bullet: await imageLoader.load("weapons/bullet.png"),
             pistol: await imageLoader.load("weapons/pistol.png"),

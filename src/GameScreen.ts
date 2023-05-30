@@ -1,5 +1,6 @@
 import { Game } from "./game/Game";
 import { LevelDefinition } from "./game/Levels";
+import { Keys } from "./input/InputProvider";
 import { FrameTime } from "./utilities/FrameTime";
 import { Screen } from "./utilities/ScreenManager";
 
@@ -21,6 +22,10 @@ export class GameScreen extends Screen {
     public update(time: FrameTime): void {
         this._game.update(time);
         this.viewport.update(time);
+
+        if (this.inputs.player1.wasButtonPressedInFrame(Keys.Menu)) {
+            this._screens.showLevelSelect(time);
+        }
     }
 
     public render(): void {

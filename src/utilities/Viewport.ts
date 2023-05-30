@@ -39,8 +39,8 @@ export class Viewport {
         this._parentElement.appendChild(this._element);
     }
 
-    public clearCanvas() {
-        this._canvasContext.fillStyle = "black";
+    public clearCanvas(color: string = "black") {
+        this._canvasContext.fillStyle = color;
         this._canvasContext.fillRect(0, 0, this.size.width, this.size.height);
     }
 
