@@ -49,6 +49,9 @@ export class LevelSelectionScreen extends Screen {
 
     public render(): void {
         this.viewport.context.drawImage(this.resources.images.background, 0, 0);
+        this.viewport.context.fillStyle = "#00000088";
+        this.viewport.context.fillRect(0, 0, this.viewport.width, this.viewport.height);
+
         this.resources.fonts.large.renderCenteredInArea(this.viewport, "SELECT LEVEL!", 60, this.viewport.width);
 
         let x = this._renderOffset + (this.viewport.width / 2);
