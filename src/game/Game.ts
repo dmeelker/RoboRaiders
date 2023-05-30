@@ -142,16 +142,16 @@ export class Game implements IGameContext {
         if (this._showGameOverScreen) {
             let highscore = this._highScores.get(this._level.name);
 
-            this.resources.fonts.large.renderHCentered(this.viewport, "GAME OVER", 220, this.viewport.width);
+            this.resources.fonts.large.renderCenteredInArea(this.viewport, "GAME OVER", 220, this.viewport.width);
 
             if (highscore == null || this._score > highscore) {
-                this.resources.fonts.small.renderHCentered(this.viewport, `NEW HIGHSCORE ${this._score}!`, 250, this.viewport.width);
+                this.resources.fonts.small.renderCenteredInArea(this.viewport, `NEW HIGHSCORE ${this._score}!`, 250, this.viewport.width);
             } else {
-                this.resources.fonts.small.renderHCentered(this.viewport, `SCORE: ${this._score}`, 250, this.viewport.width);
-                this.resources.fonts.small.renderHCentered(this.viewport, `HIGH SCORE: ${highscore}`, 270, this.viewport.width);
+                this.resources.fonts.small.renderCenteredInArea(this.viewport, `SCORE: ${this._score}`, 250, this.viewport.width);
+                this.resources.fonts.small.renderCenteredInArea(this.viewport, `HIGH SCORE: ${highscore}`, 270, this.viewport.width);
             }
         } else {
-            this.resources.fonts.default.renderHCentered(this.viewport, this._score.toString(), 40, this.viewport.width);
+            this.resources.fonts.default.renderCenteredInArea(this.viewport, this._score.toString(), 40, this.viewport.width);
         }
     }
 

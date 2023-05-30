@@ -62,8 +62,13 @@ export class Font {
         }
     }
 
-    public renderHCentered(viewport: Viewport, text: string, y: number, containerWidth: number) {
+    public renderCenteredInArea(viewport: Viewport, text: string, y: number, containerWidth: number) {
         this.render(viewport, text, { x: Math.floor((containerWidth / 2) - (this.calculateSize(text).width / 2)), y: y });
+    }
+
+    public renderCenteredOnPoint(viewport: Viewport, text: string, location: ILocation) {
+        let size = this.calculateSize(text);
+        this.render(viewport, text, { x: location.x - (size.width / 2), y: location.y - (size.height / 2) });
     }
 
     public render(viewport: Viewport, text: string, location: ILocation) {

@@ -4,15 +4,19 @@ import { Keys } from "./input/InputProvider";
 import { FrameTime } from "./utilities/FrameTime";
 import { Screen } from "./utilities/ScreenManager";
 import { Viewport } from "./utilities/Viewport";
-import * as Align from "./utilities/Align";
-import { Point, Rectangle, Size, Vector } from "./utilities/Trig";
+import { Rectangle, Vector } from "./utilities/Trig";
 import { Highscores } from "./game/Highscores";
+import { interpolate } from "./utilities/Math";
+import * as Easing from "./utilities/Easing";
 
 export class LevelSelectionScreen extends Screen {
     private readonly _levels = levels;
     private _selectedLevelIndex = 0;
+    private _renderOffset = 0;
     private _highscores = new Highscores();
-
+    private _transitionStart = 0;
+    private _transitionEnd = 0;
+    private _transitionTime = 0;
 
     public constructor(viewport: Viewport, resources: Resources, inputs: Inputs, screens: IScreens) {
         super(viewport, resources, inputs, screens);
@@ -20,16 +24,22 @@ export class LevelSelectionScreen extends Screen {
 
     public activate(time: FrameTime): void {
         this._highscores.load();
-        this.selectLevel(this._levels[0]);
+        this.transitionToLevel(this._levels[0], time);
     }
 
     public update(time: FrameTime): void {
         if (this.inputs.player1.wasButtonPressedInFrame(Keys.MoveLeft)) {
-            this.previousLevel();
+            this.previousLevel(time);
         } else if (this.inputs.player1.wasButtonPressedInFrame(Keys.MoveRight)) {
-            this.nextLevel();
+            this.nextLevel(time);
         } else if (this.inputs.player1.wasButtonPressedInFrame(Keys.A)) {
             this._screens.playGame(this.selectedLevel, time);
+        }
+
+        let timeSinceTransitionStart = time.currentTime - this._transitionTime;
+        if (timeSinceTransitionStart < 300) {
+            let transitionProgress = timeSinceTransitionStart / 300;
+            this._renderOffset = interpolate(this._transitionStart, this._transitionEnd, Easing.easeInOutSine(transitionProgress));
         }
 
         this.viewport.update(time);
@@ -37,22 +47,31 @@ export class LevelSelectionScreen extends Screen {
 
     public render(): void {
         this.viewport.context.drawImage(this.resources.images.background, 0, 0);
+        this.resources.fonts.large.renderCenteredInArea(this.viewport, "SELECT LEVEL!", 60, this.viewport.width);
 
-        this.resources.fonts.large.renderHCentered(this.viewport, "SELECT LEVEL!", 60, this.viewport.width);
-        this.resources.fonts.default.renderHCentered(this.viewport, this.selectedLevel.name.toUpperCase(), 110, this.viewport.width);
-
-
-        let highscore = this._highscores.get(this.selectedLevel.code);
-        if (highscore) {
-            this.resources.fonts.small.renderHCentered(this.viewport, `HIGHSCORE ${highscore}`, 130, this.viewport.width);
+        let x = this._renderOffset + (this.viewport.width / 2);
+        for (let i = 0; i < this._levels.length; i++) {
+            if (x >= -this.viewport.width && x <= this.viewport.width) {
+                this.renderLevel(this._levels[i], new Vector(x, 0));
+            }
+            x += this.viewport.width;
         }
-
-        this.renderThumbnail();
     }
 
-    private renderThumbnail() {
-        let levelGraphics = this.resources.images.levels[this.selectedLevel.code];
-        let thumbnailRect = new Rectangle(Align.center(this.viewport.width, levelGraphics.thumbnail.width), 150, levelGraphics.thumbnail.width, levelGraphics.thumbnail.height);
+    private renderLevel(level: LevelDefinition, centerLocation: Vector) {
+        this.resources.fonts.default.renderCenteredOnPoint(this.viewport, level.name.toUpperCase(), centerLocation.addY(130));
+
+        let highscore = this._highscores.get(level.code);
+        if (highscore) {
+            this.resources.fonts.small.renderCenteredOnPoint(this.viewport, `HIGHSCORE ${highscore}`, centerLocation.addY(150));
+        }
+
+        this.renderThumbnail(level, centerLocation.addY(150));
+    }
+
+    private renderThumbnail(level: LevelDefinition, centerLocation: Vector) {
+        let levelGraphics = this.resources.images.levels[level.code];
+        let thumbnailRect = new Rectangle(centerLocation.x - (levelGraphics.thumbnail.width / 2), 170, levelGraphics.thumbnail.width, levelGraphics.thumbnail.height);
 
         let shadowRect = thumbnailRect.translate(new Vector(2, 2));
         this.viewport.context.fillStyle = "#00000088";
@@ -61,27 +80,39 @@ export class LevelSelectionScreen extends Screen {
         this.viewport.context.drawImage(levelGraphics.thumbnail, thumbnailRect.x, thumbnailRect.y);
     }
 
-    private previousLevel() {
+    private previousLevel(time: FrameTime) {
         if (this._selectedLevelIndex > 0) {
-            this.selectLevel(this._levels[this._selectedLevelIndex - 1]);
+            this.transitionToLevel(this._levels[this._selectedLevelIndex - 1], time);
         } else {
-            this.selectLevel(this._levels[this._levels.length - 1]);
+            this.transitionToLevel(this._levels[this._levels.length - 1], time);
         }
     }
 
-    private nextLevel() {
+    private nextLevel(time: FrameTime) {
         if (this._selectedLevelIndex < this._levels.length - 1) {
-            this.selectLevel(this._levels[this._selectedLevelIndex + 1]);
+            this.transitionToLevel(this._levels[this._selectedLevelIndex + 1], time);
         } else {
-            this.selectLevel(this._levels[0]);
+            this.transitionToLevel(this._levels[0], time);
         }
+    }
+
+    public transitionToLevel(level: LevelDefinition, time: FrameTime) {
+        this._transitionTime = time.currentTime;
+        this._transitionStart = this.levelOffset(this._selectedLevelIndex);
+        this._selectedLevelIndex = this._levels.indexOf(level);
+        this._transitionEnd = this.levelOffset(this._selectedLevelIndex);
     }
 
     public selectLevel(level: LevelDefinition) {
+        this._transitionTime = -10000;
         this._selectedLevelIndex = this._levels.indexOf(level);
     }
 
     private get selectedLevel() {
         return this._levels[this._selectedLevelIndex];
+    }
+
+    private levelOffset(index: number) {
+        return -(index * this.viewport.width);
     }
 }
