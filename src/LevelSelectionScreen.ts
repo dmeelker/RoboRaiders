@@ -38,12 +38,12 @@ export class LevelSelectionScreen extends Screen {
     public render(): void {
         this.viewport.context.drawImage(this.resources.images.background, 0, 0);
 
-        this.resources.fonts.large.renderHCentered(this.viewport, this.selectedLevel.name.toUpperCase(), 20, this.viewport.width);
+        this.resources.fonts.large.renderHCentered(this.viewport, this.selectedLevel.name.toUpperCase(), 60, this.viewport.width);
 
 
         let highscore = this._highscores.get(this.selectedLevel.code);
         if (highscore) {
-            this.resources.fonts.small.renderHCentered(this.viewport, `HIGHSCORE ${highscore}`, 70, this.viewport.width);
+            this.resources.fonts.small.renderHCentered(this.viewport, `HIGHSCORE ${highscore}`, 80, this.viewport.width);
         }
 
         let levelGraphics = this.resources.images.levels[this.selectedLevel.code];

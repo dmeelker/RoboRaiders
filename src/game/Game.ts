@@ -51,31 +51,6 @@ export class Game implements IGameContext {
         this._inputs = inputs;
     }
 
-    public activate(time: FrameTime) {
-        this.reset(time);
-    }
-
-    public deactivate() {
-
-    }
-
-    private loadLevelData(level: LevelDefinition) {
-        this._levelDefinition = level;
-        let levelLoader = new LevelLoader(this);
-        levelLoader.loadLevel(level.code);
-
-        this._players = [
-            new Player(this._level.playerSpawnLocations[0].clone(), this._inputs.player1, 0, this)];
-
-        // this._players = [
-        //     new Player(this._level.playerSpawnLocations[0].clone(), this._inputs.player1, 0, this),
-        //     new Player(this._level.playerSpawnLocations[1].clone(), this._inputs.player2, 1, this)];
-    }
-
-    private spawnBox() {
-        this._box = new BoxSpawner(this).spawn();
-    }
-
     public update(time: FrameTime) {
         this._time = time;
 
@@ -117,15 +92,32 @@ export class Game implements IGameContext {
         this._startTime = time.currentTime;
         this._time = time;
         this._score = 0;
+        this._showGameOverScreen = false;
 
         this.loadLevelData(level);
 
         for (let player of this._players) {
             this._entities.add(player.entity);
         }
-        this._showGameOverScreen = false;
 
         this.spawnBox();
+    }
+
+    private loadLevelData(level: LevelDefinition) {
+        this._levelDefinition = level;
+        let levelLoader = new LevelLoader(this);
+        levelLoader.loadLevel(level.code);
+
+        this._players = [
+            new Player(this._level.playerSpawnLocations[0].clone(), this._inputs.player1, 0, this)];
+
+        // this._players = [
+        //     new Player(this._level.playerSpawnLocations[0].clone(), this._inputs.player1, 0, this),
+        //     new Player(this._level.playerSpawnLocations[1].clone(), this._inputs.player2, 1, this)];
+    }
+
+    private spawnBox() {
+        this._box = new BoxSpawner(this).spawn();
     }
 
     public addPoint() {
@@ -150,7 +142,7 @@ export class Game implements IGameContext {
         if (this._showGameOverScreen) {
             let highscore = this._highScores.get(this._level.name);
 
-            this.resources.fonts.large.renderHCentered(this.viewport, "GAME OVER", 200, this.viewport.width);
+            this.resources.fonts.large.renderHCentered(this.viewport, "GAME OVER", 220, this.viewport.width);
 
             if (highscore == null || this._score > highscore) {
                 this.resources.fonts.small.renderHCentered(this.viewport, `NEW HIGHSCORE ${this._score}!`, 250, this.viewport.width);
@@ -159,7 +151,7 @@ export class Game implements IGameContext {
                 this.resources.fonts.small.renderHCentered(this.viewport, `HIGH SCORE: ${highscore}`, 270, this.viewport.width);
             }
         } else {
-            this.resources.fonts.default.renderHCentered(this.viewport, this._score.toString(), 10, this.viewport.width);
+            this.resources.fonts.default.renderHCentered(this.viewport, this._score.toString(), 40, this.viewport.width);
         }
     }
 

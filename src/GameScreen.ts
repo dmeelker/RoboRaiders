@@ -7,15 +7,8 @@ import { Screen } from "./utilities/ScreenManager";
 export class GameScreen extends Screen {
     private _game = new Game(this.viewport, this.resources, this.inputs);
 
-    public activate(time: FrameTime): void {
-        this._game.activate(time);
-    }
-
-    public deactivate(time: FrameTime): void {
-        this._game.deactivate();
-    }
-
     public loadLevel(level: LevelDefinition, time: FrameTime) {
+        this._game = new Game(this.viewport, this.resources, this.inputs);
         this._game.loadLevel(level, time);
     }
 

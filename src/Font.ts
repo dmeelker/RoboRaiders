@@ -63,7 +63,7 @@ export class Font {
     }
 
     public renderHCentered(viewport: Viewport, text: string, y: number, containerWidth: number) {
-        this.render(viewport, text, { x: (containerWidth / 2) - (this.calculateSize(text).width / 2), y: y });
+        this.render(viewport, text, { x: Math.floor((containerWidth / 2) - (this.calculateSize(text).width / 2)), y: y });
     }
 
     public render(viewport: Viewport, text: string, location: ILocation) {
@@ -74,7 +74,7 @@ export class Font {
 
             if (this.data[char] != undefined) {
                 let charData = this.data[char];
-                viewport.context.drawImage(this.image, charData[0], charData[1], charData[2], charData[3], currentX, location.y, charData[2], charData[3]);
+                viewport.context.drawImage(this.image, charData[0], charData[1], charData[2], charData[3], currentX, location.y - charData[3], charData[2], charData[3]);
 
                 currentX += charData[2] + 2;
             } else if (char == ' ') {
