@@ -14,6 +14,7 @@ export class IntroScreen extends Screen {
 
     public update(time: FrameTime): void {
         if (this.inputs.player1.anyButtonPressedInFrame()) {
+            this.resources.audio.select.play();
             this._screens.showLevelSelect(time);
         }
 

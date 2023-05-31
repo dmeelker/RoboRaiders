@@ -34,6 +34,7 @@ export class LevelSelectionScreen extends Screen {
         } else if (this.inputs.player1.wasButtonPressedInFrame(Keys.MoveRight)) {
             this.nextLevel(time);
         } else if (this.inputs.player1.wasButtonPressedInFrame(Keys.A) || this.inputs.player1.wasButtonPressedInFrame(Keys.Select)) {
+            this.resources.audio.select.play();
             this._screens.playGame(this.selectedLevel, time);
         } else if (this.inputs.player1.wasButtonPressedInFrame(Keys.Menu)) {
             this._screens.showIntro(time);
@@ -92,6 +93,8 @@ export class LevelSelectionScreen extends Screen {
         } else {
             this.transitionToLevel(this._levels[this._levels.length - 1], time);
         }
+
+        this.resources.audio.select.play();
     }
 
     private nextLevel(time: FrameTime) {
@@ -100,6 +103,8 @@ export class LevelSelectionScreen extends Screen {
         } else {
             this.transitionToLevel(this._levels[0], time);
         }
+
+        this.resources.audio.select.play();
     }
 
     public transitionToLevel(level: LevelDefinition, time: FrameTime) {

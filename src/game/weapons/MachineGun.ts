@@ -43,6 +43,8 @@ export class MachineGunWeapon extends Weapon {
         let projectile = new ProjectileEntity(location.add(offset), velocity, time, context);
         projectile.power = 1;
         context.entityManager.add(projectile);
+
+        context.resources.audio.machinegun.play();
     }
 
     public render(location: Vector, direction: Vector, viewport: Viewport): void {

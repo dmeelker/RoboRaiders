@@ -81,6 +81,7 @@ export class EnemyEntity extends Entity {
 
         this.hitpoints -= power;
         this._lastHitTime = this.context.time.currentTime;
+        this.context.resources.audio.hit.play();
 
         if (this.hitpoints <= 0) {
             this.die(vector);

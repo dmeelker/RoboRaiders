@@ -46,6 +46,8 @@ export class ShotgunWeapon extends Weapon {
             projectile.maxAge = randomInt(250, 350);
             context.entityManager.add(projectile);
         }
+
+        context.resources.audio.shotgun.play();
     }
 
     public render(location: Vector, direction: Vector, viewport: Viewport): void {

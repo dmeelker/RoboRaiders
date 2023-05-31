@@ -57,7 +57,7 @@ export class GravityGrenadeEntity extends Entity {
         } else {
             if (this._state != GravityGrenadeState.Armed) {
                 this._particleEmitter = createSingularityEmitter(this.context.particleSystem, this.centerLocation, this._radius, this.context.time);
-                this.context.resources.audio.singularitygrenade.play(this.context.time);
+                this.context.resources.audio.singularitygrenade.play();
             }
             this._state = GravityGrenadeState.Armed;
         }

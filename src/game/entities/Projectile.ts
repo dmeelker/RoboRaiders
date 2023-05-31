@@ -44,10 +44,6 @@ export class ProjectileEntity extends Entity {
             for (let enemy of hitEnemies) {
                 enemy.hit(this.power, this.physics.velocity);
             }
-
-            if (hitEnemies.length > 0) {
-                this.context.resources.audio.hit.play(time);
-            }
         }
     }
 

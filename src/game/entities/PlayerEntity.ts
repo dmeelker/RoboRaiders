@@ -110,7 +110,7 @@ export class PlayerEntity extends Entity {
                 box.markDisposable();
                 this.context.addPoint();
                 this.randomWeapon();
-                this.context.resources.audio.box.play(time);
+                this.context.resources.audio.box.play();
             }
         }
 
@@ -133,6 +133,7 @@ export class PlayerEntity extends Entity {
     }
 
     private die() {
+        this.context.resources.audio.dead.play();
         this._dead = true;
         let corpseVector = Vector.fromDegreeAngle(randomInt(0, 360)).multiplyScalar(randomInt(200, 300));
         this.context.entityManager.add(new CorpseEntity(this.location, corpseVector, this._animator.activeAnimation.getImage(), this.context));
@@ -170,7 +171,7 @@ export class PlayerEntity extends Entity {
             this._jumping = true;
             this._jumpStart = time.currentTime;
             this.physics.velocity.y = -jumpSpeed;
-            this.context.resources.audio.jump.play(time);
+            this.context.resources.audio.jump.play();
         }
         else if (this._jumping) {
             const timeSinceJump = time.currentTime - this._jumpStart;

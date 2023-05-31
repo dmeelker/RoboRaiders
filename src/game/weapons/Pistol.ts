@@ -21,6 +21,7 @@ export class PistolWeapon extends Weapon {
         let projectile = new ProjectileEntity(location.add(offset), direction.toUnit().multiplyScalar(600), time, context);
         projectile.power = 2;
         context.entityManager.add(projectile);
+        context.resources.audio.pistol.play();
     }
 
     public render(location: Vector, direction: Vector, viewport: Viewport): void {

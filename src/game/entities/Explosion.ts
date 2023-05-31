@@ -19,7 +19,7 @@ export class ExplosionEntity extends Entity {
         this.setRadius(70);
 
         createExplosion(context.particleSystem, centerLocation, time);
-        context.resources.audio.explosion.play(time);
+        context.resources.audio.explosion.play();
         context.viewport.shakeHeavy(time);
     }
 

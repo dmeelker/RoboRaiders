@@ -54,6 +54,7 @@ export class RailgunWeapon extends Weapon {
         let sparkLocation = direction.x > 0 ? fireLocation.addX(-this._image.width - 4) : fireLocation.addX(this._image.width + 4);
         sparkLocation = sparkLocation.addY(8);
         this.spawnSparks(sparkLocation, direction.multiplyScalar(-1).toUnit(), time);
+        context.resources.audio.railgun.play();
     }
 
     private spawnSparks(location: Vector, direction: Vector, time: FrameTime) {

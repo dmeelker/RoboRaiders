@@ -33,11 +33,17 @@ export interface LevelImages {
 
 export interface AudioResources {
     box: AudioClip;
+    pistol: AudioClip;
+    shotgun: AudioClip;
+    machinegun: AudioClip;
+    railgun: AudioClip;
     explosion: AudioClip;
     hit: AudioClip;
     jump: AudioClip;
     rocket: AudioClip;
     singularitygrenade: AudioClip;
+    dead: AudioClip;
+    select: AudioClip;
 }
 
 interface IAudioFile {
@@ -308,20 +314,31 @@ export class ResourceLoader {
 
         let files = await this.loadFiles([
             { name: "box.wav", instances: 1 },
+            { name: "pistol.wav", instances: 10 },
+            { name: "shotgun.wav", instances: 2 },
+            { name: "machinegun.wav", instances: 10 },
+            { name: "railgun.wav", instances: 2 },
             { name: "explosion.wav", instances: 3 },
             { name: "hit.wav", instances: 10 },
             { name: "jump.wav", instances: 2 },
             { name: "rocket.wav", instances: 3 },
             { name: "singularitygrenade.wav", instances: 3 },
+            { name: "dead.wav", instances: 2 },
         ], file => loader.load(file.name, file.instances));
 
         return {
             box: files.get("box.wav")!,
+            pistol: files.get("pistol.wav")!,
+            shotgun: files.get("shotgun.wav")!,
+            machinegun: files.get("machinegun.wav")!,
+            railgun: files.get("railgun.wav")!,
             explosion: files.get("explosion.wav")!,
             hit: files.get("hit.wav")!,
             jump: files.get("jump.wav")!,
             rocket: files.get("rocket.wav")!,
             singularitygrenade: files.get("singularitygrenade.wav")!,
+            dead: files.get("dead.wav")!,
+            select: files.get("hit.wav")!,
         };
     }
 
