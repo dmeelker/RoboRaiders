@@ -1,6 +1,6 @@
 import { Font } from "./Font";
 import { AnimationDefinition } from "./utilities/Animation";
-import { AudioClip } from "./utilities/Audio";
+import { AudioClip, AudioSystem } from "./utilities/Audio";
 import { AudioLoader } from "./utilities/AudioLoader";
 import { ImageLoader } from "./utilities/ImagesLoader";
 import { SpriteSheetLoader } from "./utilities/SpriteSheetLoader";
@@ -103,6 +103,12 @@ export class Resources {
 }
 
 export class ResourceLoader {
+    private readonly _audioSystem: AudioSystem;
+
+    public constructor(audioSystem: AudioSystem) {
+        this._audioSystem = audioSystem;
+    }
+
     public async load(): Promise<Resources> {
         const imageLoader = new ImageLoader("assets/gfx");
 
@@ -298,7 +304,7 @@ export class ResourceLoader {
     }
 
     private async loadAudioResources(): Promise<AudioResources> {
-        const loader = new AudioLoader("assets/sounds");
+        const loader = new AudioLoader("assets/sounds", this._audioSystem);
 
         let files = await this.loadFiles([
             { name: "box.wav", instances: 1 },

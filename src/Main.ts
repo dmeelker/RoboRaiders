@@ -19,6 +19,7 @@ import { LevelDefinition } from "./game/Levels";
 import { Font } from "./Font";
 import { IntroScreen } from "./IntroScreen";
 import { ResourceLoader, Resources } from "./Resources";
+import { AudioSystem } from "./utilities/Audio";
 
 export interface Inputs {
     player1: InputProvider,
@@ -73,6 +74,7 @@ class Main {
     private _gamepadPoller = new GamepadPoller();
     private _inputs: Inputs;
     private _resources: Resources = null!;
+    private _audioSystem = new AudioSystem();
 
     private readonly _fpsLabel: HTMLElement = document.getElementById("fps-label")!;
 
@@ -96,13 +98,16 @@ class Main {
     public async initialize() {
         await this.loadResources();
 
+        this._audioSystem.effectVolume = .1;
+        //this._audioSystem.effectsMuted = true;
+
         this._viewport = new Viewport(new Size(640, 480), this._container);
 
         this._screens = new Screens(this._viewport, this._resources, this._inputs, new FrameTime(0, 0));
     }
 
     private async loadResources() {
-        let loader = new ResourceLoader();
+        let loader = new ResourceLoader(this._audioSystem);
         this._resources = await loader.load();
     }
 
