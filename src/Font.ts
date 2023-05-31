@@ -52,9 +52,11 @@ const FontData = {
 export class Font {
     private image: ImageBitmap;
     private data: IFontData = {};
+    private _spaceSize: number;
 
     constructor(image: ImageBitmap, scale: number, data: IFontData = FontData) {
         this.image = image;
+        this._spaceSize = 5 * scale;
 
         for (let key in data) {
             let values = data[key];
@@ -83,7 +85,7 @@ export class Font {
 
                 currentX += charData[2] + 2;
             } else if (char == ' ') {
-                currentX += 5;
+                currentX += this._spaceSize;
             }
         }
     }

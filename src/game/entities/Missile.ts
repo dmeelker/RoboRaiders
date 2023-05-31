@@ -37,6 +37,7 @@ export class MissileEntity extends Entity {
         this.physics.gravity = false;
 
         this._smokeEmitter = createSmokeTrailEmitter(gameContext.particleSystem, this.centerLocation, time);
+        gameContext.resources.audio.rocket.play(time);
     }
 
     protected onDispose(_time: FrameTime) {

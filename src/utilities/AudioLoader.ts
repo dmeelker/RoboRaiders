@@ -1,3 +1,5 @@
+import { AudioClip } from "./Audio";
+
 export class AudioLoader {
     public readonly basePath: string = "";
 
@@ -5,7 +7,24 @@ export class AudioLoader {
         this.basePath = basePath ?? "";
     }
 
-    public async load(url: string): Promise<HTMLAudioElement> {
+    public async load(url: string, instances: number): Promise<AudioClip> {
+        let tasks = new Array<Promise<HTMLAudioElement>>();
+
+        for (let i = 0; i < instances; i++) {
+            tasks.push(this.loadSingle(url));
+        }
+
+        await Promise.all(tasks);
+
+        let elements = new Array<HTMLAudioElement>();
+        for (let i = 0; i < instances; i++) {
+            elements.push(await tasks[i]);
+        }
+
+        return new AudioClip(elements);
+    }
+
+    private async loadSingle(url: string): Promise<HTMLAudioElement> {
         return new Promise<HTMLAudioElement>((resolve) => {
             url = this.getAudioUrl(url);
             const audio = new Audio();

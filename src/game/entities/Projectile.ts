@@ -38,12 +38,16 @@ export class ProjectileEntity extends Entity {
 
         if (this.physics.lastCollisions.length > 0) {
             this.markDisposable();
-        }
 
-        let hitEnemies = this.physics.lastCollisions.filter(c => c.entity instanceof EnemyEntity).map(c => c.entity as EnemyEntity);
+            let hitEnemies = this.physics.lastCollisions.filter(c => c.entity instanceof EnemyEntity).map(c => c.entity as EnemyEntity);
 
-        for (let enemy of hitEnemies) {
-            enemy.hit(this.power, this.physics.velocity);
+            for (let enemy of hitEnemies) {
+                enemy.hit(this.power, this.physics.velocity);
+            }
+
+            if (hitEnemies.length > 0) {
+                this.context.resources.audio.hit.play(time);
+            }
         }
     }
 

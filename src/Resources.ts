@@ -1,5 +1,6 @@
 import { Font } from "./Font";
 import { AnimationDefinition } from "./utilities/Animation";
+import { AudioClip } from "./utilities/Audio";
 import { AudioLoader } from "./utilities/AudioLoader";
 import { ImageLoader } from "./utilities/ImagesLoader";
 import { SpriteSheetLoader } from "./utilities/SpriteSheetLoader";
@@ -31,7 +32,17 @@ export interface LevelImages {
 }
 
 export interface AudioResources {
-    fire: HTMLAudioElement;
+    box: AudioClip;
+    explosion: AudioClip;
+    hit: AudioClip;
+    jump: AudioClip;
+    rocket: AudioClip;
+    singularitygrenade: AudioClip;
+}
+
+interface IAudioFile {
+    name: string;
+    instances: number;
 }
 
 export interface AnimationResources {
@@ -223,10 +234,7 @@ export class ResourceLoader {
             fastBotHitLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("fast_bot_hit_left.png")!), 1, 1),
         };
 
-        const soundLoader = new AudioLoader("assets/sounds");
-        let audio = {
-            fire: await soundLoader.load("fire.wav")
-        };
+        let audio = await this.loadAudioResources();
 
         let animations = {
             player1StandRight: new AnimationDefinition(images.player1StandRight, 1),
@@ -287,5 +295,42 @@ export class ResourceLoader {
             metadata: await imageLoader.load(`levels/${name}_metadata.png`),
             thumbnail: await imageLoader.load(`levels/${name}_thumbnail.png`),
         }
+    }
+
+    private async loadAudioResources(): Promise<AudioResources> {
+        const loader = new AudioLoader("assets/sounds");
+
+        let files = await this.loadFiles([
+            { name: "box.wav", instances: 1 },
+            { name: "explosion.wav", instances: 3 },
+            { name: "hit.wav", instances: 10 },
+            { name: "jump.wav", instances: 2 },
+            { name: "rocket.wav", instances: 3 },
+            { name: "singularitygrenade.wav", instances: 3 },
+        ], file => loader.load(file.name, file.instances));
+
+        return {
+            box: files.get("box.wav")!,
+            explosion: files.get("explosion.wav")!,
+            hit: files.get("hit.wav")!,
+            jump: files.get("jump.wav")!,
+            rocket: files.get("rocket.wav")!,
+            singularitygrenade: files.get("singularitygrenade.wav")!,
+        };
+    }
+
+    private async loadFiles<TResource>(files: IAudioFile[], loader: (file: IAudioFile) => Promise<TResource>): Promise<Map<string, TResource>> {
+        let tasks = new Map<string, Promise<TResource>>();
+        for (let file of files) {
+            tasks.set(file.name, loader(file));
+        }
+        await Promise.all(tasks.values());
+
+        let result = new Map<string, TResource>();
+        for (let [key, value] of tasks) {
+            result.set(key, await value);
+        }
+
+        return result;
     }
 }

@@ -110,6 +110,7 @@ export class PlayerEntity extends Entity {
                 box.markDisposable();
                 this.context.addPoint();
                 this.randomWeapon();
+                this.context.resources.audio.box.play(time);
             }
         }
 
@@ -169,6 +170,7 @@ export class PlayerEntity extends Entity {
             this._jumping = true;
             this._jumpStart = time.currentTime;
             this.physics.velocity.y = -jumpSpeed;
+            this.context.resources.audio.jump.play(time);
         }
         else if (this._jumping) {
             const timeSinceJump = time.currentTime - this._jumpStart;
