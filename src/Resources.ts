@@ -5,6 +5,8 @@ import { AudioLoader } from "./utilities/AudioLoader";
 import { ImageLoader } from "./utilities/ImagesLoader";
 import { SpriteSheetLoader } from "./utilities/SpriteSheetLoader";
 
+
+
 export interface ImageResources {
     background: ImageBitmap;
 
@@ -44,6 +46,10 @@ export interface AudioResources {
     singularitygrenade: AudioClip;
     dead: AudioClip;
     select: AudioClip;
+}
+
+interface IAudioResourceSpec {
+    [name: string]: IAudioFile
 }
 
 interface IAudioFile {
@@ -118,7 +124,7 @@ export class ResourceLoader {
     public async load(): Promise<Resources> {
         const imageLoader = new ImageLoader("assets/gfx");
 
-        let imageNames = [
+        let imageFiles = await this.loadImageFiles([
             "background.png",
             "crate.png",
             "weapons/bullet.png",
@@ -173,30 +179,22 @@ export class ResourceLoader {
             "fast_bot_jump_left.png",
             "fast_bot_hit_right.png",
             "fast_bot_hit_left.png",
-        ];
-
-        let imageTasks = new Map<string, Promise<ImageBitmap>>(); //imageNames.map(name => imageLoader.load(name));
-
-        for (let key of imageNames) {
-            imageTasks.set(key, imageLoader.load(key));
-        }
-
-        await Promise.all(imageTasks.values());
+        ], file => imageLoader.load(file));
 
         let images = {
-            background: await imageTasks.get("background.png")!,
-            crate: await imageTasks.get("crate.png")!,
-            bullet: await imageTasks.get("weapons/bullet.png")!,
-            pistol: await imageTasks.get("weapons/pistol.png")!,
-            machinegun: await imageTasks.get("weapons/machinegun.png")!,
-            shotgun: await imageTasks.get("weapons/shotgun.png")!,
-            rpg: await imageTasks.get("weapons/rpg.png")!,
-            rpgGrenade: await imageTasks.get("weapons/rpg_grenade.png")!,
-            railgun: await imageTasks.get("weapons/railgun.png")!,
-            railgunLoaded: await imageTasks.get("weapons/railgun_loaded.png")!,
-            dart: await imageTasks.get("weapons/dart.png")!,
-            gravityGrenadeUnarmed: await imageTasks.get("weapons/gravity_grenade_unarmed.png")!,
-            gravityGrenadeArmed: await imageTasks.get("weapons/gravity_grenade_armed.png")!,
+            background: imageFiles.get("background.png")!,
+            crate: imageFiles.get("crate.png")!,
+            bullet: imageFiles.get("weapons/bullet.png")!,
+            pistol: imageFiles.get("weapons/pistol.png")!,
+            machinegun: imageFiles.get("weapons/machinegun.png")!,
+            shotgun: imageFiles.get("weapons/shotgun.png")!,
+            rpg: imageFiles.get("weapons/rpg.png")!,
+            rpgGrenade: imageFiles.get("weapons/rpg_grenade.png")!,
+            railgun: imageFiles.get("weapons/railgun.png")!,
+            railgunLoaded: imageFiles.get("weapons/railgun_loaded.png")!,
+            dart: imageFiles.get("weapons/dart.png")!,
+            gravityGrenadeUnarmed: imageFiles.get("weapons/gravity_grenade_unarmed.png")!,
+            gravityGrenadeArmed: imageFiles.get("weapons/gravity_grenade_armed.png")!,
 
             levels: {
                 level1: await this.loadLevelImages("level1", imageLoader),
@@ -204,46 +202,46 @@ export class ResourceLoader {
                 level3: await this.loadLevelImages("level3", imageLoader),
             },
 
-            player1StandRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player1_stand_right.png")!), 1, 1),
-            player1WalkRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player1_walk_right.png")!), 4, 1),
-            player1JumpRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player1_jump_right.png")!), 1, 1),
-            player1StandLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player1_stand_left.png")!), 1, 1),
-            player1WalkLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player1_walk_left.png")!), 4, 1),
-            player1JumpLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player1_jump_left.png")!), 1, 1),
+            player1StandRight: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("player1_stand_right.png")!), 1, 1),
+            player1WalkRight: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("player1_walk_right.png")!), 4, 1),
+            player1JumpRight: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("player1_jump_right.png")!), 1, 1),
+            player1StandLeft: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("player1_stand_left.png")!), 1, 1),
+            player1WalkLeft: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("player1_walk_left.png")!), 4, 1),
+            player1JumpLeft: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("player1_jump_left.png")!), 1, 1),
 
-            player2StandRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player2_stand_right.png")!), 1, 1),
-            player2WalkRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player2_walk_right.png")!), 4, 1),
-            player2JumpRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player2_jump_right.png")!), 1, 1),
-            player2StandLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player2_stand_left.png")!), 1, 1),
-            player2WalkLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player2_walk_left.png")!), 4, 1),
-            player2JumpLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("player2_jump_left.png")!), 1, 1),
+            player2StandRight: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("player2_stand_right.png")!), 1, 1),
+            player2WalkRight: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("player2_walk_right.png")!), 4, 1),
+            player2JumpRight: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("player2_jump_right.png")!), 1, 1),
+            player2StandLeft: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("player2_stand_left.png")!), 1, 1),
+            player2WalkLeft: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("player2_walk_left.png")!), 4, 1),
+            player2JumpLeft: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("player2_jump_left.png")!), 1, 1),
 
-            runnerBotStandRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("runner_bot_stand_right.png")!), 1, 1),
-            runnerBotStandLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("runner_bot_stand_left.png")!), 1, 1),
-            runnerBotWalkRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("runner_bot_walk_right.png")!), 4, 1),
-            runnerBotWalkLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("runner_bot_walk_left.png")!), 4, 1),
-            runnerBotJumpRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("runner_bot_jump_right.png")!), 1, 1),
-            runnerBotJumpLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("runner_bot_jump_left.png")!), 1, 1),
-            runnerBotHitRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("runner_bot_hit_right.png")!), 1, 1),
-            runnerBotHitLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("runner_bot_hit_left.png")!), 1, 1),
+            runnerBotStandRight: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("runner_bot_stand_right.png")!), 1, 1),
+            runnerBotStandLeft: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("runner_bot_stand_left.png")!), 1, 1),
+            runnerBotWalkRight: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("runner_bot_walk_right.png")!), 4, 1),
+            runnerBotWalkLeft: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("runner_bot_walk_left.png")!), 4, 1),
+            runnerBotJumpRight: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("runner_bot_jump_right.png")!), 1, 1),
+            runnerBotJumpLeft: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("runner_bot_jump_left.png")!), 1, 1),
+            runnerBotHitRight: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("runner_bot_hit_right.png")!), 1, 1),
+            runnerBotHitLeft: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("runner_bot_hit_left.png")!), 1, 1),
 
-            rollerBotStandRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("roller_bot_stand_right.png")!), 1, 1),
-            rollerBotStandLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("roller_bot_stand_left.png")!), 1, 1),
-            rollerBotWalkRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("roller_bot_walk_right.png")!), 2, 1),
-            rollerBotWalkLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("roller_bot_walk_left.png")!), 2, 1),
-            rollerBotJumpRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("roller_bot_jump_right.png")!), 1, 1),
-            rollerBotJumpLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("roller_bot_jump_left.png")!), 1, 1),
-            rollerBotHitRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("roller_bot_hit_right.png")!), 1, 1),
-            rollerBotHitLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("roller_bot_hit_left.png")!), 1, 1),
+            rollerBotStandRight: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("roller_bot_stand_right.png")!), 1, 1),
+            rollerBotStandLeft: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("roller_bot_stand_left.png")!), 1, 1),
+            rollerBotWalkRight: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("roller_bot_walk_right.png")!), 2, 1),
+            rollerBotWalkLeft: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("roller_bot_walk_left.png")!), 2, 1),
+            rollerBotJumpRight: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("roller_bot_jump_right.png")!), 1, 1),
+            rollerBotJumpLeft: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("roller_bot_jump_left.png")!), 1, 1),
+            rollerBotHitRight: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("roller_bot_hit_right.png")!), 1, 1),
+            rollerBotHitLeft: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("roller_bot_hit_left.png")!), 1, 1),
 
-            fastBotStandRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("fast_bot_stand_right.png")!), 1, 1),
-            fastBotStandLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("fast_bot_stand_left.png")!), 1, 1),
-            fastBotWalkRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("fast_bot_walk_right.png")!), 3, 1),
-            fastBotWalkLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("fast_bot_walk_left.png")!), 3, 1),
-            fastBotJumpRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("fast_bot_jump_right.png")!), 1, 1),
-            fastBotJumpLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("fast_bot_jump_left.png")!), 1, 1),
-            fastBotHitRight: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("fast_bot_hit_right.png")!), 1, 1),
-            fastBotHitLeft: await new SpriteSheetLoader().cutSpriteSheet((await imageTasks.get("fast_bot_hit_left.png")!), 1, 1),
+            fastBotStandRight: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("fast_bot_stand_right.png")!), 1, 1),
+            fastBotStandLeft: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("fast_bot_stand_left.png")!), 1, 1),
+            fastBotWalkRight: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("fast_bot_walk_right.png")!), 3, 1),
+            fastBotWalkLeft: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("fast_bot_walk_left.png")!), 3, 1),
+            fastBotJumpRight: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("fast_bot_jump_right.png")!), 1, 1),
+            fastBotJumpLeft: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("fast_bot_jump_left.png")!), 1, 1),
+            fastBotHitRight: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("fast_bot_hit_right.png")!), 1, 1),
+            fastBotHitLeft: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("fast_bot_hit_left.png")!), 1, 1),
         };
 
         let audio = await this.loadAudioResources();
@@ -309,49 +307,52 @@ export class ResourceLoader {
         }
     }
 
-    private async loadAudioResources(): Promise<AudioResources> {
-        const loader = new AudioLoader("assets/sounds", this._audioSystem);
-
-        let files = await this.loadFiles([
-            { name: "box.wav", instances: 1 },
-            { name: "pistol.wav", instances: 10 },
-            { name: "shotgun.wav", instances: 2 },
-            { name: "machinegun.wav", instances: 10 },
-            { name: "railgun.wav", instances: 2 },
-            { name: "explosion.wav", instances: 3 },
-            { name: "hit.wav", instances: 10 },
-            { name: "jump.wav", instances: 2 },
-            { name: "rocket.wav", instances: 3 },
-            { name: "singularitygrenade.wav", instances: 3 },
-            { name: "dead.wav", instances: 2 },
-        ], file => loader.load(file.name, file.instances));
-
-        return {
-            box: files.get("box.wav")!,
-            pistol: files.get("pistol.wav")!,
-            shotgun: files.get("shotgun.wav")!,
-            machinegun: files.get("machinegun.wav")!,
-            railgun: files.get("railgun.wav")!,
-            explosion: files.get("explosion.wav")!,
-            hit: files.get("hit.wav")!,
-            jump: files.get("jump.wav")!,
-            rocket: files.get("rocket.wav")!,
-            singularitygrenade: files.get("singularitygrenade.wav")!,
-            dead: files.get("dead.wav")!,
-            select: files.get("hit.wav")!,
-        };
-    }
-
-    private async loadFiles<TResource>(files: IAudioFile[], loader: (file: IAudioFile) => Promise<TResource>): Promise<Map<string, TResource>> {
+    private async loadImageFiles<TResource>(files: string[], loader: (file: string) => Promise<TResource>): Promise<Map<string, TResource>> {
         let tasks = new Map<string, Promise<TResource>>();
         for (let file of files) {
-            tasks.set(file.name, loader(file));
+            tasks.set(file, loader(file));
         }
         await Promise.all(tasks.values());
 
         let result = new Map<string, TResource>();
         for (let [key, value] of tasks) {
             result.set(key, await value);
+        }
+
+        return result;
+    }
+
+    private async loadAudioResources(): Promise<AudioResources> {
+        const loader = new AudioLoader("assets/sounds", this._audioSystem);
+
+        return await this.loadAudioFiles(
+            {
+                box: { name: "box.wav", instances: 1 },
+                pistol: { name: "pistol.wav", instances: 10 },
+                shotgun: { name: "shotgun.wav", instances: 2 },
+                machinegun: { name: "machinegun.wav", instances: 10 },
+                railgun: { name: "railgun.wav", instances: 2 },
+                explosion: { name: "explosion.wav", instances: 3 },
+                hit: { name: "hit.wav", instances: 10 },
+                jump: { name: "jump.wav", instances: 2 },
+                rocket: { name: "rocket.wav", instances: 3 },
+                singularitygrenade: { name: "singularitygrenade.wav", instances: 3 },
+                dead: { name: "dead.wav", instances: 2 },
+                select: { name: "hit.wav", instances: 1 },
+            },
+            file => loader.load(file.name, file.instances));
+    }
+
+    private async loadAudioFiles(definition: IAudioResourceSpec, loader: (file: IAudioFile) => Promise<AudioClip>): Promise<AudioResources> {
+        let tasks = new Map<string, Promise<AudioClip>>();
+        for (let key in definition) {
+            tasks.set(key, loader(definition[key]));
+        }
+        await Promise.all(tasks.values());
+
+        let result: any = {};
+        for (let [key, value] of tasks) {
+            result[key] = await value;
         }
 
         return result;
