@@ -63,7 +63,7 @@ export class Game implements IGameContext {
             this.spawnBox();
         }
 
-        if (!this._showGameOverScreen && this._players.filter(p => !p.entity.dead).length == 0) {
+        if (!this._showGameOverScreen && this.allPlayersDead) {
             this._showGameOverScreen = true;
             this._showGameOverScreenTime = time.currentTime;
         }
@@ -172,4 +172,6 @@ export class Game implements IGameContext {
         this._backdropImage = backdrop;
         this._overlayImage = overlay;
     }
+
+    private get allPlayersDead() { return this._players.filter(p => !p.entity.dead).length == 0; }
 }

@@ -50,12 +50,20 @@ export class LevelSelectionScreen extends Screen {
     }
 
     public render(): void {
-        this.viewport.context.drawImage(this.resources.images.background, 0, 0);
-        this.viewport.context.fillStyle = "#00000088";
-        this.viewport.context.fillRect(0, 0, this.viewport.width, this.viewport.height);
+        this.renderBackground();
 
         this.resources.fonts.large.renderCenteredInArea(this.viewport, "SELECT LEVEL!", 60, this.viewport.width);
 
+        this.renderLevels();
+    }
+
+    private renderBackground() {
+        this.viewport.context.drawImage(this.resources.images.background, 0, 0);
+        this.viewport.context.fillStyle = "#00000088";
+        this.viewport.context.fillRect(0, 0, this.viewport.width, this.viewport.height);
+    }
+
+    private renderLevels() {
         let x = this._renderOffset + (this.viewport.width / 2);
         for (let i = 0; i < this._levels.length; i++) {
             if (x >= -this.viewport.width && x <= this.viewport.width) {
@@ -73,10 +81,10 @@ export class LevelSelectionScreen extends Screen {
             this.resources.fonts.small.renderCenteredOnPoint(this.viewport, `HIGHSCORE ${highscore}`, centerLocation.addY(150));
         }
 
-        this.renderThumbnail(level, centerLocation.addY(150));
+        this.renderLevelThumbnail(level, centerLocation.addY(150));
     }
 
-    private renderThumbnail(level: LevelDefinition, centerLocation: Vector) {
+    private renderLevelThumbnail(level: LevelDefinition, centerLocation: Vector) {
         let levelGraphics = this.resources.images.levels[level.code];
         let thumbnailRect = new Rectangle(centerLocation.x - (levelGraphics.thumbnail.width / 2), 170, levelGraphics.thumbnail.width, levelGraphics.thumbnail.height);
 
