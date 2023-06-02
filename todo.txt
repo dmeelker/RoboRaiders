@@ -7,12 +7,10 @@
 [x] Sound effects
 
 - Weapon unlocks
-- Multiplayer modes
- - Coop
- - Competition
+
 - More weapons that are difficult to use
  - EMP emitter (place on ground, temporarily disables enemies)
- - Baseball bat (knocks enemies back)
+ [x] Baseball bat (knocks enemies back)
  - Stun rod (stuns enemies from close range)
  - Plasma rifle (fires a single shot that can pass through multiple enemies, dealing less damage as it goes)
  - Grenade launcher (fires a grenade that explodes on contact)
@@ -21,7 +19,9 @@
  - Foam grenade (fires a grenade that explodes on contact, expanding into a large foam blob that blocks enemy movement, large enemies might be able to walk through and destroy it)
  - Circuit Breaker (Joker weapon, kills everything, use once)
  - Rust weapon (slowly damages robots)
-
+- Multiplayer modes
+ - Coop
+ - Competition
 - More levels
 - Extra level elements
  - Pools of sludge
@@ -30,5 +30,5 @@
  - Configurable emitters
 - Enemy types
  - Charger
- - Flyer
+ [x] Flyer
 - Music

@@ -119,7 +119,7 @@ export class EntitySpawner extends Entity {
 
     private static createFlyingEnemy(location: Vector, context: IGameContext) {
         let enemy = new FlyingEnemyEntity(location, context);
-        enemy.hitpoints = 10;
+        enemy.hitpoints = 5;
         enemy.speed = 20;
         return enemy;
     }
