@@ -99,7 +99,7 @@ export class PlayerEntity extends Entity {
         this.updateJump(time);
         this.physics.update(time);
 
-        let enemies = this.context.entityManager.getOfType(EnemyEntity);
+        let enemies = this.context.entityManager.getEnemies();
         for (let enemy of enemies) {
             if (enemy.bounds.overlaps(this.bounds)) {
                 this.die();

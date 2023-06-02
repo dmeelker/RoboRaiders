@@ -1,6 +1,7 @@
 import { FrameTime } from "../../utilities/FrameTime";
 import { ILocation } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
+import { EnemyEntity } from "./Enemy";
 import { Entity } from "./Entity";
 
 export class EntityManager {
@@ -32,6 +33,18 @@ export class EntityManager {
     public render(viewport: Viewport) {
         for (let entity of this._entities) {
             entity.render(viewport);
+        }
+    }
+
+    public getEnemies(): EnemyEntity[] {
+        return this._entities.filter(e => e instanceof EnemyEntity).map(e => e as EnemyEntity);
+    }
+
+    public * getFiltered(filter: (entity: Entity) => boolean) {
+        for (let entity of this._entities) {
+            if (filter(entity)) {
+                yield entity;
+            }
         }
     }
 

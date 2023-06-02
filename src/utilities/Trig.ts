@@ -158,6 +158,10 @@ export class Vector implements ILocation {
         return new Vector(this.x * scalar, this.y * scalar);
     }
 
+    public floor() {
+        return new Vector(Math.floor(this.x), Math.floor(this.y));
+    }
+
     public toUnit() {
         let length = this.length;
 

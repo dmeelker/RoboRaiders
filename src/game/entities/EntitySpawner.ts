@@ -4,7 +4,7 @@ import { chance, randomArrayElement } from "../../utilities/Random";
 import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
-import { EnemyEntity } from "./Enemy";
+import { EnemyEntity, WalkingEnemyEntity } from "./Enemy";
 import { Entity } from "./Entity";
 import { Facing } from "./PlayerEntity";
 
@@ -68,7 +68,7 @@ export class EntitySpawner extends Entity {
             hitRight: context.resources.animations.runnerBotHitRight,
         };
 
-        let enemy = new EnemyEntity(location, animations, context);
+        let enemy = new WalkingEnemyEntity(location, animations, context);
         enemy.hitpoints = 10;
         enemy.speed = 200;
         return enemy;
@@ -86,7 +86,7 @@ export class EntitySpawner extends Entity {
             hitRight: context.resources.animations.fastBotHitRight,
         };
 
-        let enemy = new EnemyEntity(location, animations, context);
+        let enemy = new WalkingEnemyEntity(location, animations, context);
         enemy.hitpoints = 5;
         enemy.speed = 250;
         return enemy;
@@ -104,7 +104,7 @@ export class EntitySpawner extends Entity {
             hitRight: context.resources.animations.rollerBotHitRight,
         };
 
-        let enemy = new EnemyEntity(location, animations, context);
+        let enemy = new WalkingEnemyEntity(location, animations, context);
         enemy.hitpoints = 20;
         enemy.speed = 100;
         enemy.heavy = true;

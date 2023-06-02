@@ -1,7 +1,7 @@
 import { FrameTime } from "../../utilities/FrameTime";
 import { interpolate } from "../../utilities/Math";
 import { randomInt } from "../../utilities/Random";
-import { Point, Size, Vector } from "../../utilities/Trig";
+import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 import { Axis, CollisionContext, PhyicalObject } from "../Physics";
@@ -10,81 +10,31 @@ import { CorpseEntity } from "./Corpse";
 import { Entity } from "./Entity";
 import { Facing } from "./PlayerEntity";
 
-export class EnemyEntity extends Entity {
+export abstract class EnemyEntity extends Entity {
     public physics: PhyicalObject;
     public hitpoints = 10;
-    private _facing = Facing.Left;
     public speed = 200;
-    private _animator: ActorAnimator;
     public gravityOverride?: Vector;
     private _lastHitTime = -1000;
-    private _renderOffset = new Vector(0, 0);
-    public heavy = false;
     private _stunTime = -1000;
     private _stunDuration = 0;
 
-    public constructor(location: Vector, animations: ActorAnimations, gameContext: IGameContext) {
-        super(location, new Size(animations.standLeft.frames[0].width, animations.standLeft.frames[0].height), gameContext);
-        this._animator = new ActorAnimator(animations);
+    public constructor(location: Vector, size: Size, gameContext: IGameContext) {
+        super(location, size, gameContext);
 
         this.physics = new PhyicalObject(
             this, Vector.zero,
             new CollisionContext(this.context.level, this.context.entityManager));
-        this.physics.groundDrag = 1000;
     }
 
     public update(time: FrameTime) {
-        if (!this.stunned) {
-            if (this._facing == Facing.Left) {
-                this.moveLeft();
-            } else {
-                this.moveRight();
-            }
-        }
-
         this.physics.gravityVector = this.gravityOverride || PhyicalObject.defaultGravity;
-
         this.physics.update(time);
-
-        if (this.heavy && this.physics.groundedThisUpdate) {
-            this.context.viewport.shakeLight(time);
-        }
-
-        if (this.physics.lastCollisions.filter(c => c.axis == Axis.X && !c.passable).length > 0) {
-            this.turn();
-        }
-
-        this._animator.update({
-            physics: this.physics,
-            facing: this.facing,
-            timeSinceLastHit: this.timeSinceLastHit
-        });
-    }
-
-    public moveLeft() {
-        if (this.physics.onGround) {
-            this.physics.velocity.x -= this.speed;
-            this.physics.velocity.x = Math.max(this.physics.velocity.x, -this.speed);
-        }
-    }
-
-    public moveRight() {
-        if (this.physics.onGround) {
-            this.physics.velocity.x += this.speed;
-            this.physics.velocity.x = Math.min(this.physics.velocity.x, this.speed);
-        }
-    }
-
-    private turn() {
-        this._facing = this._facing == Facing.Left ? Facing.Right : Facing.Left;
     }
 
     public render(viewport: Viewport) {
-        let location = this.location.add(this._renderOffset);
-        this._animator.activeAnimation.render(viewport.context, new Point(Math.floor(location.x), Math.floor(location.y)));
-
-        //viewport.context.fillStyle = "yellow";
-        //viewport.context.fillRect(Math.floor(this.location.x), Math.floor(this.location.y), this.size.width, this.size.height);
+        let location = this.location.floor();
+        viewport.context.drawImage(this.activeAnimationImage, location.x, location.y);
     }
 
     public hit(power: number, vector: Vector | null = null) {
@@ -113,8 +63,45 @@ export class EnemyEntity extends Entity {
     private die(vector: Vector | null = null) {
         let direction = vector?.toUnit() ?? Vector.fromDegreeAngle(randomInt(0, 360));
         let corpseVector = direction.multiplyScalar(randomInt(200, 300));
-        this.context.entityManager.add(new CorpseEntity(this.location, corpseVector, this._animator.activeAnimation.getImage(), this.context));
+        this.context.entityManager.add(new CorpseEntity(this.location, corpseVector, this.activeAnimationImage, this.context));
         this.markDisposable();
+    }
+
+    protected get timeSinceLastHit() { return this.context.time.currentTime - this._lastHitTime; }
+    public get stunned() { return this.context.time.currentTime - this._stunTime < this._stunDuration; }
+
+    protected abstract get activeAnimationImage(): ImageBitmap;
+}
+
+export class WalkingEnemyEntity extends EnemyEntity {
+    private _facing = Facing.Left;
+    private _animator: ActorAnimator;
+    public heavy = false;
+
+
+    public constructor(location: Vector, animations: ActorAnimations, gameContext: IGameContext) {
+        super(location, new Size(animations.standLeft.frames[0].width, animations.standLeft.frames[0].height), gameContext);
+        this._animator = new ActorAnimator(animations);
+
+        this.physics.groundDrag = 1000;
+    }
+
+    public moveLeft() {
+        if (this.physics.onGround) {
+            this.physics.velocity.x -= this.speed;
+            this.physics.velocity.x = Math.max(this.physics.velocity.x, -this.speed);
+        }
+    }
+
+    public moveRight() {
+        if (this.physics.onGround) {
+            this.physics.velocity.x += this.speed;
+            this.physics.velocity.x = Math.min(this.physics.velocity.x, this.speed);
+        }
+    }
+
+    private turn() {
+        this._facing = this._facing == Facing.Left ? Facing.Right : Facing.Left;
     }
 
     public get facing() { return this._facing; }
@@ -131,6 +118,35 @@ export class EnemyEntity extends Entity {
         }
     }
 
-    private get timeSinceLastHit() { return this.context.time.currentTime - this._lastHitTime; }
-    public get stunned() { return this.context.time.currentTime - this._stunTime < this._stunDuration; }
+    public update(time: FrameTime) {
+        if (!this.stunned) {
+            if (this._facing == Facing.Left) {
+                this.moveLeft();
+            } else {
+                this.moveRight();
+            }
+        }
+
+        super.update(time);
+
+        if (this.heavy && this.physics.groundedThisUpdate) {
+            this.context.viewport.shakeLight(time);
+        }
+
+        if (this.physics.lastCollisions.filter(c => c.axis == Axis.X && !c.passable).length > 0) {
+            this.turn();
+        }
+
+        this._animator.update({
+            physics: this.physics,
+            facing: this.facing,
+            timeSinceLastHit: this.timeSinceLastHit
+        });
+    }
+
+    protected get activeAnimationImage() { return this._animator.activeAnimation.getImage(); }
 }
+
+// export class FlyingEnemyEntity extends EnemyEntity {
+
+// }
