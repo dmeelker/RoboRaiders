@@ -46,6 +46,7 @@ export interface AudioResources {
     jump: AudioClip;
     rocket: AudioClip;
     singularitygrenade: AudioClip;
+    bat: AudioClip;
     dead: AudioClip;
     select: AudioClip;
 }
@@ -343,6 +344,7 @@ export class ResourceLoader {
                 jump: { name: "jump.wav", instances: 2 },
                 rocket: { name: "rocket.wav", instances: 3 },
                 singularitygrenade: { name: "singularitygrenade.wav", instances: 3 },
+                bat: { name: "bat.wav", instances: 3 },
                 dead: { name: "dead.wav", instances: 2 },
                 select: { name: "hit.wav", instances: 1 },
             },

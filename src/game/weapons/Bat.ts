@@ -24,6 +24,7 @@ export class BatWeapon extends Weapon {
         let projectile = new BatSwingEntity(location.add(offset), time, direction, context);
         context.entityManager.add(projectile);
         this._lastSwingTime = time.currentTime;
+        context.resources.audio.bat.play();
     }
 
     public render(location: Vector, direction: Vector, viewport: Viewport): void {
