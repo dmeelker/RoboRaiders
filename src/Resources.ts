@@ -213,6 +213,7 @@ export class ResourceLoader {
                 level1: await this.loadLevelImages("level1", imageLoader),
                 level2: await this.loadLevelImages("level2", imageLoader),
                 level3: await this.loadLevelImages("level3", imageLoader),
+                level4: await this.loadLevelImages("level4", imageLoader),
             },
 
             player1StandRight: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("player1_stand_right.png")!), 1, 1),

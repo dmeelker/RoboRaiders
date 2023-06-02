@@ -65,6 +65,7 @@ convert("weapons/gravity_grenade", "Armed", "weapons/gravity_grenade_armed");
 convertLevel("level1");
 convertLevel("level2");
 convertLevel("level3");
+convertLevel("level4");
 
 scale("font", 1, "font_small");
 scale("font", 2, "font_default");
