@@ -80,7 +80,7 @@ export class GravityGrenadeEntity extends Entity {
     private get age() { return this.context.time.currentTime - this._creationTime; }
 
     public static updateGravityPull(gameContext: IGameContext) {
-        let enemies = gameContext.entityManager.getOfType(EnemyEntity);
+        let enemies = gameContext.entityManager.getEnemies();
         let gravityGrenades = Array.from(gameContext.entityManager.getOfType(GravityGrenadeEntity)).filter(g => g._state == GravityGrenadeState.Armed);
 
         for (let enemy of enemies) {

@@ -41,6 +41,9 @@ convert("fast-robot", "JumpRight", "fast_bot_jump_right");
 convert("fast-robot", "HitRight", "fast_bot_hit_right");
 convert("fast-robot", "HitLeft", "fast_bot_hit_left");
 
+convert("flyer", "Normal", "flyer");
+convert("flyer", "Hit", "flyer_hit");
+
 convert("crate", null, "crate");
 
 convert("weapons/bullet");

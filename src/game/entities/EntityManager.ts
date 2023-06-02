@@ -3,6 +3,7 @@ import { ILocation } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { EnemyEntity } from "./Enemy";
 import { Entity } from "./Entity";
+import { PlayerEntity } from "./PlayerEntity";
 
 export class EntityManager {
     private _entities = new Array<Entity>();
@@ -38,6 +39,10 @@ export class EntityManager {
 
     public getEnemies(): EnemyEntity[] {
         return this._entities.filter(e => e instanceof EnemyEntity).map(e => e as EnemyEntity);
+    }
+
+    public getPlayers(): PlayerEntity[] {
+        return this._entities.filter(e => e instanceof PlayerEntity).map(e => e as PlayerEntity);
     }
 
     public * getFiltered(filter: (entity: Entity) => boolean) {

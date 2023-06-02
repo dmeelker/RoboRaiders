@@ -34,6 +34,7 @@ export class PhyicalObject {
     public gravityModifier = 1.0;
     public terminalVelocity = 600;
     public groundDrag = 0;
+    public collidesWithLevel = true;
     private readonly _context: CollisionContext;
     private _onGround = false;
     private _onGroundTime = 0;
@@ -218,6 +219,10 @@ export class PhyicalObject {
     }
 
     private checkLevelCollision(location: Vector, axis: Axis): CollisionResult | undefined {
+        if (!this.collidesWithLevel) {
+            return undefined;;
+        }
+
         if (!this._context.level.bounds.containsPoint(location)) {
 
         }

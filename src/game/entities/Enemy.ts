@@ -1,6 +1,7 @@
+import { AnimationInstance } from "../../utilities/Animation";
 import { FrameTime } from "../../utilities/FrameTime";
 import { interpolate } from "../../utilities/Math";
-import { randomInt } from "../../utilities/Random";
+import { randomArrayElement, randomInt } from "../../utilities/Random";
 import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
@@ -8,7 +9,7 @@ import { Axis, CollisionContext, PhyicalObject } from "../Physics";
 import { ActorAnimations, ActorAnimator } from "./ActorAnimations";
 import { CorpseEntity } from "./Corpse";
 import { Entity } from "./Entity";
-import { Facing } from "./PlayerEntity";
+import { Facing, PlayerEntity } from "./PlayerEntity";
 
 export abstract class EnemyEntity extends Entity {
     public physics: PhyicalObject;
@@ -78,7 +79,6 @@ export class WalkingEnemyEntity extends EnemyEntity {
     private _animator: ActorAnimator;
     public heavy = false;
 
-
     public constructor(location: Vector, animations: ActorAnimations, gameContext: IGameContext) {
         super(location, new Size(animations.standLeft.frames[0].width, animations.standLeft.frames[0].height), gameContext);
         this._animator = new ActorAnimator(animations);
@@ -147,6 +147,132 @@ export class WalkingEnemyEntity extends EnemyEntity {
     protected get activeAnimationImage() { return this._animator.activeAnimation.getImage(); }
 }
 
-// export class FlyingEnemyEntity extends EnemyEntity {
+export class FlyingEnemyEntity extends EnemyEntity {
+    static readonly MODE_WANDER = "wander";
+    static readonly MODE_PLAYER = "player";
+    static readonly MODE_SCAN = "scan";
 
-// }
+    private _mode = FlyingEnemyEntity.MODE_WANDER;
+    private _modeStartTime = 0;
+
+    private readonly _animationNormal: AnimationInstance;
+    private readonly _animationHit: AnimationInstance;
+    private _animation: AnimationInstance;
+    private _target: PlayerEntity | Vector | null = null;
+
+    public constructor(location: Vector, context: IGameContext) {
+        super(location, new Size(context.resources.animations.flyer.frames[0].width, context.resources.animations.flyer.frames[0].height), context);
+        this._animationNormal = this.context.resources.animations.flyer.newInstance();
+        this._animationHit = this.context.resources.animations.flyerHit.newInstance();
+        this._animation = this._animationNormal;
+
+        this.physics.gravity = false;
+        this.physics.collidesWithLevel = false;
+        this.switchMode(this.getRandomMode());
+    }
+
+    public update(time: FrameTime) {
+        this._animation = this.timeSinceLastHit < 100 ? this._animationHit : this._animationNormal;
+
+        if (this.modeDurationPassed) {
+            this.toggleMode();
+        }
+
+        if (this._target == null) {
+            this._target = this.findTarget();
+        }
+
+        if (this._target) {
+            this.moveTowardsTarget();
+        }
+
+        this.physics.gravity = this.gravityOverride != null;
+
+        super.update(time);
+    }
+
+    private findTarget(): Vector | PlayerEntity | null {
+        if (this._mode == FlyingEnemyEntity.MODE_PLAYER) {
+            return this.findPlayerTarget();
+        } else if (this._mode == FlyingEnemyEntity.MODE_PLAYER) {
+            return this.findRandomTarget();
+        } else {
+            return null;
+        }
+    }
+
+    private findPlayerTarget(): PlayerEntity | null {
+        let player = this.context.entityManager.getPlayers();
+        if (player.length == 0)
+            return null;
+
+        return player[0];
+    }
+
+    private findRandomTarget(): Vector {
+        let x = randomInt(20, this.context.viewport.size.width - 40);
+        let y = randomInt(20, this.context.viewport.size.height - 40);
+
+        return new Vector(x, y);
+    }
+
+    private moveTowardsTarget() {
+        let target = this._target;
+        if (target == null)
+            return;
+
+        let direction: Vector;
+        if (target instanceof PlayerEntity) {
+            let distance = target.centerLocation.subtract(this.centerLocation);
+            direction = distance.toUnit();
+        } else if (target instanceof Vector) {
+            let distance = target.subtract(this.centerLocation).length;
+            if (distance < 10) {
+                this._target = null;
+                return;
+            }
+
+            direction = target.subtract(this.centerLocation).toUnit();
+        } else {
+            return;
+        }
+
+        let velocity = direction.multiplyScalar(this.speed);
+        this.physics.velocity = velocity;
+    }
+
+    private switchMode(mode: string) {
+        this._mode = mode;
+        this._modeStartTime = this.context.time.currentTime;
+    }
+
+    private toggleMode() {
+        if (this._mode == FlyingEnemyEntity.MODE_WANDER) {
+            this.switchMode(FlyingEnemyEntity.MODE_SCAN);
+        } else if (this._mode == FlyingEnemyEntity.MODE_SCAN) {
+            this.switchMode(FlyingEnemyEntity.MODE_PLAYER);
+        } else {
+            this.switchMode(FlyingEnemyEntity.MODE_WANDER);
+        }
+        this._target = null;
+    }
+
+    private getRandomMode() {
+        return randomArrayElement([FlyingEnemyEntity.MODE_WANDER, FlyingEnemyEntity.MODE_PLAYER, FlyingEnemyEntity.MODE_SCAN]);
+    }
+
+    protected get activeAnimationImage() { return this._animation.getImage(); }
+    private get modeDurationPassed() {
+        let modeDuration = this.context.time.currentTime - this._modeStartTime;
+
+        if (this._mode == FlyingEnemyEntity.MODE_WANDER) {
+            return modeDuration > 10000;
+        } else if (this._mode == FlyingEnemyEntity.MODE_SCAN) {
+            return modeDuration > 3000;
+        } else if (this._mode == FlyingEnemyEntity.MODE_PLAYER) {
+            return modeDuration > 5000;
+        } else {
+            return false;
+        }
+    }
+}

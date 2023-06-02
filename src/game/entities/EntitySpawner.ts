@@ -4,7 +4,7 @@ import { chance, randomArrayElement } from "../../utilities/Random";
 import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
-import { EnemyEntity, WalkingEnemyEntity } from "./Enemy";
+import { EnemyEntity, FlyingEnemyEntity, WalkingEnemyEntity } from "./Enemy";
 import { Entity } from "./Entity";
 import { Facing } from "./PlayerEntity";
 
@@ -26,7 +26,6 @@ export class EntitySpawner extends Entity {
 
     public spawnEnemy(time: FrameTime) {
         let enemy = this.createRandomEnemy(this.centerLocation);
-        enemy.facing = this.randomFacing();
         enemy.location.x = this.location.y;
         enemy.location.x = this.centerLocation.x - (enemy.width / 2);
 
@@ -41,7 +40,7 @@ export class EntitySpawner extends Entity {
     }
 
     private getAvailableEnemyTypes() {
-        let availableTypes = [
+        let availableTypes: Array<(location: Vector, context: IGameContext) => EnemyEntity> = [
             EntitySpawner.createBasicEnemy
         ];
 
@@ -50,6 +49,10 @@ export class EntitySpawner extends Entity {
         }
 
         if (this.context.difficulty > 0.5) {
+            availableTypes.push(EntitySpawner.createFlyingEnemy);
+        }
+
+        if (this.context.difficulty > 0.7) {
             availableTypes.push(EntitySpawner.createFastEnemy);
         }
 
@@ -71,6 +74,7 @@ export class EntitySpawner extends Entity {
         let enemy = new WalkingEnemyEntity(location, animations, context);
         enemy.hitpoints = 10;
         enemy.speed = 200;
+        enemy.facing = EntitySpawner.randomFacing();
         return enemy;
     }
 
@@ -89,6 +93,7 @@ export class EntitySpawner extends Entity {
         let enemy = new WalkingEnemyEntity(location, animations, context);
         enemy.hitpoints = 5;
         enemy.speed = 250;
+        enemy.facing = EntitySpawner.randomFacing();
         return enemy;
     }
 
@@ -107,11 +112,19 @@ export class EntitySpawner extends Entity {
         let enemy = new WalkingEnemyEntity(location, animations, context);
         enemy.hitpoints = 20;
         enemy.speed = 100;
+        enemy.facing = EntitySpawner.randomFacing();
         enemy.heavy = true;
         return enemy;
     }
 
-    private randomFacing(): Facing {
+    private static createFlyingEnemy(location: Vector, context: IGameContext) {
+        let enemy = new FlyingEnemyEntity(location, context);
+        enemy.hitpoints = 10;
+        enemy.speed = 20;
+        return enemy;
+    }
+
+    private static randomFacing(): Facing {
         return chance(50) ? Facing.Left : Facing.Right;
     }
 

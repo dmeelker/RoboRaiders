@@ -101,6 +101,9 @@ export interface AnimationResources {
     fastBotJumpLeft: AnimationDefinition,
     fastBotHitRight: AnimationDefinition,
     fastBotHitLeft: AnimationDefinition,
+
+    flyer: AnimationDefinition,
+    flyerHit: AnimationDefinition,
 }
 
 export interface Fonts {
@@ -184,6 +187,9 @@ export class ResourceLoader {
             "fast_bot_jump_left.png",
             "fast_bot_hit_right.png",
             "fast_bot_hit_left.png",
+
+            "flyer.png",
+            "flyer_hit.png",
         ], file => imageLoader.load(file));
 
         let images = {
@@ -249,6 +255,9 @@ export class ResourceLoader {
             fastBotJumpLeft: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("fast_bot_jump_left.png")!), 1, 1),
             fastBotHitRight: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("fast_bot_hit_right.png")!), 1, 1),
             fastBotHitLeft: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("fast_bot_hit_left.png")!), 1, 1),
+
+            flyer: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("flyer.png")!), 4, 1),
+            flyerHit: await new SpriteSheetLoader().cutSpriteSheet((imageFiles.get("flyer_hit.png")!), 1, 1),
         };
 
         let audio = await this.loadAudioResources();
@@ -294,6 +303,9 @@ export class ResourceLoader {
             fastBotJumpLeft: new AnimationDefinition(images.fastBotJumpLeft, 1),
             fastBotHitRight: new AnimationDefinition(images.fastBotHitRight, 1),
             fastBotHitLeft: new AnimationDefinition(images.fastBotHitLeft, 1),
+
+            flyer: new AnimationDefinition(images.flyer, 150),
+            flyerHit: new AnimationDefinition(images.flyerHit, 1),
         };
 
         let fonts = {
