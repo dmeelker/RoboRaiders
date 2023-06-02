@@ -48,7 +48,7 @@ export class EntitySpawner extends Entity {
             availableTypes.push(EntitySpawner.createLargeEnemy);
         }
 
-        if (this.context.difficulty > 0.5) {
+        if (this.context.difficulty > 0.4) {
             availableTypes.push(EntitySpawner.createFlyingEnemy);
         }
 
