@@ -1,4 +1,5 @@
 import { FrameTime } from "../../utilities/FrameTime";
+import { interpolate } from "../../utilities/Math";
 import { randomInt } from "../../utilities/Random";
 import { Point, Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
@@ -19,6 +20,8 @@ export class EnemyEntity extends Entity {
     private _lastHitTime = -1000;
     private _renderOffset = new Vector(0, 0);
     public heavy = false;
+    private _stunTime = -1000;
+    private _stunDuration = 0;
 
     public constructor(location: Vector, animations: ActorAnimations, gameContext: IGameContext) {
         super(location, new Size(animations.standLeft.frames[0].width, animations.standLeft.frames[0].height), gameContext);
@@ -27,13 +30,16 @@ export class EnemyEntity extends Entity {
         this.physics = new PhyicalObject(
             this, Vector.zero,
             new CollisionContext(this.context.level, this.context.entityManager));
+        this.physics.groundDrag = 1000;
     }
 
     public update(time: FrameTime) {
-        if (this._facing == Facing.Left) {
-            this.moveLeft();
-        } else {
-            this.moveRight();
+        if (!this.stunned) {
+            if (this._facing == Facing.Left) {
+                this.moveLeft();
+            } else {
+                this.moveRight();
+            }
         }
 
         this.physics.gravityVector = this.gravityOverride || PhyicalObject.defaultGravity;
@@ -56,11 +62,17 @@ export class EnemyEntity extends Entity {
     }
 
     public moveLeft() {
-        this.physics.velocity.x = -this.speed;
+        if (this.physics.onGround) {
+            this.physics.velocity.x -= this.speed;
+            this.physics.velocity.x = Math.max(this.physics.velocity.x, -this.speed);
+        }
     }
 
     public moveRight() {
-        this.physics.velocity.x = this.speed;
+        if (this.physics.onGround) {
+            this.physics.velocity.x += this.speed;
+            this.physics.velocity.x = Math.min(this.physics.velocity.x, this.speed);
+        }
     }
 
     private turn() {
@@ -81,11 +93,21 @@ export class EnemyEntity extends Entity {
 
         this.hitpoints -= power;
         this._lastHitTime = this.context.time.currentTime;
+        this.stun(Math.min(interpolate(50, 200, power / 10), 200));
         this.context.resources.audio.hit.play();
 
         if (this.hitpoints <= 0) {
             this.die(vector);
         }
+    }
+
+    public stun(duration = 500) {
+        this._stunTime = this.context.time.currentTime;
+        this._stunDuration = duration;
+    }
+
+    public push(vector: Vector) {
+        this.physics.velocity = this.physics.velocity.add(vector);
     }
 
     private die(vector: Vector | null = null) {
@@ -110,4 +132,5 @@ export class EnemyEntity extends Entity {
     }
 
     private get timeSinceLastHit() { return this.context.time.currentTime - this._lastHitTime; }
+    public get stunned() { return this.context.time.currentTime - this._stunTime < this._stunDuration; }
 }

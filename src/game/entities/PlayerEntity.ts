@@ -18,6 +18,7 @@ import { EnemyEntity } from "./Enemy";
 import { Entity } from "./Entity";
 import { BoxEntity } from "./BoxEntity";
 import { CorpseEntity } from "./Corpse";
+import { BatWeapon } from "../weapons/Bat";
 
 export enum Facing {
     Left,
@@ -55,6 +56,7 @@ export class PlayerEntity extends Entity {
     public constructor(location: Vector, _player: Player, index: number, gameContext: IGameContext) {
         super(location, new Size(32, 34), gameContext);
         this._availableWeapons = [
+            () => new BatWeapon(gameContext),
             () => new PistolWeapon(gameContext),
             () => new MachineGunWeapon(gameContext),
             () => new ShotgunWeapon(gameContext),

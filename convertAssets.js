@@ -49,6 +49,8 @@ convert("weapons/machinegun");
 convert("weapons/shotgun");
 convert("weapons/rpg");
 convert("weapons/rpg_grenade");
+convert("weapons/bat");
+convert("weapons/bat_swing");
 
 convert("weapons/railgun");
 convert("weapons/railgun_loaded");

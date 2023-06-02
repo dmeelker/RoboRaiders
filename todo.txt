@@ -4,6 +4,7 @@
 [x] High scores
 [x] Level selection
 [x] Home screen
+[x] Sound effects
 
 - Weapon unlocks
 - Multiplayer modes
@@ -19,6 +20,7 @@
  - Explosive darts (fires darts that stick in enemy and explode after a short delay)
  - Foam grenade (fires a grenade that explodes on contact, expanding into a large foam blob that blocks enemy movement, large enemies might be able to walk through and destroy it)
  - Circuit Breaker (Joker weapon, kills everything, use once)
+ - Rust weapon (slowly damages robots)
 
 - More levels
 - Extra level elements
@@ -29,5 +31,4 @@
 - Enemy types
  - Charger
  - Flyer
-- Sound effects
 - Music

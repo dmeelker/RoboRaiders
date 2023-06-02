@@ -22,6 +22,8 @@ export interface ImageResources {
     dart: ImageBitmap;
     gravityGrenadeUnarmed: ImageBitmap;
     gravityGrenadeArmed: ImageBitmap;
+    bat: ImageBitmap;
+    batSwing: ImageBitmap;
 
     levels: { [id: string]: LevelImages; };
 }
@@ -138,6 +140,8 @@ export class ResourceLoader {
             "weapons/dart.png",
             "weapons/gravity_grenade_unarmed.png",
             "weapons/gravity_grenade_armed.png",
+            "weapons/bat.png",
+            "weapons/bat_swing.png",
 
             "player1_stand_right.png",
             "player1_walk_right.png",
@@ -195,6 +199,8 @@ export class ResourceLoader {
             dart: imageFiles.get("weapons/dart.png")!,
             gravityGrenadeUnarmed: imageFiles.get("weapons/gravity_grenade_unarmed.png")!,
             gravityGrenadeArmed: imageFiles.get("weapons/gravity_grenade_armed.png")!,
+            bat: imageFiles.get("weapons/bat.png")!,
+            batSwing: imageFiles.get("weapons/bat_swing.png")!,
 
             levels: {
                 level1: await this.loadLevelImages("level1", imageLoader),
