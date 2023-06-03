@@ -15,7 +15,7 @@ import { SpriteSheetLoader } from "./utilities/SpriteSheetLoader";
 import { AnimationDefinition } from "./utilities/Animation";
 import { InputProvider } from "./input/InputProvider";
 import { LevelSelectionScreen } from "./LevelSelectionScreen";
-import { LevelDefinition } from "./game/Levels";
+import { LevelDefinition } from "./game/LevelDefinition";
 import { Font } from "./Font";
 import { IntroScreen } from "./IntroScreen";
 import { ResourceLoader, Resources } from "./Resources";

@@ -1,5 +1,6 @@
 import { IScreens, Inputs } from "./Main";
-import { LevelDefinition, levels } from "./game/Levels";
+import { levels } from "./game/Levels";
+import { LevelDefinition } from "./game/LevelDefinition";
 import { Keys } from "./input/InputProvider";
 import { FrameTime } from "./utilities/FrameTime";
 import { Screen } from "./utilities/ScreenManager";

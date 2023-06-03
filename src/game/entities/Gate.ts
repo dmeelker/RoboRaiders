@@ -9,6 +9,8 @@ import { Entity } from "./Entity";
 export enum GateDirection {
     Left,
     Right,
+    Up,
+    Down
 }
 
 export class Gate extends Entity {
@@ -28,7 +30,7 @@ export class Gate extends Entity {
             return;
         }
 
-        let enemies = this.context.entityManager.getOfType(EnemyEntity);
+        let enemies = this.context.entityManager.getEnemies();
         // let players = this.context.entityManager.getOfType(PlayerEntity);
 
         for (let enemy of enemies) {
@@ -49,6 +51,8 @@ export class Gate extends Entity {
             return entity.location.x == this.location.x && between(entity.location.y, this.location.y, this.location.y + this.bounds.height);
         } else if (this._direction == GateDirection.Right) {
             return entity.location.x + entity.size.width == this.location.x + this.size.width && between(entity.location.y, this.location.y, this.location.y + this.bounds.height);
+        } else if (this._direction == GateDirection.Down) {
+            return between(entity.location.x, this.location.x, this.location.x + this.bounds.width) && entity.location.y + entity.size.height == this.location.y + this.size.height;
         }
 
         return false;
@@ -59,12 +63,32 @@ export class Gate extends Entity {
             return;
 
         let entranceOffset = entity.location.subtract(this.location);
-        let exitOffset = this._direction == GateDirection.Right ? new Vector(4, 0) : new Vector(-4, 0);
+        let exitOffset = Vector.zero;
+
+        switch (this._direction) {
+            case GateDirection.Left:
+                exitOffset = new Vector(-4, 0);
+                break;
+            case GateDirection.Right:
+                exitOffset = new Vector(4, 0);
+                break;
+            case GateDirection.Down:
+                let locationX = entranceOffset.x / this.width;
+                entranceOffset.y = 0;
+                entranceOffset.x = this._matchingGate.width * locationX;
+                break;
+        }
+
+        //let exitOffset = this._direction == GateDirection.Right ? new Vector(4, 0) : new Vector(-4, 0);
         entity.location = this._matchingGate.location.add(exitOffset).add(entranceOffset);
+
+        console.log(entity.location);
     }
 
     public render(_viewport: Viewport) {
-        // viewport.context.fillStyle = "orange";
-        // viewport.context.fillRect(this.location.x, this.location.y, this.size.width, this.size.height);
+        if (this.context.debugMode) {
+            _viewport.context.fillStyle = "orange";
+            _viewport.context.fillRect(this.location.x, this.location.y, this.size.width, this.size.height);
+        }
     }
 }

@@ -128,8 +128,10 @@ export class EntitySpawner extends Entity {
         return chance(50) ? Facing.Left : Facing.Right;
     }
 
-    public render(_viewport: Viewport) {
-        //viewport.context.fillStyle = "maroon";
-        //viewport.context.fillRect(Math.floor(this.location.x), Math.floor(this.location.y), this.size.width, this.size.height);
+    public render(viewport: Viewport) {
+        if (this.context.debugMode) {
+            viewport.context.fillStyle = "maroon";
+            viewport.context.fillRect(Math.floor(this.location.x), Math.floor(this.location.y), this.size.width, this.size.height);
+        }
     }
 }

@@ -10,10 +10,11 @@ import { BoxEntity } from "./entities/BoxEntity";
 import { LevelLoader } from "./LevelLoader";
 import { BoxSpawner } from "./BoxSpawner";
 import { Highscores } from "./Highscores";
-import { LevelDefinition } from "./Levels";
+import { LevelDefinition } from "./LevelDefinition";
 import { Resources } from "../Resources";
 
 export interface IGameContext {
+    get debugMode(): boolean;
     get time(): FrameTime;
     get runTime(): number;
     get difficulty(): number;
@@ -107,7 +108,7 @@ export class Game implements IGameContext {
     private loadLevelData(level: LevelDefinition) {
         this._levelDefinition = level;
         let levelLoader = new LevelLoader(this);
-        levelLoader.loadLevel(level.code);
+        levelLoader.loadLevel(level);
 
         this._players = [
             new Player(this._level.playerSpawnLocations[0].clone(), this._inputs.player1, 0, this)];
@@ -164,6 +165,7 @@ export class Game implements IGameContext {
     public get viewport() { return this._viewport; }
     public get runTime() { return this._time.currentTime - this._startTime; }
     public get difficulty() { return Math.min(this._score / 50, 1); }
+    public get debugMode() { return true; }
 
     public get levelDefinition() { return this._levelDefinition; }
 

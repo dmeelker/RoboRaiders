@@ -134,7 +134,7 @@ export class PlayerEntity extends Entity {
         this._weaponEquipTime = this.context.time.currentTime;
     }
 
-    private die() {
+    public die() {
         this.context.resources.audio.dead.play();
         this._dead = true;
         let corpseVector = Vector.fromDegreeAngle(randomInt(0, 360)).multiplyScalar(randomInt(200, 300));

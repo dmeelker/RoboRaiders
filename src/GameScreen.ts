@@ -1,5 +1,5 @@
 import { Game } from "./game/Game";
-import { LevelDefinition } from "./game/Levels";
+import { LevelDefinition } from "./game/LevelDefinition";
 import { Keys } from "./input/InputProvider";
 import { FrameTime } from "./utilities/FrameTime";
 import { Screen } from "./utilities/ScreenManager";

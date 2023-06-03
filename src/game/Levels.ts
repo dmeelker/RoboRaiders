@@ -1,12 +1,11 @@
-export class LevelDefinition {
-    public constructor(public code: string, public name: string) {
-
-    }
-}
+import { LevelDefinition } from "./LevelDefinition";
+import level1 from "./levels/Level1";
+import level3 from "./levels/Level3";
+import level4 from "./levels/Level4";
 
 export const levels = [
-    new LevelDefinition("level1", "Temple"),
+    level1,
     new LevelDefinition("level2", "Big bang"),
-    new LevelDefinition("level3", "Alien Invasion"),
-    new LevelDefinition("level4", "No swimming!"),
+    level3,
+    level4,
 ];

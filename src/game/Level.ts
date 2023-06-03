@@ -1,5 +1,6 @@
 import { Rectangle, Size, Vector } from "../utilities/Trig";
 import { Viewport } from "../utilities/Viewport";
+import { LevelDefinition } from "./LevelDefinition";
 
 export class Level {
     private _blocks = new Array<Rectangle>();
@@ -9,8 +10,8 @@ export class Level {
     private readonly _itemSpawnAreas: Array<Rectangle>;
     private readonly _playerSpawnLocations: Array<Vector>;
 
-    public constructor(name: string, size: Size, blocks: Array<Rectangle>, playerSpawnLocations: Array<Vector>) {
-        this.name = name;
+    public constructor(definition: LevelDefinition, size: Size, blocks: Array<Rectangle>, playerSpawnLocations: Array<Vector>) {
+        this.name = definition.code;
         this._size = size;
         this._bounds = new Rectangle(0, 0, size.width, size.height);
         this._playerSpawnLocations = playerSpawnLocations;

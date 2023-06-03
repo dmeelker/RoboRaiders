@@ -3,8 +3,10 @@ import { Block, ImageBlockScanner } from "../utilities/ImageBlockScanner";
 import * as Trig from "../utilities/Trig";
 import { Game } from "./Game";
 import { Level } from "./Level";
+import { GateSetDefinition, LevelDefinition } from "./LevelDefinition";
 import { EntitySpawner } from "./entities/EntitySpawner";
-import { Gate, GateDirection } from "./entities/Gate";
+import { Gate } from "./entities/Gate";
+import { PlayerZoneKillerEntity } from "./entities/PlayerKillerZone";
 
 export class LevelLoader {
     private readonly _game: Game;
@@ -13,57 +15,32 @@ export class LevelLoader {
         this._game = game;
     }
 
-    public loadLevel(level: string) {
-        let images = this._game.resources.images.levels[level];
+    public loadLevel(levelDefinition: LevelDefinition) {
+        let images = this._game.resources.images.levels[levelDefinition.code];
 
         let blocks = new ImageBlockScanner().loadBlocks(images.metadata);
         let collisionBlocks = this.loadCollisionBlocks(blocks);
         let playerSpawns = this.loadPlayerSpawnLocations(blocks);
 
+
         this._game.setLevel(
-            new Level(level, new Trig.Size(640, 480), collisionBlocks, playerSpawns),
+            new Level(levelDefinition, new Trig.Size(640, 480), collisionBlocks, playerSpawns),
             images.backdrop,
             images.overlay);
 
         this.loadSpawns(blocks);
-        this.loadGates(blocks);
+        this.loadGates(levelDefinition.gates);
+        this.loadKillZones(levelDefinition.killZones);
     }
 
-    private loadGates(blocks: Block[]) {
-        {
-            const entranceColor = new Color(255, 182, 0, 255);
-            const exitColor = new Color(255, 255, 0, 255);
+    private loadGates(gates: GateSetDefinition[]) {
+        for (let gate of gates) {
+            let entrance = new Gate(gate.entrance.rect, gate.entrance.direction, true, this._game);
+            let exit = new Gate(gate.exit.rect, gate.exit.direction, false, this._game);
+            entrance._matchingGate = exit;
 
-            const entrances = blocks.filter(b => b.color.equals(entranceColor));
-            const exits = blocks.filter(b => b.color.equals(exitColor));
-
-            if (entrances.length == 1 && exits.length == 1) {
-                let entrance = new Gate(entrances[0].rectangle, GateDirection.Right, true, this._game);
-                let exit = new Gate(exits[0].rectangle, GateDirection.Left, false, this._game);
-
-                entrance._matchingGate = exit;
-
-                this._game.entityManager.add(entrance);
-                this._game.entityManager.add(exit);
-            }
-        }
-
-        {
-            const entranceColor = new Color(255, 72, 0, 255);
-            const exitColor = new Color(255, 121, 0, 255);
-
-            const entrances = blocks.filter(b => b.color.equals(entranceColor));
-            const exits = blocks.filter(b => b.color.equals(exitColor));
-
-            if (entrances.length == 1 && exits.length == 1) {
-                let entrance = new Gate(entrances[0].rectangle, GateDirection.Left, true, this._game);
-                let exit = new Gate(exits[0].rectangle, GateDirection.Right, false, this._game);
-
-                entrance._matchingGate = exit;
-
-                this._game.entityManager.add(entrance);
-                this._game.entityManager.add(exit);
-            }
+            this._game.entityManager.add(entrance);
+            this._game.entityManager.add(exit);
         }
     }
 
@@ -98,5 +75,11 @@ export class LevelLoader {
         }
 
         return null;
+    }
+
+    private loadKillZones(killZones: Trig.Rectangle[]) {
+        for (let killZone of killZones) {
+            this._game.entityManager.add(new PlayerZoneKillerEntity(killZone.location.toVector(), killZone.size, this._game));
+        }
     }
 }
