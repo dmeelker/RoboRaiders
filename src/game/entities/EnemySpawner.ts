@@ -1,6 +1,6 @@
 import { FrameTime } from "../../utilities/FrameTime";
 import { interpolate } from "../../utilities/Math";
-import { chance, randomArrayElement } from "../../utilities/Random";
+import { chance, randomWeightedArrayElement } from "../../utilities/Random";
 import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
@@ -8,14 +8,60 @@ import { EnemyEntity, FlyingEnemyEntity, WalkingEnemyEntity } from "./Enemy";
 import { Entity } from "./Entity";
 import { Facing } from "./PlayerEntity";
 
-export class EntitySpawner extends Entity {
-    private _lastSpawnTime = -10000;
+type EnemyFactory = (location: Vector, context: IGameContext) => EnemyEntity;
 
-    private get interval() { return interpolate(5000, 2000, this.context.difficulty); }
+export interface IEnemySpawnerConfigurationOptions {
+    enemyTypes?: EnemySpawnConfiguration[];
+    minSpawnInterval?: number;
+    maxSpawnInterval?: number;
+    delay?: number;
+}
+
+export class EnemySpawnerConfiguration {
+    public enemyTypes: EnemySpawnConfiguration[] = [];
+    public minSpawnInterval: number;
+    public maxSpawnInterval: number;
+    public delay: number
+
+    public constructor(options: IEnemySpawnerConfigurationOptions = {}) {
+        this.minSpawnInterval = options?.minSpawnInterval ?? 5000;
+        this.maxSpawnInterval = options?.maxSpawnInterval ?? 2000;
+        this.delay = options?.delay ?? 0;
+
+        if (options?.enemyTypes) {
+            this.enemyTypes = options?.enemyTypes;
+        } else {
+            this.enemyTypes.push(new EnemySpawnConfiguration(EnemySpawner.createBasicEnemy, 10, 0));
+            this.enemyTypes.push(new EnemySpawnConfiguration(EnemySpawner.createLargeEnemy, 6, 0.3));
+            this.enemyTypes.push(new EnemySpawnConfiguration(EnemySpawner.createFlyingEnemy, 3, 0.4));
+            this.enemyTypes.push(new EnemySpawnConfiguration(EnemySpawner.createFastEnemy, 3, 0.7));
+        }
+    }
+}
+
+export class EnemySpawnConfiguration {
+    public factory: EnemyFactory;
+    public weight: number;
+    public fromDifficulty: number;
+
+    public constructor(factory: EnemyFactory, weight: number, fromDifficulty: number) {
+        this.factory = factory;
+        this.weight = weight;
+        this.fromDifficulty = fromDifficulty;
+    }
+}
+
+export class EnemySpawner extends Entity {
+    private _lastSpawnTime = -10000;
+    private readonly _configuration: EnemySpawnerConfiguration;
+
+    private get interval() { return interpolate(this._configuration.minSpawnInterval, this._configuration.maxSpawnInterval, this.context.difficulty); }
     private get timeSinceLastSpawn() { return this.context.time.currentTime - this._lastSpawnTime; }
 
-    public constructor(location: Vector, size: Size, context: IGameContext) {
+    public constructor(location: Vector, size: Size, context: IGameContext, configuration: EnemySpawnerConfiguration) {
         super(location, size, context);
+        this._configuration = configuration;
+        this._lastSpawnTime = context.time.currentTime - this.interval + configuration.delay;
     }
 
     public update(time: FrameTime) {
@@ -34,32 +80,35 @@ export class EntitySpawner extends Entity {
     }
 
     private createRandomEnemy(location: Vector) {
-        let factories = this.getAvailableEnemyTypes();
+        let enemyTypes = this.getAvailableEnemyTypes();
+        let enemyType = randomWeightedArrayElement(enemyTypes, type => type.weight);
 
-        return randomArrayElement(factories)(location, this.context);
+        return enemyType.factory(location, this.context);
     }
 
-    private getAvailableEnemyTypes() {
-        let availableTypes: Array<(location: Vector, context: IGameContext) => EnemyEntity> = [
-            EntitySpawner.createBasicEnemy
-        ];
+    private getAvailableEnemyTypes(): EnemySpawnConfiguration[] {
+        return this._configuration.enemyTypes.filter(x => x.fromDifficulty <= this.context.difficulty);
 
-        if (this.context.difficulty > 0.3) {
-            availableTypes.push(EntitySpawner.createLargeEnemy);
-        }
+        // let availableTypes: Array<(location: Vector, context: IGameContext) => EnemyEntity> = [
+        //     EnemySpawner.createBasicEnemy
+        // ];
 
-        if (this.context.difficulty > 0.4) {
-            availableTypes.push(EntitySpawner.createFlyingEnemy);
-        }
+        // if (this.context.difficulty > 0.3) {
+        //     availableTypes.push(EnemySpawner.createLargeEnemy);
+        // }
 
-        if (this.context.difficulty > 0.7) {
-            availableTypes.push(EntitySpawner.createFastEnemy);
-        }
+        // if (this.context.difficulty > 0.4) {
+        //     availableTypes.push(EnemySpawner.createFlyingEnemy);
+        // }
 
-        return availableTypes;
+        // if (this.context.difficulty > 0.7) {
+        //     availableTypes.push(EnemySpawner.createFastEnemy);
+        // }
+
+        // return availableTypes;
     }
 
-    private static createBasicEnemy(location: Vector, context: IGameContext) {
+    public static createBasicEnemy(location: Vector, context: IGameContext) {
         let animations = {
             standLeft: context.resources.animations.runnerBotStandLeft,
             standRight: context.resources.animations.runnerBotStandRight,
@@ -74,11 +123,11 @@ export class EntitySpawner extends Entity {
         let enemy = new WalkingEnemyEntity(location, animations, context);
         enemy.hitpoints = 10;
         enemy.speed = 200;
-        enemy.facing = EntitySpawner.randomFacing();
+        enemy.facing = EnemySpawner.randomFacing();
         return enemy;
     }
 
-    private static createFastEnemy(location: Vector, context: IGameContext) {
+    public static createFastEnemy(location: Vector, context: IGameContext) {
         let animations = {
             standLeft: context.resources.animations.fastBotStandLeft,
             standRight: context.resources.animations.fastBotStandRight,
@@ -93,11 +142,11 @@ export class EntitySpawner extends Entity {
         let enemy = new WalkingEnemyEntity(location, animations, context);
         enemy.hitpoints = 5;
         enemy.speed = 250;
-        enemy.facing = EntitySpawner.randomFacing();
+        enemy.facing = EnemySpawner.randomFacing();
         return enemy;
     }
 
-    private static createLargeEnemy(location: Vector, context: IGameContext) {
+    public static createLargeEnemy(location: Vector, context: IGameContext) {
         let animations = {
             standLeft: context.resources.animations.rollerBotStandLeft,
             standRight: context.resources.animations.rollerBotStandRight,
@@ -112,12 +161,12 @@ export class EntitySpawner extends Entity {
         let enemy = new WalkingEnemyEntity(location, animations, context);
         enemy.hitpoints = 20;
         enemy.speed = 100;
-        enemy.facing = EntitySpawner.randomFacing();
+        enemy.facing = EnemySpawner.randomFacing();
         enemy.heavy = true;
         return enemy;
     }
 
-    private static createFlyingEnemy(location: Vector, context: IGameContext) {
+    public static createFlyingEnemy(location: Vector, context: IGameContext) {
         let enemy = new FlyingEnemyEntity(location, context);
         enemy.hitpoints = 5;
         enemy.speed = 20;

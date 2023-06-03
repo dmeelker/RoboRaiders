@@ -12,6 +12,22 @@ export function randomArrayElement<T>(array: Array<T>): T {
     return array[randomArrayIndex(array)];
 }
 
+export function randomWeightedArrayElement<T>(array: Array<T>, weightSelector: (item: T) => number): T {
+    let totalWeight = array.reduce((sum, x) => sum + weightSelector(x), 0);
+
+    let randomWeight = randomInt(0, totalWeight);
+    let currentWeight = 0;
+
+    for (let item of array) {
+        currentWeight += weightSelector(item);
+        if (currentWeight >= randomWeight) {
+            return item;
+        }
+    }
+
+    throw new Error("Could not find a random weighted element");
+}
+
 export function chance(value: number): boolean {
     return randomInt(0, 100) <= value;
 }

@@ -3,8 +3,8 @@ import { Block, ImageBlockScanner } from "../utilities/ImageBlockScanner";
 import * as Trig from "../utilities/Trig";
 import { Game } from "./Game";
 import { Level } from "./Level";
-import { GateSetDefinition, LevelDefinition } from "./LevelDefinition";
-import { EntitySpawner } from "./entities/EntitySpawner";
+import { GateSetDefinition, IEnemySpawnDefinition, LevelDefinition } from "./LevelDefinition";
+import { EnemySpawner } from "./entities/EnemySpawner";
 import { Gate } from "./entities/Gate";
 import { PlayerZoneKillerEntity } from "./entities/PlayerKillerZone";
 
@@ -28,7 +28,7 @@ export class LevelLoader {
             images.backdrop,
             images.overlay);
 
-        this.loadSpawns(blocks);
+        this.loadSpawns(levelDefinition.spawns);
         this.loadGates(levelDefinition.gates);
         this.loadKillZones(levelDefinition.killZones);
     }
@@ -44,11 +44,9 @@ export class LevelLoader {
         }
     }
 
-    private loadSpawns(blocks: Block[]) {
-        let rects = blocks.filter(b => b.color.equals(new Color(255, 0, 0, 255))).map(b => b.rectangle);
-
-        for (let spawn of rects) {
-            this._game.entityManager.add(new EntitySpawner(spawn.location.toVector(), spawn.size, this._game));
+    private loadSpawns(definitions: IEnemySpawnDefinition[]) {
+        for (let spawn of definitions) {
+            this._game.entityManager.add(new EnemySpawner(spawn.rect.location.toVector(), spawn.rect.size, this._game, spawn.configuration));
         }
     }
 

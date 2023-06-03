@@ -165,7 +165,7 @@ export class Game implements IGameContext {
     public get viewport() { return this._viewport; }
     public get runTime() { return this._time.currentTime - this._startTime; }
     public get difficulty() { return Math.min(this._score / 50, 1); }
-    public get debugMode() { return true; }
+    public get debugMode() { return false; }
 
     public get levelDefinition() { return this._levelDefinition; }
 
