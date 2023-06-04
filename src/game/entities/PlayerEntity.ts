@@ -6,7 +6,10 @@ import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 import { CollisionContext, PhyicalObject } from "../Physics";
 import { Player } from "../Player";
+import { BatWeapon } from "../weapons/Bat";
+import { GoopGunWeapon } from "../weapons/GoopGun";
 import { GravityGrenadeWeapon } from "../weapons/GravityGrenadeLauncher";
+import { GrenadeLauncherWeapon } from "../weapons/GrenadeLauncher";
 import { MachineGunWeapon } from "../weapons/MachineGun";
 import { PistolWeapon } from "../weapons/Pistol";
 import { RailgunWeapon } from "../weapons/Railgun";
@@ -14,12 +17,9 @@ import { RpgWeapon } from "../weapons/Rpg";
 import { ShotgunWeapon } from "../weapons/Shotgun";
 import { Weapon } from "../weapons/Weapon";
 import { ActorAnimations, ActorAnimator } from "./ActorAnimations";
-import { EnemyEntity } from "./Enemy";
-import { Entity } from "./Entity";
 import { BoxEntity } from "./BoxEntity";
 import { CorpseEntity } from "./Corpse";
-import { BatWeapon } from "../weapons/Bat";
-import { GrenadeLauncherWeapon } from "../weapons/GrenadeLauncher";
+import { Entity } from "./Entity";
 
 export enum Facing {
     Left,
@@ -64,9 +64,10 @@ export class PlayerEntity extends Entity {
             () => new RpgWeapon(gameContext),
             () => new RailgunWeapon(gameContext),
             () => new GravityGrenadeWeapon(gameContext),
-            () => new GrenadeLauncherWeapon(gameContext)];
+            () => new GrenadeLauncherWeapon(gameContext),
+            () => new GoopGunWeapon(gameContext)];
 
-        this._weapon = new PistolWeapon(gameContext);
+        this._weapon = new GoopGunWeapon(gameContext);
 
         if (index == 0) {
             this._animations = {

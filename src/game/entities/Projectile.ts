@@ -10,7 +10,6 @@ import { Entity } from "./Entity";
 export class ProjectileEntity extends Entity {
     public physics: PhyicalObject;
     public power = 1;
-    private _creationTime = 0;
     public maxAge?: number;
     private _image: ImageBitmap;
 
@@ -18,7 +17,6 @@ export class ProjectileEntity extends Entity {
         super(location, new Size(gameContext.resources.images.bullet.width, gameContext.resources.images.bullet.height), gameContext);
 
         this._image = gameContext.resources.images.bullet;
-        this._creationTime = time.currentTime;
 
         this.physics = new PhyicalObject(
             this,
@@ -29,7 +27,7 @@ export class ProjectileEntity extends Entity {
     }
 
     public update(time: FrameTime) {
-        if (this.maxAge && time.currentTime - this._creationTime > this.maxAge) {
+        if (this.maxAge && this.age > this.maxAge) {
             this.markDisposable();
             return;
         }

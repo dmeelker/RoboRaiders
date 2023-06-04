@@ -54,16 +54,16 @@ convert("weapons/rpg");
 convert("weapons/rpg_grenade");
 convert("weapons/bat");
 convert("weapons/bat_swing");
-
 convert("weapons/railgun");
 convert("weapons/railgun_loaded");
 convert("weapons/dart");
-
 convert("weapons/gravity_grenade", "Unarmed", "weapons/gravity_grenade_unarmed");
 convert("weapons/gravity_grenade", "Armed", "weapons/gravity_grenade_armed");
-
 convert("weapons/grenade_launcher");
 convert("weapons/grenade_launcher_grenade");
+convert("weapons/goop_gun");
+convert("weapons/goop_ball");
+convert("weapons/goop1");
 
 convertLevel("level1");
 convertLevel("level2");

@@ -9,12 +9,15 @@ import { Axis, CollisionContext, PhyicalObject } from "../Physics";
 import { ActorAnimations, ActorAnimator } from "./ActorAnimations";
 import { CorpseEntity } from "./Corpse";
 import { Entity } from "./Entity";
+import { GoopPuddle } from "./GoopPuddle";
 import { Facing, PlayerEntity } from "./PlayerEntity";
 
 export abstract class EnemyEntity extends Entity {
     public physics: PhyicalObject;
     public hitpoints = 10;
     public speed = 200;
+    public speedModifier = 1;
+    protected get actualSpeed() { return this.speed * this.speedModifier; }
     public gravityOverride?: Vector;
     private _lastHitTime = -1000;
     private _stunTime = -1000;
@@ -25,7 +28,8 @@ export abstract class EnemyEntity extends Entity {
 
         this.physics = new PhyicalObject(
             this, Vector.zero,
-            new CollisionContext(this.context.level, this.context.entityManager));
+            new CollisionContext(this.context.level, this.context.entityManager),
+            entity => entity instanceof GoopPuddle);
     }
 
     public update(time: FrameTime) {
@@ -88,15 +92,15 @@ export class WalkingEnemyEntity extends EnemyEntity {
 
     public moveLeft() {
         if (this.physics.onGround) {
-            this.physics.velocity.x -= this.speed;
-            this.physics.velocity.x = Math.max(this.physics.velocity.x, -this.speed);
+            this.physics.velocity.x -= this.actualSpeed;
+            this.physics.velocity.x = Math.max(this.physics.velocity.x, -this.actualSpeed);
         }
     }
 
     public moveRight() {
         if (this.physics.onGround) {
-            this.physics.velocity.x += this.speed;
-            this.physics.velocity.x = Math.min(this.physics.velocity.x, this.speed);
+            this.physics.velocity.x += this.actualSpeed;
+            this.physics.velocity.x = Math.min(this.physics.velocity.x, this.actualSpeed);
         }
     }
 
@@ -129,6 +133,8 @@ export class WalkingEnemyEntity extends EnemyEntity {
 
         super.update(time);
 
+        this.checkGoopCollisions();
+
         if (this.heavy && this.physics.groundedThisUpdate) {
             this.context.viewport.shakeLight(time);
         }
@@ -142,6 +148,14 @@ export class WalkingEnemyEntity extends EnemyEntity {
             facing: this.facing,
             timeSinceLastHit: this.timeSinceLastHit
         });
+    }
+
+    private checkGoopCollisions() {
+        if (this.physics.lastCollisions.filter(c => c.entity instanceof GoopPuddle).length > 0) {
+            this.speedModifier = 0.2;
+        } else {
+            this.speedModifier = 1;
+        }
     }
 
     protected get activeAnimationImage() { return this._animator.activeAnimation.getImage(); }
@@ -237,7 +251,7 @@ export class FlyingEnemyEntity extends EnemyEntity {
             return;
         }
 
-        let velocity = direction.multiplyScalar(this.speed);
+        let velocity = direction.multiplyScalar(this.actualSpeed);
         this.physics.velocity = velocity;
     }
 

@@ -6,7 +6,6 @@ import { IGameContext } from "../Game";
 import { Entity } from "./Entity";
 
 export class CorpseEntity extends Entity {
-    private _creationTime = 0;
     public maxAge?: number;
     private readonly _image: ImageBitmap;
     private _velocity: Vector;
@@ -15,7 +14,6 @@ export class CorpseEntity extends Entity {
     public constructor(location: Vector, velocity: Vector, image: ImageBitmap, gameContext: IGameContext) {
         super(location, new Size(image.width, image.height), gameContext);
 
-        this._creationTime = gameContext.time.currentTime;
         this._image = image;
         this._velocity = velocity;
     }
@@ -41,6 +39,4 @@ export class CorpseEntity extends Entity {
             Math.floor(- (this.height / 2)));
         viewport.context.resetTransform();
     }
-
-    private get age() { return this.context.time.currentTime - this._creationTime; }
 }

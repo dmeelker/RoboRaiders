@@ -5,23 +5,22 @@ import { IGameContext } from "../Game";
 import { CollisionContext, PhyicalObject } from "../Physics";
 import { EnemyEntity } from "./Enemy";
 import { Entity } from "./Entity";
-import { ExplosionEntity } from "./Explosion";
+import { GoopPuddle } from "./GoopPuddle";
 
-export class GrenadeLauncherGrenadeEntity extends Entity {
+export class GoopBall extends Entity {
+    private readonly _image: ImageBitmap;
     public physics: PhyicalObject;
-    private _image: ImageBitmap;
 
-    public constructor(location: Vector, velocity: Vector, gameContext: IGameContext) {
-        super(location, new Size(4, 4), gameContext);
-
-        this._image = gameContext.resources.images.grenadeLauncherGrenade; //gameContext.resources.images.gravityGrenadeArmed;
+    public constructor(location: Vector, velocity: Vector, context: IGameContext) {
+        super(location, new Size(0, 0), context);
+        this._image = context.resources.images.goopBall;
         this.size = new Size(this._image.width, this._image.height);
 
         this.physics = new PhyicalObject(
             this,
             velocity,
             new CollisionContext(this.context.level, this.context.entityManager),
-            entity => entity instanceof EnemyEntity);
+            e => e instanceof EnemyEntity);
         this.physics.gravity = true;
         this.physics.gravityVector = new Vector(0, 1000);
     }
@@ -30,21 +29,20 @@ export class GrenadeLauncherGrenadeEntity extends Entity {
         this.physics.update(time);
 
         if (this.physics.lastCollisions.length > 0) {
-            this.detonate(time);
+            this.stick();
         }
     }
 
-    private detonate(time: FrameTime) {
-        let explosion = new ExplosionEntity(this.centerLocation, time, this.context);
-        this.context.entityManager.add(explosion);
+    private stick() {
+        let goop = new GoopPuddle(this.centerLocation, this.context);
+        this.context.entityManager.add(goop);
         this.markDisposable();
     }
 
     public render(viewport: Viewport) {
-        let location = this.centerLocation.floor();
+        let location = this.location.floor();
 
         viewport.context.translate(location.x, location.y);
-        viewport.context.rotate(this.physics.velocity.angleInRadians);
         viewport.context.drawImage(this._image, -(this.size.width / 2), -(this.size.height / 2), this.size.width, this.size.height);
 
         viewport.context.resetTransform();

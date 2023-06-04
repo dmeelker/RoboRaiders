@@ -9,10 +9,12 @@ export class Entity {
     private _disposable = false;
     private _disposed = false;
     protected readonly context: IGameContext;
+    private readonly _creationTime: number;
 
     public constructor(location: Vector, size: Size, context: IGameContext) {
         this._location = location;
         this._size = size;
+        this._creationTime = context.time.currentTime;
         this.context = context;
     }
 
@@ -41,6 +43,7 @@ export class Entity {
     public get height() { return this._size.height; }
     public get bounds() { return new Rectangle(this._location.x, this._location.y, this._size.width, this._size.height); }
     public get centerLocation() { return new Vector(this._location.x + (this._size.width / 2), this._location.y + (this._size.height / 2)) }
+    public get age() { return this.context.time.currentTime - this._creationTime; }
 
     public get disposable() { return this._disposable; }
     public get disposed() { return this._disposed; }
