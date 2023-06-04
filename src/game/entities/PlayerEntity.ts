@@ -67,7 +67,7 @@ export class PlayerEntity extends Entity {
             () => new GrenadeLauncherWeapon(gameContext),
             () => new GoopGunWeapon(gameContext)];
 
-        this._weapon = new GoopGunWeapon(gameContext);
+        this._weapon = new PistolWeapon(gameContext);
 
         if (index == 0) {
             this._animations = {
