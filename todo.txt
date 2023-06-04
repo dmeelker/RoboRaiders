@@ -5,15 +5,19 @@
 [x] Level selection
 [x] Home screen
 [x] Sound effects
+[x] More levels
+[x] Better level definitions
+[x] Baseball bat (knocks enemies back)
+[x] Flyer
+[x] Grenade launcher (fires a grenade that explodes on contact)
 
+- Tutorial
 - Weapon unlocks
 
 - More weapons that are difficult to use
  - EMP emitter (place on ground, temporarily disables enemies)
- [x] Baseball bat (knocks enemies back)
  - Stun rod (stuns enemies from close range)
  - Plasma rifle (fires a single shot that can pass through multiple enemies, dealing less damage as it goes)
- - Grenade launcher (fires a grenade that explodes on contact)
  - Goop gun (fires blobs of goop that sticks enemies and the player in place for a short time)
  - Explosive darts (fires darts that stick in enemy and explode after a short delay)
  - Foam grenade (fires a grenade that explodes on contact, expanding into a large foam blob that blocks enemy movement, large enemies might be able to walk through and destroy it)
@@ -22,13 +26,9 @@
 - Multiplayer modes
  - Coop
  - Competition
-- More levels
 - Extra level elements
  - Pools of sludge
  - Moveable elements (doors?)
-- Better level definitions
- - Configurable emitters
 - Enemy types
  - Charger
- [x] Flyer
 - Music

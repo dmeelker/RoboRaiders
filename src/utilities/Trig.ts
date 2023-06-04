@@ -192,7 +192,10 @@ export class Vector implements ILocation {
         return this.fromRadianAngle(degreesToRadians(degrees));
     }
 
-    public mirrorX(): Vector {
+    public mirrorX(condition: boolean = true): Vector {
+        if (!condition)
+            return this.clone();
+        ;
         return new Vector(this.x * -1, this.y);
     }
 

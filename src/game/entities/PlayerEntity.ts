@@ -19,6 +19,7 @@ import { Entity } from "./Entity";
 import { BoxEntity } from "./BoxEntity";
 import { CorpseEntity } from "./Corpse";
 import { BatWeapon } from "../weapons/Bat";
+import { GrenadeLauncherWeapon } from "../weapons/GrenadeLauncher";
 
 export enum Facing {
     Left,
@@ -62,7 +63,8 @@ export class PlayerEntity extends Entity {
             () => new ShotgunWeapon(gameContext),
             () => new RpgWeapon(gameContext),
             () => new RailgunWeapon(gameContext),
-            () => new GravityGrenadeWeapon(gameContext)];
+            () => new GravityGrenadeWeapon(gameContext),
+            () => new GrenadeLauncherWeapon(gameContext)];
 
         this._weapon = new PistolWeapon(gameContext);
 

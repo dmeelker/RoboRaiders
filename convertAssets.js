@@ -62,6 +62,9 @@ convert("weapons/dart");
 convert("weapons/gravity_grenade", "Unarmed", "weapons/gravity_grenade_unarmed");
 convert("weapons/gravity_grenade", "Armed", "weapons/gravity_grenade_armed");
 
+convert("weapons/grenade_launcher");
+convert("weapons/grenade_launcher_grenade");
+
 convertLevel("level1");
 convertLevel("level2");
 convertLevel("level3");

@@ -24,6 +24,8 @@ export interface ImageResources {
     gravityGrenadeArmed: ImageBitmap;
     bat: ImageBitmap;
     batSwing: ImageBitmap;
+    grenadeLauncher: ImageBitmap;
+    grenadeLauncherGrenade: ImageBitmap;
 
     levels: { [id: string]: LevelImages; };
 }
@@ -47,6 +49,7 @@ export interface AudioResources {
     rocket: AudioClip;
     singularitygrenade: AudioClip;
     bat: AudioClip;
+    grenadeLauncher: AudioClip;
     dead: AudioClip;
     select: AudioClip;
 }
@@ -146,6 +149,8 @@ export class ResourceLoader {
             "weapons/gravity_grenade_armed.png",
             "weapons/bat.png",
             "weapons/bat_swing.png",
+            "weapons/grenade_launcher.png",
+            "weapons/grenade_launcher_grenade.png",
 
             "player1_stand_right.png",
             "player1_walk_right.png",
@@ -208,6 +213,8 @@ export class ResourceLoader {
             gravityGrenadeArmed: imageFiles.get("weapons/gravity_grenade_armed.png")!,
             bat: imageFiles.get("weapons/bat.png")!,
             batSwing: imageFiles.get("weapons/bat_swing.png")!,
+            grenadeLauncher: imageFiles.get("weapons/grenade_launcher.png")!,
+            grenadeLauncherGrenade: imageFiles.get("weapons/grenade_launcher_grenade.png")!,
 
             levels: {
                 level1: await this.loadLevelImages("level1", imageLoader),
@@ -358,6 +365,7 @@ export class ResourceLoader {
                 rocket: { name: "rocket.wav", instances: 3 },
                 singularitygrenade: { name: "singularitygrenade.wav", instances: 3 },
                 bat: { name: "bat.wav", instances: 3 },
+                grenadeLauncher: { name: "grenadelauncher.wav", instances: 3 },
                 dead: { name: "dead.wav", instances: 2 },
                 select: { name: "hit.wav", instances: 1 },
             },
