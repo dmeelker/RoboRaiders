@@ -133,6 +133,9 @@ export class Game implements IGameContext {
         this.viewport.context.drawImage(this._backdropImage, 0, 0);
         //this._level.render(this.viewport);
 
+        this.renderControls();
+
+
         this._entities.render(this.viewport);
         this._projectiles.render(this.viewport);
 
@@ -158,6 +161,15 @@ export class Game implements IGameContext {
         }
     }
 
+    private renderControls() {
+        if (this.showControls) {
+            this.resources.fonts.small.renderCenteredInArea(this.viewport, "HOW TO PLAY", 200, this.viewport.width);
+            this.resources.fonts.small.renderCenteredInArea(this.viewport, "ARROW KEYS  MOVE", 220, this.viewport.width);
+            this.resources.fonts.small.renderCenteredInArea(this.viewport, "Z   JUMP", 240, this.viewport.width);
+            this.resources.fonts.small.renderCenteredInArea(this.viewport, "X   SHOOT", 260, this.viewport.width);
+        }
+    }
+
     public get time() { return this._time; }
     public get resources() { return this._resources; }
     public get level() { return this._level; }
@@ -169,6 +181,18 @@ export class Game implements IGameContext {
     public get debugMode() { return false; }
 
     public get levelDefinition() { return this._levelDefinition; }
+    public get showControls() {
+        if (this._score > 0)
+            return false;
+
+        for (let player of this._players) {
+            if (this._time.currentTime - player.entity.lastMoveTime < 5000 &&
+                this._time.currentTime - player.entity.lastActionTime < 5000) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public setLevel(level: Level, backdrop: ImageBitmap, overlay: ImageBitmap) {
         this._level = level;

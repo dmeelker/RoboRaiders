@@ -48,6 +48,8 @@ export class PlayerEntity extends Entity {
     private _jumpButtonDown = false;
     private _jumpButtonDownTime = 0;
     private _jumping = false;
+    private _lastMoveTime = 0;
+    private _lastActionTime = 0;
 
     private _dead = false;
     private _unlockableWeapons: Array<WeaponFactory>;
@@ -58,6 +60,10 @@ export class PlayerEntity extends Entity {
 
     public constructor(location: Vector, _player: Player, index: number, gameContext: IGameContext) {
         super(location, new Size(32, 34), gameContext);
+
+        this._lastMoveTime = gameContext.time.currentTime;
+        this._lastActionTime = gameContext.time.currentTime;
+
         this._availableWeapons = [
             () => new BatWeapon(gameContext),
             () => new PistolWeapon(gameContext),
@@ -179,15 +185,18 @@ export class PlayerEntity extends Entity {
 
     public fireShot(time: FrameTime) {
         this._weapon.fireSingleShot(this.weaponLocation, this.lookVector, this.context, time);
+        this._lastActionTime = time.currentTime;
     }
 
     public fireContinually(time: FrameTime) {
         this._weapon.fireContinually(this.weaponLocation, this.lookVector, this.context, time);
+        this._lastActionTime = time.currentTime;
     }
 
     public jump(time: FrameTime) {
         this._jumpButtonDown = true;
         this._jumpButtonDownTime = time.currentTime;
+        this._lastActionTime = time.currentTime;
     }
 
     public stopJump() {
@@ -234,11 +243,13 @@ export class PlayerEntity extends Entity {
     public moveLeft() {
         this.physics.velocity.x = -300;
         this._facing = Facing.Left;
+        this._lastMoveTime = this.context.time.currentTime;
     }
 
     public moveRight() {
         this.physics.velocity.x = 300;
         this._facing = Facing.Right;
+        this._lastMoveTime = this.context.time.currentTime;
     }
 
     public render(viewport: Viewport) {
@@ -272,6 +283,8 @@ export class PlayerEntity extends Entity {
 
     public get facing() { return this._facing; }
     public get dead() { return this._dead; }
+    public get lastMoveTime() { return this._lastMoveTime; }
+    public get lastActionTime() { return this._lastActionTime; }
 
     public get lookVector() {
         switch (this._facing) {
