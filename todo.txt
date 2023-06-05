@@ -11,9 +11,10 @@
 [x] Flyer
 [x] Grenade launcher (fires a grenade that explodes on contact)
 [x] Goop gun (fires blobs of goop that sticks enemies and the player in place for a short time)
+[x] Controls
+[x] Weapon unlocks
 
 - Tutorial
-- Weapon unlocks
 
 - More weapons that are difficult to use
  - Circuit Breaker (Joker weapon, kills everything, use once)
