@@ -23,7 +23,7 @@ export interface IGameContext {
     get entityManager(): EntityManager;
     get particleSystem(): ParticleSystem;
     get viewport(): Viewport;
-    addPoint(): void;
+    addPoint(): number;
 }
 
 export class Game implements IGameContext {
@@ -122,8 +122,9 @@ export class Game implements IGameContext {
         this._box = new BoxSpawner(this).spawn();
     }
 
-    public addPoint() {
+    public addPoint(): number {
         this._score++;
+        return this._score;
     }
 
     public render() {

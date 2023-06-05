@@ -49,6 +49,7 @@ export class PlayerEntity extends Entity {
     private _jumping = false;
 
     private _dead = false;
+    private _unlockableWeapons: Array<WeaponFactory>;
     private _availableWeapons: Array<WeaponFactory>;
 
     private _animator: ActorAnimator;
@@ -59,13 +60,18 @@ export class PlayerEntity extends Entity {
         this._availableWeapons = [
             () => new BatWeapon(gameContext),
             () => new PistolWeapon(gameContext),
-            () => new MachineGunWeapon(gameContext),
-            () => new ShotgunWeapon(gameContext),
-            () => new RpgWeapon(gameContext),
+            () => new ShotgunWeapon(gameContext)
+        ];
+
+        // These are unlocked in reverse order
+        this._unlockableWeapons = [
+            () => new GoopGunWeapon(gameContext),
+            () => new GrenadeLauncherWeapon(gameContext),
             () => new RailgunWeapon(gameContext),
             () => new GravityGrenadeWeapon(gameContext),
-            () => new GrenadeLauncherWeapon(gameContext),
-            () => new GoopGunWeapon(gameContext)];
+            () => new RpgWeapon(gameContext),
+            () => new MachineGunWeapon(gameContext),
+        ];
 
         this._weapon = new PistolWeapon(gameContext);
 
@@ -113,9 +119,7 @@ export class PlayerEntity extends Entity {
         for (let box of boxes) {
             if (box.bounds.overlaps(this.bounds)) {
                 box.markDisposable();
-                this.context.addPoint();
-                this.randomWeapon();
-                this.context.resources.audio.box.play();
+                this.onBoxCollected();
             }
         }
 
@@ -126,6 +130,18 @@ export class PlayerEntity extends Entity {
         });
     }
 
+    private onBoxCollected() {
+        let score = this.context.addPoint();
+
+        if (score % 5 == 0 && this._availableWeapons.length > 0) {
+            this.unlockWeapon();
+        } else {
+            this.randomWeapon();
+        }
+
+        this.context.resources.audio.box.play();
+    }
+
     private randomWeapon() {
         let newWeapon: Weapon;
 
@@ -133,7 +149,22 @@ export class PlayerEntity extends Entity {
             newWeapon = randomArrayElement(this._availableWeapons)(this.context);
         } while (this._weapon.name == newWeapon.name);
 
-        this._weapon = newWeapon;
+        this.equipWeapon(newWeapon);
+    }
+
+    public unlockWeapon() {
+        let weaponFactory = this._unlockableWeapons.pop();
+        if (weaponFactory) {
+            this._availableWeapons.push(weaponFactory);
+            let weapon = weaponFactory(this.context);
+            this.equipWeapon(weapon);
+
+            console.log("Unlocked " + weapon.name);
+        }
+    }
+
+    private equipWeapon(weapon: Weapon) {
+        this._weapon = weapon;
         this._weaponEquipTime = this.context.time.currentTime;
     }
 
