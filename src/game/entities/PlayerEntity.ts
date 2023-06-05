@@ -43,6 +43,7 @@ export class PlayerEntity extends Entity {
     private _weaponOffset = new Vector(0, 0);
     private _weapon: Weapon;
     private _weaponEquipTime = 0;
+    private _weaponEquippedWasNew = false;
     private _jumpStart = 0;
     private _jumpButtonDown = false;
     private _jumpButtonDownTime = 0;
@@ -149,6 +150,7 @@ export class PlayerEntity extends Entity {
             newWeapon = randomArrayElement(this._availableWeapons)(this.context);
         } while (this._weapon.name == newWeapon.name);
 
+        this._weaponEquippedWasNew = false;
         this.equipWeapon(newWeapon);
     }
 
@@ -157,9 +159,8 @@ export class PlayerEntity extends Entity {
         if (weaponFactory) {
             this._availableWeapons.push(weaponFactory);
             let weapon = weaponFactory(this.context);
+            this._weaponEquippedWasNew = true;
             this.equipWeapon(weapon);
-
-            console.log("Unlocked " + weapon.name);
         }
     }
 
@@ -244,13 +245,28 @@ export class PlayerEntity extends Entity {
         this._animator.activeAnimation.render(viewport.context, new Point(Math.floor(this.location.x), Math.floor(this.location.y)));
         this._weapon.render(this.weaponLocation, this.lookVector, viewport);
 
-        if (this.context.time.currentTime - this._weaponEquipTime < 1000) {
-            let label = this._weapon.name.toUpperCase();
-            let stringSize = this.context.resources.fonts.small.calculateSize(label);
-            let location = new Point(this.centerLocation.x - (stringSize.width / 2), this.location.y - stringSize.height);
-            this.context.resources.fonts.small.render(viewport, label, location);
+        if (this.showWeaponEquippedLabel) {
+            let nameLabel = this._weapon.name.toUpperCase();
+            let nameSize = this.context.resources.fonts.small.calculateSize(nameLabel);
+
+            let y = this.location.y - nameSize.height;
+
+            if (this._weaponEquippedWasNew) {
+                let newWeaponLabel = "NEW WEAPON!";
+                let newWeaponSize = this.context.resources.fonts.small.calculateSize(newWeaponLabel);
+                let location = new Point(this.centerLocation.x - (newWeaponSize.width / 2), y);
+                this.context.resources.fonts.small.render(viewport, newWeaponLabel, location);
+                y += nameSize.height;
+            }
+
+            {
+                let location = new Point(this.centerLocation.x - (nameSize.width / 2), y);
+                this.context.resources.fonts.small.render(viewport, nameLabel, location);
+            }
         }
     }
+
+    private get showWeaponEquippedLabel() { return this.context.time.currentTime - this._weaponEquipTime < (this._weaponEquippedWasNew ? 2000 : 1000); }
 
     private get weaponLocation() { return this.centerLocation.add(this._facing == Facing.Right ? this._weaponOffset : this._weaponOffset.mirrorX()); }
 
