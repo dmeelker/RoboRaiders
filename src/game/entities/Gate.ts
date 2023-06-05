@@ -81,8 +81,6 @@ export class Gate extends Entity {
 
         //let exitOffset = this._direction == GateDirection.Right ? new Vector(4, 0) : new Vector(-4, 0);
         entity.location = this._matchingGate.location.add(exitOffset).add(entranceOffset);
-
-        console.log(entity.location);
     }
 
     public render(_viewport: Viewport) {
