@@ -18,7 +18,6 @@ enum GravityGrenadeState {
 export class GravityGrenadeEntity extends Entity {
     public physics: PhyicalObject;
     private _radius = 100;
-    private _creationTime = 0;
     private _imageUnarmed: ImageBitmap;
     private _imageArmed: ImageBitmap;
     private _state = GravityGrenadeState.Thrown;
@@ -30,8 +29,6 @@ export class GravityGrenadeEntity extends Entity {
         this._imageUnarmed = gameContext.resources.images.gravityGrenadeUnarmed;
         this._imageArmed = gameContext.resources.images.gravityGrenadeArmed;
         this.size = new Size(this._imageUnarmed.width, this._imageUnarmed.height);
-
-        this._creationTime = time.currentTime;
 
         this.physics = new PhyicalObject(
             this,
@@ -76,8 +73,6 @@ export class GravityGrenadeEntity extends Entity {
     public render(viewport: Viewport) {
         viewport.context.drawImage(this._state == GravityGrenadeState.Thrown ? this._imageUnarmed : this._imageArmed, this.location.x, this.location.y, this.size.width, this.size.height);
     }
-
-    private get age() { return this.context.time.currentTime - this._creationTime; }
 
     public static updateGravityPull(gameContext: IGameContext) {
         let enemies = gameContext.entityManager.getEnemies();

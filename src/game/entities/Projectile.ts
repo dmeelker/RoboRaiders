@@ -46,6 +46,6 @@ export class ProjectileEntity extends Entity {
     }
 
     public render(viewport: Viewport) {
-        viewport.context.drawImage(this._image, Math.floor(this.location.x), Math.floor(this.location.y));
+        this.drawCenteredImage(this._image, viewport);
     }
 }

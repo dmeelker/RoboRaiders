@@ -7,7 +7,6 @@ import { Entity } from "./Entity";
 import { Facing } from "./PlayerEntity";
 
 export class BatSwingEntity extends Entity {
-    private readonly _creationTime: number;
     private readonly _lifetime = 30;
     private readonly _swingDirection: Vector;
     private readonly _image: ImageBitmap;
@@ -16,7 +15,6 @@ export class BatSwingEntity extends Entity {
         super(centerLocation, new Size(30, 20), context);
 
         this._image = context.resources.images.batSwing;
-        this._creationTime = time.currentTime;
 
         if (swingDirection.x < 0) {
             this._swingDirection = new Vector(-1, -1);
@@ -50,9 +48,6 @@ export class BatSwingEntity extends Entity {
     }
 
     public render(viewport: Viewport) {
-        // viewport.context.fillStyle = "white";
-        // viewport.context.fillRect(this.location.x, this.location.y, this.size.width, this.size.height);
-
         viewport.context.translate(Math.floor(this.location.x), Math.floor(this.location.y));
 
         if (this.facing == Facing.Left) {
@@ -65,6 +60,5 @@ export class BatSwingEntity extends Entity {
 
     }
 
-    private get age() { return this.context.time.currentTime - this._creationTime; }
     private get facing() { return this._swingDirection.x > 0 ? Facing.Right : Facing.Left; }
 }

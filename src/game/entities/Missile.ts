@@ -14,7 +14,6 @@ import { Facing } from "./PlayerEntity";
 export class MissileEntity extends Entity {
     private readonly _context: IGameContext
     public physics: PhyicalObject;
-    private _creationTime = 0;
     public maxAge?: number;
     private _image: ImageBitmap;
     private _speed = 1;
@@ -26,8 +25,6 @@ export class MissileEntity extends Entity {
         this._context = gameContext;
         this._image = gameContext.resources.images.rpgGrenade;
         this.size = new Size(this._image.width, this._image.height);
-
-        this._creationTime = time.currentTime;
 
         this.physics = new PhyicalObject(
             this,
@@ -45,7 +42,7 @@ export class MissileEntity extends Entity {
     }
 
     public update(time: FrameTime) {
-        if (this.maxAge && time.currentTime - this._creationTime > this.maxAge) {
+        if (this.maxAge && this.age > this.maxAge) {
             this.markDisposable();
             return;
         }
@@ -83,5 +80,4 @@ export class MissileEntity extends Entity {
     }
 
     private get facing() { return this.physics.velocity.x > 0 ? Facing.Right : Facing.Left; }
-    private get age() { return this.context.time.currentTime - this._creationTime; }
 }

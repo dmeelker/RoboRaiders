@@ -40,11 +40,6 @@ export class GoopBall extends Entity {
     }
 
     public render(viewport: Viewport) {
-        let location = this.location.floor();
-
-        viewport.context.translate(location.x, location.y);
-        viewport.context.drawImage(this._image, -(this.size.width / 2), -(this.size.height / 2), this.size.width, this.size.height);
-
-        viewport.context.resetTransform();
+        this.drawCenteredImage(this._image, viewport);
     }
 }
