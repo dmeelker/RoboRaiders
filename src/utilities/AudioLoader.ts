@@ -1,4 +1,4 @@
-import { AudioClip, AudioSystem } from "./Audio";
+import { AudioClip, AudioSystem, Music } from "./Audio";
 
 export class AudioLoader {
     public readonly basePath: string = "";
@@ -9,7 +9,7 @@ export class AudioLoader {
         this._audioSystem = audioSystem;
     }
 
-    public async load(url: string, instances: number): Promise<AudioClip> {
+    public async loadClip(url: string, instances: number): Promise<AudioClip> {
         let tasks = new Array<Promise<HTMLAudioElement>>();
 
         for (let i = 0; i < instances; i++) {
@@ -24,6 +24,11 @@ export class AudioLoader {
         }
 
         return new AudioClip(elements, this._audioSystem);
+    }
+
+    public async loadMusic(url: string): Promise<Music> {
+        let audio = await this.loadSingle(url);
+        return new Music(audio, this._audioSystem);
     }
 
     private async loadSingle(url: string): Promise<HTMLAudioElement> {

@@ -25,6 +25,7 @@ export class LevelSelectionScreen extends Screen {
     }
 
     public activate(time: FrameTime): void {
+        this._resources.audio.music.play();
         this._highscores.load();
         this._levels.load();
         this.transitionToLevel(this._levels.levels[0], time);

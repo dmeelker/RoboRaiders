@@ -99,6 +99,7 @@ class Main {
         await this.loadResources();
 
         this._audioSystem.effectVolume = .1;
+        this._audioSystem.musicVolume = .4;
         //this._audioSystem.effectsMuted = true;
 
         this._viewport = new Viewport(new Size(640, 480), this._container);

@@ -1,6 +1,6 @@
 import { Font } from "./Font";
 import { AnimationDefinition } from "./utilities/Animation";
-import { AudioClip, AudioSystem } from "./utilities/Audio";
+import { AudioClip, AudioSystem, Music } from "./utilities/Audio";
 import { AudioLoader } from "./utilities/AudioLoader";
 import { ImageLoader } from "./utilities/ImagesLoader";
 import { SpriteSheetLoader } from "./utilities/SpriteSheetLoader";
@@ -60,6 +60,8 @@ export interface AudioResources {
     dead: AudioClip;
     select: AudioClip;
     error: AudioClip;
+
+    music: Music;
 }
 
 interface IAudioResourceSpec {
@@ -370,7 +372,7 @@ export class ResourceLoader {
     private async loadAudioResources(): Promise<AudioResources> {
         const loader = new AudioLoader("assets/sounds", this._audioSystem);
 
-        return await this.loadAudioFiles(
+        let audio = await this.loadAudioFiles(
             {
                 box: { name: "box.wav", instances: 1 },
                 pistol: { name: "pistol.wav", instances: 10 },
@@ -391,7 +393,10 @@ export class ResourceLoader {
                 select: { name: "hit.wav", instances: 1 },
                 error: { name: "error.wav", instances: 1 },
             },
-            file => loader.load(file.name, file.instances));
+            file => loader.loadClip(file.name, file.instances));
+
+        audio.music = await loader.loadMusic("chiptune-grooving-142242.mp3");
+        return audio;
     }
 
     private async loadAudioFiles(definition: IAudioResourceSpec, loader: (file: IAudioFile) => Promise<AudioClip>): Promise<AudioResources> {
