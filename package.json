@@ -7,7 +7,8 @@
     "convertAssets": "node convertAssets.js",
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "publish": "npm run build && az storage blob upload-batch -d boxgame --connection-string DefaultEndpointsProtocol=https;AccountName=dmeelker;AccountKey=S0QCXkV2fNOt913KwwArALjSDO0cbzgS232hReJOQijld8VGGd6X9D74ehfykqLWSIHU+XqeR6dn+AStc262tQ==;EndpointSuffix=core.windows.net -s dist --overwrite true"
   },
   "devDependencies": {
     "typescript": "^5.0.2",
