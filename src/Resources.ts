@@ -29,6 +29,8 @@ export interface ImageResources {
     goopGun: ImageBitmap;
     goopBall: ImageBitmap;
     goop1: ImageBitmap;
+    chainsaw: ImageBitmap;
+    chainlink: ImageBitmap;
 
     levels: { [id: string]: LevelImages; };
 }
@@ -54,6 +56,7 @@ export interface AudioResources {
     bat: AudioClip;
     grenadeLauncher: AudioClip;
     goopGun: AudioClip;
+    chainsaw: AudioClip;
     dead: AudioClip;
     select: AudioClip;
 }
@@ -158,6 +161,8 @@ export class ResourceLoader {
             "weapons/goop_gun.png",
             "weapons/goop_ball.png",
             "weapons/goop1.png",
+            "weapons/chainsaw.png",
+            "weapons/chainlink.png",
 
             "player1_stand_right.png",
             "player1_walk_right.png",
@@ -225,6 +230,8 @@ export class ResourceLoader {
             goopGun: imageFiles.get("weapons/goop_gun.png")!,
             goopBall: imageFiles.get("weapons/goop_ball.png")!,
             goop1: imageFiles.get("weapons/goop1.png")!,
+            chainsaw: imageFiles.get("weapons/chainsaw.png")!,
+            chainlink: imageFiles.get("weapons/chainlink.png")!,
 
             levels: {
                 level1: await this.loadLevelImages("level1", imageLoader),
@@ -377,6 +384,7 @@ export class ResourceLoader {
                 bat: { name: "bat.wav", instances: 3 },
                 grenadeLauncher: { name: "grenadelauncher.wav", instances: 3 },
                 goopGun: { name: "goopgun.wav", instances: 10 },
+                chainsaw: { name: "chainsaw.wav", instances: 5 },
                 dead: { name: "dead.wav", instances: 2 },
                 select: { name: "hit.wav", instances: 1 },
             },

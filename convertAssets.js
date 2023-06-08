@@ -64,6 +64,8 @@ convert("weapons/grenade_launcher_grenade");
 convert("weapons/goop_gun");
 convert("weapons/goop_ball");
 convert("weapons/goop1");
+convert("weapons/chainsaw");
+convert("weapons/chainlink");
 
 convertLevel("level1");
 convertLevel("level2");

@@ -7,6 +7,7 @@ import { IGameContext } from "../Game";
 import { CollisionContext, PhyicalObject } from "../Physics";
 import { Player } from "../Player";
 import { BatWeapon } from "../weapons/Bat";
+import { ChainsawChain } from "../weapons/ChainsawChain";
 import { GoopGunWeapon } from "../weapons/GoopGun";
 import { GravityGrenadeWeapon } from "../weapons/GravityGrenadeLauncher";
 import { GrenadeLauncherWeapon } from "../weapons/GrenadeLauncher";
@@ -76,6 +77,7 @@ export class PlayerEntity extends Entity {
             () => new GrenadeLauncherWeapon(this, gameContext),
             () => new RailgunWeapon(this, gameContext),
             () => new GravityGrenadeWeapon(this, gameContext),
+            () => new ChainsawChain(this, gameContext),
             () => new RpgWeapon(this, gameContext),
             () => new MachineGunWeapon(this, gameContext),
         ];
@@ -171,6 +173,7 @@ export class PlayerEntity extends Entity {
     }
 
     private equipWeapon(weapon: Weapon) {
+        this._weapon.dispose();
         this._weapon = weapon;
         this._weaponEquipTime = this.context.time.currentTime;
     }
@@ -180,6 +183,7 @@ export class PlayerEntity extends Entity {
         this._dead = true;
         let corpseVector = Vector.fromDegreeAngle(randomInt(0, 360)).multiplyScalar(randomInt(200, 300));
         this.context.entityManager.add(new CorpseEntity(this.location, corpseVector, this._animator.activeAnimation.getImage(), this.context));
+        this._weapon.dispose();
         this.markDisposable();
     }
 

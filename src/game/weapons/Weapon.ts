@@ -8,6 +8,10 @@ export abstract class Weapon {
     private _triggerDown = false;
     private _triggerDownLastFrame = false;
 
+    protected get isTriggerDown() { return this._triggerDown; }
+    protected get wasTriggerDownLastFrame() { return this._triggerDownLastFrame; }
+    protected get wasTriggerPressedThisFrame() { return this._triggerDown && !this._triggerDownLastFrame; }
+
     protected readonly player: PlayerEntity;
     protected readonly context: IGameContext;
     public abstract get name(): string;
@@ -40,4 +44,5 @@ export abstract class Weapon {
     public fireSingleShot(_location: Vector, _direction: Vector, _context: IGameContext, _time: FrameTime): void { }
     public fireContinually(_location: Vector, _direction: Vector, _context: IGameContext, _time: FrameTime): void { }
     public abstract render(location: Vector, direction: Vector, viewport: Viewport): void;
+    public dispose(): void { }
 }
