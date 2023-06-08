@@ -140,6 +140,9 @@ export class Game implements IGameContext {
         this.viewport.context.drawImage(this._backdropImage, 0, 0);
         //this._level.render(this.viewport);
 
+        if (!this._showGameOverScreen) {
+            this.resources.fonts.default.renderCenteredInArea(this.viewport, this._score.toString(), 40, this.viewport.width);
+        }
         this.renderControls();
 
 
@@ -169,8 +172,6 @@ export class Game implements IGameContext {
                     this.resources.fonts.default.renderCenteredInArea(this.viewport, `NEXT LEVEL UNLOCKED!`, 340, this.viewport.width);
                 }
             }
-        } else {
-            this.resources.fonts.default.renderCenteredInArea(this.viewport, this._score.toString(), 40, this.viewport.width);
         }
     }
 
