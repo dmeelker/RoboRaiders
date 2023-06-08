@@ -1,7 +1,7 @@
 import { LevelDefinition } from "./LevelDefinition";
 import level1 from "./levels/Level1";
-import level2 from "./levels/Level2";
-import level3 from "./levels/Level3";
+import level2 from "./levels/Level3";
+import level3 from "./levels/Level2";
 import level4 from "./levels/Level4";
 
 export class LevelSet {

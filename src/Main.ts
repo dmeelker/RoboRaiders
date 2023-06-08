@@ -1,25 +1,20 @@
+import { GameScreen } from "./GameScreen";
+import { IntroScreen } from "./IntroScreen";
+import { LevelSelectionScreen } from "./LevelSelectionScreen";
+import { ResourceLoader, Resources } from "./Resources";
+import { LevelDefinition } from "./game/LevelDefinition";
+import { GamepadPoller } from "./input/GamepadPoller";
+import { createPlayer1InputProvider, createPlayer2InputProvider } from "./input/InputConfiguration";
+import { InputProvider } from "./input/InputProvider";
+import { Keyboard } from "./input/Keyboard";
+import * as Align from "./utilities/Align";
+import { AudioSystem } from "./utilities/Audio";
+import * as Dom from "./utilities/Dom";
 import { FrameCounter } from "./utilities/FrameCounter";
 import { FrameTime } from "./utilities/FrameTime";
+import { ScreenManager } from "./utilities/ScreenManager";
 import { Size } from "./utilities/Trig";
 import { Viewport } from "./utilities/Viewport";
-import * as Dom from "./utilities/Dom";
-import * as Align from "./utilities/Align";
-import { ScreenManager } from "./utilities/ScreenManager";
-import { GameScreen } from "./GameScreen";
-import { createPlayer1InputProvider, createPlayer2InputProvider } from "./input/InputConfiguration";
-import { Keyboard } from "./input/Keyboard";
-import { GamepadPoller } from "./input/GamepadPoller";
-import { ImageLoader } from "./utilities/ImagesLoader";
-import { AudioLoader } from "./utilities/AudioLoader";
-import { SpriteSheetLoader } from "./utilities/SpriteSheetLoader";
-import { AnimationDefinition } from "./utilities/Animation";
-import { InputProvider } from "./input/InputProvider";
-import { LevelSelectionScreen } from "./LevelSelectionScreen";
-import { LevelDefinition } from "./game/LevelDefinition";
-import { Font } from "./Font";
-import { IntroScreen } from "./IntroScreen";
-import { ResourceLoader, Resources } from "./Resources";
-import { AudioSystem } from "./utilities/Audio";
 
 export interface Inputs {
     player1: InputProvider,
@@ -121,8 +116,6 @@ class Main {
 
         if (document.hasFocus() && !document.hidden) {
             this._screens.screenManager.update(frameTime);
-        } else {
-            document.title = `Paused`;
         }
         this._screens.screenManager.render();
 
