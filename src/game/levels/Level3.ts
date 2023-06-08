@@ -1,26 +1,16 @@
 import { Rectangle } from "../../utilities/Trig";
-import { GateDefinition, GateSetDefinition, LevelDefinition } from "../LevelDefinition";
+import { LevelDefinition } from "../LevelDefinition";
 import { EnemySpawnerConfiguration } from "../entities/EnemySpawner";
-import { GateDirection } from "../entities/Gate";
 
-let level = new LevelDefinition("level3", "Alien Invasion");
-
-let floorHeight = 20;
-
-// Bottom left to top right
-level.gates.push(new GateSetDefinition(
-    new GateDefinition(new Rectangle(0, 480 - 60 - floorHeight, 20, 60), GateDirection.Left),
-    new GateDefinition(new Rectangle(640 - 20, 0, 20, 60), GateDirection.Right),
-));
-
-// Bottom right to top left
-level.gates.push(new GateSetDefinition(
-    new GateDefinition(new Rectangle(640 - 20, 480 - 60 - floorHeight, 20, 60), GateDirection.Right),
-    new GateDefinition(new Rectangle(0, 0, 20, 60), GateDirection.Left),
-));
+let level = new LevelDefinition("level3", "Big bang");
 
 level.spawns.push({
-    rect: new Rectangle(270, 0, 100, 21),
+    rect: new Rectangle(20, 0, 80, 20),
+    configuration: new EnemySpawnerConfiguration()
+});
+
+level.spawns.push({
+    rect: new Rectangle(640 - 100, 0, 80, 20),
     configuration: new EnemySpawnerConfiguration()
 });
 

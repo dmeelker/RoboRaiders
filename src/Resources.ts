@@ -59,6 +59,7 @@ export interface AudioResources {
     chainsaw: AudioClip;
     dead: AudioClip;
     select: AudioClip;
+    error: AudioClip;
 }
 
 interface IAudioResourceSpec {
@@ -386,7 +387,9 @@ export class ResourceLoader {
                 goopGun: { name: "goopgun.wav", instances: 10 },
                 chainsaw: { name: "chainsaw.wav", instances: 5 },
                 dead: { name: "dead.wav", instances: 2 },
+
                 select: { name: "hit.wav", instances: 1 },
+                error: { name: "error.wav", instances: 1 },
             },
             file => loader.load(file.name, file.instances));
     }

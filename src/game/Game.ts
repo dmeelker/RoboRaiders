@@ -12,6 +12,7 @@ import { BoxSpawner } from "./BoxSpawner";
 import { Highscores } from "./Highscores";
 import { LevelDefinition } from "./LevelDefinition";
 import { Resources } from "../Resources";
+import { LevelSet } from "./Levels";
 
 export interface IGameContext {
     get debugMode(): boolean;
@@ -42,10 +43,12 @@ export class Game implements IGameContext {
     private _score = 0;
     private _players: Array<Player> = null!;
     private _box: BoxEntity = null!;
+    private readonly _levels = new LevelSet();
     private _highScores = new Highscores();
 
     private _showGameOverScreenTime = 0;
     private _showGameOverScreen = false;
+    private _unlockedNextLevel = false;
 
     public constructor(viewport: Viewport, resources: Resources, inputs: Inputs) {
         this._viewport = viewport;
@@ -67,6 +70,11 @@ export class Game implements IGameContext {
         if (!this._showGameOverScreen && this.allPlayersDead) {
             this._showGameOverScreen = true;
             this._showGameOverScreenTime = time.currentTime;
+
+            this._highScores.update(this._level.name, this._score);
+            if (this._score >= 25) {
+                this._unlockedNextLevel = this._levels.unlockNextLevel(this._levelDefinition);
+            }
         }
 
         if (this._showGameOverScreen && time.currentTime - this._showGameOverScreenTime > 3000) {
@@ -79,7 +87,6 @@ export class Game implements IGameContext {
     }
 
     private gameOver(time: FrameTime) {
-        this._highScores.update(this._level.name, this._score);
         this.reset(time);
     }
 
@@ -155,6 +162,12 @@ export class Game implements IGameContext {
             } else {
                 this.resources.fonts.small.renderCenteredInArea(this.viewport, `SCORE: ${this._score}`, 250, this.viewport.width);
                 this.resources.fonts.small.renderCenteredInArea(this.viewport, `HIGH SCORE: ${highscore}`, 270, this.viewport.width);
+            }
+
+            if (this._unlockedNextLevel) {
+                if (this._time.currentTime % 1000 < 500) {
+                    this.resources.fonts.default.renderCenteredInArea(this.viewport, `NEXT LEVEL UNLOCKED!`, 340, this.viewport.width);
+                }
             }
         } else {
             this.resources.fonts.default.renderCenteredInArea(this.viewport, this._score.toString(), 40, this.viewport.width);

@@ -1,18 +1,18 @@
 import { IScreens, Inputs } from "./Main";
-import { levels } from "./game/Levels";
-import { LevelDefinition } from "./game/LevelDefinition";
-import { Keys } from "./input/InputProvider";
-import { FrameTime } from "./utilities/FrameTime";
-import { Screen } from "./utilities/ScreenManager";
-import { Viewport } from "./utilities/Viewport";
-import { Rectangle, Vector } from "./utilities/Trig";
-import { Highscores } from "./game/Highscores";
-import { interpolate } from "./utilities/Math";
-import * as Easing from "./utilities/Easing";
 import { Resources } from "./Resources";
+import { Highscores } from "./game/Highscores";
+import { LevelDefinition } from "./game/LevelDefinition";
+import { LevelSet } from "./game/Levels";
+import { Keys } from "./input/InputProvider";
+import * as Easing from "./utilities/Easing";
+import { FrameTime } from "./utilities/FrameTime";
+import { interpolate } from "./utilities/Math";
+import { Screen } from "./utilities/ScreenManager";
+import { Rectangle, Vector } from "./utilities/Trig";
+import { Viewport } from "./utilities/Viewport";
 
 export class LevelSelectionScreen extends Screen {
-    private readonly _levels = levels;
+    private readonly _levels = new LevelSet();
     private _selectedLevelIndex = 0;
     private _renderOffset = 0;
     private _highscores = new Highscores();
@@ -26,7 +26,8 @@ export class LevelSelectionScreen extends Screen {
 
     public activate(time: FrameTime): void {
         this._highscores.load();
-        this.transitionToLevel(this._levels[0], time);
+        this._levels.load();
+        this.transitionToLevel(this._levels.levels[0], time);
     }
 
     public update(time: FrameTime): void {
@@ -35,6 +36,12 @@ export class LevelSelectionScreen extends Screen {
         } else if (this.inputs.player1.wasButtonPressedInFrame(Keys.MoveRight)) {
             this.nextLevel(time);
         } else if (this.inputs.player1.wasButtonPressedInFrame(Keys.A) || this.inputs.player1.wasButtonPressedInFrame(Keys.Select)) {
+            if (this.selectedLevel.locked) {
+                this.resources.audio.error.play();
+                this.viewport.shakeLight(time);
+                return;
+            }
+
             this.resources.audio.select.play();
             this._screens.playGame(this.selectedLevel, time);
         } else if (this.inputs.player1.wasButtonPressedInFrame(Keys.Menu)) {
@@ -66,9 +73,9 @@ export class LevelSelectionScreen extends Screen {
 
     private renderLevels() {
         let x = this._renderOffset + (this.viewport.width / 2);
-        for (let i = 0; i < this._levels.length; i++) {
+        for (let i = 0; i < this._levels.levels.length; i++) {
             if (x >= -this.viewport.width && x <= this.viewport.width) {
-                this.renderLevel(this._levels[i], new Vector(x, 0));
+                this.renderLevel(this._levels.levels[i], new Vector(x, 0));
             }
             x += this.viewport.width;
         }
@@ -83,6 +90,16 @@ export class LevelSelectionScreen extends Screen {
         }
 
         this.renderLevelThumbnail(level, centerLocation.addY(150));
+
+        if (level.locked) {
+            let levelGraphics = this.resources.images.levels[level.code]
+            let thumbnailRect = new Rectangle(centerLocation.x - (levelGraphics.thumbnail.width / 2), 170, levelGraphics.thumbnail.width, levelGraphics.thumbnail.height);
+            this.viewport.context.fillStyle = "#00000088";
+            this.viewport.context.fillRect(thumbnailRect.x, thumbnailRect.y, thumbnailRect.width, thumbnailRect.height);
+
+            this.resources.fonts.default.renderCenteredOnPoint(this.viewport, "LOCKED", centerLocation.addY(300));
+            this.resources.fonts.small.renderCenteredOnPoint(this.viewport, "SCORE 25 POINTS TO UNLOCK", centerLocation.addY(330));
+        }
     }
 
     private renderLevelThumbnail(level: LevelDefinition, centerLocation: Vector) {
@@ -98,19 +115,19 @@ export class LevelSelectionScreen extends Screen {
 
     private previousLevel(time: FrameTime) {
         if (this._selectedLevelIndex > 0) {
-            this.transitionToLevel(this._levels[this._selectedLevelIndex - 1], time);
+            this.transitionToLevel(this._levels.levels[this._selectedLevelIndex - 1], time);
         } else {
-            this.transitionToLevel(this._levels[this._levels.length - 1], time);
+            this.transitionToLevel(this._levels.levels[this._levels.levels.length - 1], time);
         }
 
         this.resources.audio.select.play();
     }
 
     private nextLevel(time: FrameTime) {
-        if (this._selectedLevelIndex < this._levels.length - 1) {
-            this.transitionToLevel(this._levels[this._selectedLevelIndex + 1], time);
+        if (this._selectedLevelIndex < this._levels.levels.length - 1) {
+            this.transitionToLevel(this._levels.levels[this._selectedLevelIndex + 1], time);
         } else {
-            this.transitionToLevel(this._levels[0], time);
+            this.transitionToLevel(this._levels.levels[0], time);
         }
 
         this.resources.audio.select.play();
@@ -119,17 +136,17 @@ export class LevelSelectionScreen extends Screen {
     public transitionToLevel(level: LevelDefinition, time: FrameTime) {
         this._transitionTime = time.currentTime;
         this._transitionStart = this.levelOffset(this._selectedLevelIndex);
-        this._selectedLevelIndex = this._levels.indexOf(level);
+        this._selectedLevelIndex = this._levels.levels.indexOf(level);
         this._transitionEnd = this.levelOffset(this._selectedLevelIndex);
     }
 
     public selectLevel(level: LevelDefinition) {
         this._transitionTime = -10000;
-        this._selectedLevelIndex = this._levels.indexOf(level);
+        this._selectedLevelIndex = this._levels.levels.indexOf(level);
     }
 
     private get selectedLevel() {
-        return this._levels[this._selectedLevelIndex];
+        return this._levels.levels[this._selectedLevelIndex];
     }
 
     private levelOffset(index: number) {

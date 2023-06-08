@@ -7,6 +7,7 @@ export class LevelDefinition {
     public killZones: Rectangle[] = [];
     public gates: GateSetDefinition[] = [];
     public spawns: IEnemySpawnDefinition[] = [];
+    public locked: boolean = true;
 
     public constructor(public code: string, public name: string) {
     }
