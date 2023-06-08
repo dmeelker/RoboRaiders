@@ -5,6 +5,7 @@ import { Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 import { GoopBall } from "../entities/GoopBall";
+import { PlayerEntity } from "../entities/PlayerEntity";
 import { Weapon } from "./Weapon";
 
 export class GoopGunWeapon extends Weapon {
@@ -16,12 +17,13 @@ export class GoopGunWeapon extends Weapon {
     private _recoilOffset = Vector.zero;
     private _recoilTimer?: Timer;
 
-    public constructor(context: IGameContext) {
-        super();
+    public constructor(player: PlayerEntity, context: IGameContext) {
+        super(player, context)
         this._image = context.resources.images.goopGun;
     }
 
     public update(time: FrameTime): void {
+        super.update(time);
         this._loaded = this.loaded(time);
 
         if (this._recoilTimer) {

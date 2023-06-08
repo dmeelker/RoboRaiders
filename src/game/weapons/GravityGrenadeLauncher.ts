@@ -3,6 +3,7 @@ import { Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 import { GravityGrenadeEntity } from "../entities/GravityGrenade";
+import { PlayerEntity } from "../entities/PlayerEntity";
 import { Weapon } from "./Weapon";
 
 export class GravityGrenadeWeapon extends Weapon {
@@ -12,12 +13,14 @@ export class GravityGrenadeWeapon extends Weapon {
     private _fireInterval = 1500;
     private _loaded = true;
 
-    public constructor(context: IGameContext) {
-        super();
+    public constructor(player: PlayerEntity, context: IGameContext) {
+        super(player, context)
         this._image = context.resources.images.gravityGrenadeUnarmed;
     }
 
     public update(time: FrameTime): void {
+        super.update(time);
+
         this._loaded = this.loaded(time);
     }
 

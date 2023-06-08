@@ -4,6 +4,7 @@ import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 import { MissileEntity } from "../entities/Missile";
+import { PlayerEntity } from "../entities/PlayerEntity";
 import { Weapon } from "./Weapon";
 
 export class RpgWeapon extends Weapon {
@@ -17,14 +18,16 @@ export class RpgWeapon extends Weapon {
     private _recoilTimer?: Timer;
     private _loaded = true;
 
-    public constructor(context: IGameContext) {
-        super();
+    public constructor(player: PlayerEntity, context: IGameContext) {
+        super(player, context)
         this._image = context.resources.images.rpg;
         this._grenadeImage = context.resources.images.rpgGrenade;
         this._size = new Size(this._image.width, this._image.height);
     }
 
     public update(time: FrameTime): void {
+        super.update(time);
+
         if (this._recoilTimer) {
             this._recoilTimer.update(time, () => {
                 this._offset = Vector.zero;

@@ -4,6 +4,7 @@ import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 import { createSparkEmitter } from "../ParticleFactory";
+import { PlayerEntity } from "../entities/PlayerEntity";
 import { RailgunDartEntity } from "../entities/RailgunDart";
 import { Weapon } from "./Weapon";
 
@@ -12,22 +13,22 @@ export class RailgunWeapon extends Weapon {
     private readonly _image: ImageBitmap;
     private readonly _imageLoaded: ImageBitmap;
     private readonly _size: Size;
-    private readonly _context: IGameContext;
     private _lastFireTime = -10000;
     private _fireInterval = 3000;
     private _offset = Vector.zero;
     private _recoilTimer?: Timer;
     private _loaded = true;
 
-    public constructor(context: IGameContext) {
-        super();
+    public constructor(player: PlayerEntity, context: IGameContext) {
+        super(player, context)
         this._image = context.resources.images.railgun;
         this._imageLoaded = context.resources.images.railgunLoaded;
         this._size = new Size(this._image.width, this._image.height);
-        this._context = context;
     }
 
     public update(time: FrameTime): void {
+        super.update(time);
+
         if (this._recoilTimer) {
             this._recoilTimer.update(time, () => {
                 this._offset = Vector.zero;
@@ -58,7 +59,7 @@ export class RailgunWeapon extends Weapon {
     }
 
     private spawnSparks(location: Vector, direction: Vector, time: FrameTime) {
-        createSparkEmitter(this._context.particleSystem, location, direction, time);
+        createSparkEmitter(this.context.particleSystem, location, direction, time);
     }
 
     public render(location: Vector, direction: Vector, viewport: Viewport): void {

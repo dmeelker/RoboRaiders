@@ -3,18 +3,17 @@ import { Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 import { BatSwingEntity } from "../entities/BatSwing";
+import { PlayerEntity } from "../entities/PlayerEntity";
 import { Weapon } from "./Weapon";
 
 export class BatWeapon extends Weapon {
-    private readonly _context: IGameContext;
     private readonly _image: ImageBitmap;
     private _lastSwingTime = -1000;
     public get name() { return "Baseball Bat"; }
 
-    public constructor(context: IGameContext) {
-        super();
+    public constructor(player: PlayerEntity, context: IGameContext) {
+        super(player, context)
 
-        this._context = context;
         this._image = context.resources.images.bat;
     }
 
@@ -45,5 +44,5 @@ export class BatWeapon extends Weapon {
         viewport.context.resetTransform();
     }
 
-    private get justSwung() { return this._context.time.currentTime - this._lastSwingTime < 100; }
+    private get justSwung() { return this.context.time.currentTime - this._lastSwingTime < 100; }
 }

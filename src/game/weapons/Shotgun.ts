@@ -4,6 +4,7 @@ import { Timer } from "../../utilities/Timer";
 import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
+import { PlayerEntity } from "../entities/PlayerEntity";
 import { ProjectileEntity } from "../entities/Projectile";
 import { Weapon } from "./Weapon";
 
@@ -16,13 +17,15 @@ export class ShotgunWeapon extends Weapon {
     private _offset = Vector.zero;
     private _recoilTimer?: Timer;
 
-    public constructor(context: IGameContext) {
-        super();
+    public constructor(player: PlayerEntity, context: IGameContext) {
+        super(player, context)
         this._image = context.resources.images.shotgun;
         this._size = new Size(this._image.width, this._image.height);
     }
 
     public update(time: FrameTime): void {
+        super.update(time);
+
         if (this._recoilTimer) {
             this._recoilTimer.update(time, () => {
                 this._offset = Vector.zero;

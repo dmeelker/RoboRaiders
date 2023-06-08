@@ -28,10 +28,10 @@ export class Player {
             this.entity.stopJump();
         }
 
-        if (this._input.wasButtonPressedInFrame(Keys.B)) {
-            this.entity.fireShot(time);
-        } else if (this._input.isButtonDown(Keys.B)) {
-            this.entity.fireContinually(time);
+        if (this._input.isButtonDown(Keys.B)) {
+            this.entity.weaponTriggerDown(time);
+        } else {
+            this.entity.weaponTriggerReleased(time);
         }
 
         if (this._input.isButtonDown(Keys.MoveLeft)) {

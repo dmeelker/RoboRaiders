@@ -2,6 +2,7 @@ import { FrameTime } from "../../utilities/FrameTime";
 import { Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
+import { PlayerEntity } from "../entities/PlayerEntity";
 import { ProjectileEntity } from "../entities/Projectile";
 import { Weapon } from "./Weapon";
 
@@ -10,8 +11,8 @@ export class PistolWeapon extends Weapon {
     private readonly _image: ImageBitmap;
     private readonly _size: Size;
 
-    public constructor(context: IGameContext) {
-        super();
+    public constructor(player: PlayerEntity, context: IGameContext) {
+        super(player, context)
         this._image = context.resources.images.pistol;
         this._size = new Size(this._image.width, this._image.height);
     }

@@ -35,7 +35,7 @@ export interface PlayerAnimation {
     jumpRight: AnimationDefinition,
 }
 
-type WeaponFactory = (gameContext: IGameContext) => Weapon;
+type WeaponFactory = (player: PlayerEntity, gameContext: IGameContext) => Weapon;
 
 export class PlayerEntity extends Entity {
     public physics: PhyicalObject;
@@ -65,22 +65,22 @@ export class PlayerEntity extends Entity {
         this._lastActionTime = gameContext.time.currentTime;
 
         this._availableWeapons = [
-            () => new BatWeapon(gameContext),
-            () => new PistolWeapon(gameContext),
-            () => new ShotgunWeapon(gameContext)
+            () => new BatWeapon(this, gameContext),
+            () => new PistolWeapon(this, gameContext),
+            () => new ShotgunWeapon(this, gameContext)
         ];
 
         // These are unlocked in reverse order
         this._unlockableWeapons = [
-            () => new GoopGunWeapon(gameContext),
-            () => new GrenadeLauncherWeapon(gameContext),
-            () => new RailgunWeapon(gameContext),
-            () => new GravityGrenadeWeapon(gameContext),
-            () => new RpgWeapon(gameContext),
-            () => new MachineGunWeapon(gameContext),
+            () => new GoopGunWeapon(this, gameContext),
+            () => new GrenadeLauncherWeapon(this, gameContext),
+            () => new RailgunWeapon(this, gameContext),
+            () => new GravityGrenadeWeapon(this, gameContext),
+            () => new RpgWeapon(this, gameContext),
+            () => new MachineGunWeapon(this, gameContext),
         ];
 
-        this._weapon = new PistolWeapon(gameContext);
+        this._weapon = new PistolWeapon(this, gameContext);
 
         if (index == 0) {
             this._animations = {
@@ -153,7 +153,7 @@ export class PlayerEntity extends Entity {
         let newWeapon: Weapon;
 
         do {
-            newWeapon = randomArrayElement(this._availableWeapons)(this.context);
+            newWeapon = randomArrayElement(this._availableWeapons)(this, this.context);
         } while (this._weapon.name == newWeapon.name);
 
         this._weaponEquippedWasNew = false;
@@ -164,7 +164,7 @@ export class PlayerEntity extends Entity {
         let weaponFactory = this._unlockableWeapons.pop();
         if (weaponFactory) {
             this._availableWeapons.push(weaponFactory);
-            let weapon = weaponFactory(this.context);
+            let weapon = weaponFactory(this, this.context);
             this._weaponEquippedWasNew = true;
             this.equipWeapon(weapon);
         }
@@ -183,13 +183,13 @@ export class PlayerEntity extends Entity {
         this.markDisposable();
     }
 
-    public fireShot(time: FrameTime) {
-        this._weapon.fireSingleShot(this.weaponLocation, this.lookVector, this.context, time);
+    public weaponTriggerDown(time: FrameTime) {
+        this._weapon.triggerDown(time);
         this._lastActionTime = time.currentTime;
     }
 
-    public fireContinually(time: FrameTime) {
-        this._weapon.fireContinually(this.weaponLocation, this.lookVector, this.context, time);
+    public weaponTriggerReleased(time: FrameTime) {
+        this._weapon.triggerReleased(time);
         this._lastActionTime = time.currentTime;
     }
 
@@ -279,7 +279,7 @@ export class PlayerEntity extends Entity {
 
     private get showWeaponEquippedLabel() { return this.context.time.currentTime - this._weaponEquipTime < (this._weaponEquippedWasNew ? 2000 : 1000); }
 
-    private get weaponLocation() { return this.centerLocation.add(this._facing == Facing.Right ? this._weaponOffset : this._weaponOffset.mirrorX()); }
+    public get weaponLocation() { return this.centerLocation.add(this._facing == Facing.Right ? this._weaponOffset : this._weaponOffset.mirrorX()); }
 
     public get facing() { return this._facing; }
     public get dead() { return this._dead; }
