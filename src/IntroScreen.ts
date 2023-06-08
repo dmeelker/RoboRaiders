@@ -2,6 +2,7 @@ import { IScreens, Inputs } from "./Main";
 import { Resources } from "./Resources";
 import { FrameTime } from "./utilities/FrameTime";
 import { Screen } from "./utilities/ScreenManager";
+import { Vector } from "./utilities/Trig";
 import { Viewport } from "./utilities/Viewport";
 
 export class IntroScreen extends Screen {
@@ -31,5 +32,7 @@ export class IntroScreen extends Screen {
         if (this._showKeyLabel) {
             this.resources.fonts.default.renderCenteredInArea(this.viewport, "PRESS ANY KEY TO START", 200, this.viewport.width);
         }
+
+        this.resources.fonts.small.render(this.viewport, "A DENSPEL GAME", new Vector(465, 475));
     }
 }
