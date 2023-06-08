@@ -91,13 +91,23 @@ class Main {
     }
 
     public async initialize() {
+        this._viewport = new Viewport(new Size(640, 480), this._container);
+
+        let loadingElement = document.createElement("div")!;
+        loadingElement.innerText = "Loading...";
+        loadingElement.className = "ui-label text-m";
+        loadingElement.style.textAlign = "center";
+        this._viewport.uiElement.appendChild(loadingElement);
+
         await this.loadResources();
+
+        this._viewport.uiElement.removeChild(loadingElement);
 
         this._audioSystem.effectVolume = .1;
         this._audioSystem.musicVolume = .4;
         //this._audioSystem.effectsMuted = true;
 
-        this._viewport = new Viewport(new Size(640, 480), this._container);
+
 
         this._screens = new Screens(this._viewport, this._resources, this._inputs, new FrameTime(0, 0));
     }

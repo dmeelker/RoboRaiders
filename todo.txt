@@ -13,13 +13,13 @@
 [x] Goop gun (fires blobs of goop that sticks enemies and the player in place for a short time)
 [x] Controls
 [x] Weapon unlocks
+[x] Music
 
 - Tutorial
 
 - More weapons that are difficult to use
  - Circuit Breaker (Joker weapon, kills everything, use once)
  - Plasma rifle (fires a single shot that can pass through multiple enemies, dealing less damage as it goes) (railgun replacement?)
-
  - EMP emitter (place on ground, temporarily disables enemies)
  - Stun rod (stuns enemies from close range)
  - Explosive darts (fires darts that stick in enemy and explode after a short delay)
@@ -33,4 +33,3 @@
  - Moveable elements (doors?)
 - Enemy types
  - Charger
-- Music
