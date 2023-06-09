@@ -1,22 +1,13 @@
 import { AnimationDefinition } from "../../utilities/Animation";
 import { FrameTime } from "../../utilities/FrameTime";
-import { randomArrayElement, randomInt } from "../../utilities/Random";
+import { randomInt } from "../../utilities/Random";
 import { Point, Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 import { CollisionContext, PhyicalObject } from "../Physics";
 import { Player } from "../Player";
 import { BoxCollectedEvent, PlayerDiedEvent } from "../modes/Events";
-import { BatWeapon } from "../weapons/Bat";
-import { ChainsawChain } from "../weapons/ChainsawChain";
-import { GoopGunWeapon } from "../weapons/GoopGun";
-import { GravityGrenadeWeapon } from "../weapons/GravityGrenadeLauncher";
-import { GrenadeLauncherWeapon } from "../weapons/GrenadeLauncher";
-import { MachineGunWeapon } from "../weapons/MachineGun";
 import { PistolWeapon } from "../weapons/Pistol";
-import { RailgunWeapon } from "../weapons/Railgun";
-import { RpgWeapon } from "../weapons/Rpg";
-import { ShotgunWeapon } from "../weapons/Shotgun";
 import { Weapon } from "../weapons/Weapon";
 import { ActorAnimations, ActorAnimator } from "./ActorAnimations";
 import { BoxEntity } from "./BoxEntity";
@@ -37,8 +28,6 @@ export interface PlayerAnimation {
     jumpRight: AnimationDefinition,
 }
 
-type WeaponFactory = (player: PlayerEntity, gameContext: IGameContext) => Weapon;
-
 export class PlayerEntity extends Entity {
     public physics: PhyicalObject;
     private _facing = Facing.Left;
@@ -54,8 +43,6 @@ export class PlayerEntity extends Entity {
     private _lastActionTime = 0;
 
     private _dead = false;
-    private _unlockableWeapons: Array<WeaponFactory>;
-    private _availableWeapons: Array<WeaponFactory>;
 
     private _animator: ActorAnimator;
     private _animations: ActorAnimations;
@@ -65,23 +52,6 @@ export class PlayerEntity extends Entity {
 
         this._lastMoveTime = gameContext.time.currentTime;
         this._lastActionTime = gameContext.time.currentTime;
-
-        this._availableWeapons = [
-            () => new BatWeapon(this, gameContext),
-            () => new PistolWeapon(this, gameContext),
-            () => new ShotgunWeapon(this, gameContext)
-        ];
-
-        // These are unlocked in reverse order
-        this._unlockableWeapons = [
-            () => new GoopGunWeapon(this, gameContext),
-            () => new GrenadeLauncherWeapon(this, gameContext),
-            () => new RailgunWeapon(this, gameContext),
-            () => new GravityGrenadeWeapon(this, gameContext),
-            () => new ChainsawChain(this, gameContext),
-            () => new RpgWeapon(this, gameContext),
-            () => new MachineGunWeapon(this, gameContext),
-        ];
 
         this._weapon = new PistolWeapon(this, gameContext);
 
@@ -128,8 +98,7 @@ export class PlayerEntity extends Entity {
         let boxes = this.context.entityManager.getOfType(BoxEntity);
         for (let box of boxes) {
             if (box.bounds.overlaps(this.bounds)) {
-                box.markDisposable();
-                this.onBoxCollected();
+                this.onBoxCollected(box);
             }
         }
 
@@ -140,44 +109,17 @@ export class PlayerEntity extends Entity {
         });
     }
 
-    private onBoxCollected() {
-        this.context.eventSink.handleEvent(new BoxCollectedEvent(this, this.context.time));
-        let score = this.context.addPoint();
-
-        if (score % 5 == 0 && this._availableWeapons.length > 0) {
-            this.unlockWeapon();
-        } else {
-            this.randomWeapon();
-        }
-
+    private onBoxCollected(box: BoxEntity) {
         this.context.resources.audio.box.play();
+        this.context.eventSink.handleEvent(new BoxCollectedEvent(this, this.context.time));
+        box.markDisposable();
     }
 
-    private randomWeapon() {
-        let newWeapon: Weapon;
-
-        do {
-            newWeapon = randomArrayElement(this._availableWeapons)(this, this.context);
-        } while (this._weapon.name == newWeapon.name);
-
-        this._weaponEquippedWasNew = false;
-        this.equipWeapon(newWeapon);
-    }
-
-    public unlockWeapon() {
-        let weaponFactory = this._unlockableWeapons.pop();
-        if (weaponFactory) {
-            this._availableWeapons.push(weaponFactory);
-            let weapon = weaponFactory(this, this.context);
-            this._weaponEquippedWasNew = true;
-            this.equipWeapon(weapon);
-        }
-    }
-
-    private equipWeapon(weapon: Weapon) {
+    public equipWeapon(weapon: Weapon, newWeapon: boolean) {
         this._weapon.dispose();
         this._weapon = weapon;
         this._weaponEquipTime = this.context.time.currentTime;
+        this._weaponEquippedWasNew = newWeapon;
     }
 
     public die() {
@@ -287,6 +229,7 @@ export class PlayerEntity extends Entity {
 
     private get showWeaponEquippedLabel() { return this.context.time.currentTime - this._weaponEquipTime < (this._weaponEquippedWasNew ? 2000 : 1000); }
 
+    public get weapon() { return this._weapon; }
     public get weaponLocation() { return this.centerLocation.add(this._facing == Facing.Right ? this._weaponOffset : this._weaponOffset.mirrorX()); }
 
     public get facing() { return this._facing; }

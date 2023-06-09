@@ -4,6 +4,8 @@ import { BoxSpawner } from "../BoxSpawner";
 import { Game } from "../Game";
 import { Highscores } from "../Highscores";
 import { LevelSet } from "../Levels";
+import { WeaponProvider } from "../WeaponProvider";
+import { Weapon } from "../weapons/Weapon";
 import { BoxCollectedEvent, GameEvent, IEventSink, PlayerDiedEvent } from "./Events";
 
 export abstract class GameMode implements IEventSink {
@@ -29,9 +31,11 @@ export class SinglePlayerMode extends GameMode {
     private _unlockedNextLevel = false;
     private readonly _levels = new LevelSet();
     private _highScores = new Highscores();
+    private readonly _weaponProvider: WeaponProvider;
 
     public constructor(game: Game) {
         super(game);
+        this._weaponProvider = new WeaponProvider(game);
     }
 
     public override initializeGame(time: FrameTime): void {
@@ -47,15 +51,36 @@ export class SinglePlayerMode extends GameMode {
     public handleEvent(gameEvent: GameEvent): void {
         switch (gameEvent.type) {
             case BoxCollectedEvent.type:
-                this._score++;
-                this.spawnBox();
-                console.log(`Score: ${this._score}`);
+                this.boxCollected(gameEvent as BoxCollectedEvent);
                 break;
 
             case PlayerDiedEvent.type:
                 this.gameOver();
                 break;
         }
+    }
+
+    private boxCollected(event: BoxCollectedEvent) {
+        this._score++;
+
+        this.newWeapon(event);
+        this.spawnBox();
+
+        console.log(`Score: ${this._score}`);
+    }
+
+    private newWeapon(event: BoxCollectedEvent) {
+        let weapon: Weapon;
+        let newWeapon = false;
+
+        if (this._score % 5 == 0 && this._weaponProvider.unlockableWeaponsLeft) {
+            weapon = this._weaponProvider.unlockWeapon(event.player);
+            newWeapon = true;
+        } else {
+            weapon = this._weaponProvider.getRandomWeapon(event.player);
+        }
+
+        event.player.equipWeapon(weapon, newWeapon);
     }
 
     private gameOver() {
