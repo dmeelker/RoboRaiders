@@ -1,18 +1,16 @@
 import { Inputs } from "../Main";
+import { Resources } from "../Resources";
 import { FrameTime } from "../utilities/FrameTime";
 import { ParticleSystem } from "../utilities/Particles";
 import { Viewport } from "../utilities/Viewport";
 import { Level } from "./Level";
+import { LevelDefinition } from "./LevelDefinition";
+import { LevelLoader } from "./LevelLoader";
 import { Player } from "./Player";
 import { EntityManager } from "./entities/EntityManager";
 import { GravityGrenadeEntity } from "./entities/GravityGrenade";
-import { BoxEntity } from "./entities/BoxEntity";
-import { LevelLoader } from "./LevelLoader";
-import { BoxSpawner } from "./BoxSpawner";
-import { Highscores } from "./Highscores";
-import { LevelDefinition } from "./LevelDefinition";
-import { Resources } from "../Resources";
-import { LevelSet } from "./Levels";
+import { IEventSink } from "./modes/Events";
+import { GameMode, SinglePlayerMode } from "./modes/SinglePlayerMode";
 
 export interface IGameContext {
     get debugMode(): boolean;
@@ -25,6 +23,7 @@ export interface IGameContext {
     get particleSystem(): ParticleSystem;
     get viewport(): Viewport;
     addPoint(): number;
+    get eventSink(): IEventSink;
 }
 
 export class Game implements IGameContext {
@@ -42,13 +41,8 @@ export class Game implements IGameContext {
 
     private _score = 0;
     private _players: Array<Player> = null!;
-    private _box: BoxEntity = null!;
-    private readonly _levels = new LevelSet();
-    private _highScores = new Highscores();
 
-    private _showGameOverScreenTime = 0;
-    private _showGameOverScreen = false;
-    private _unlockedNextLevel = false;
+    private _mode: GameMode = new SinglePlayerMode(this);
 
     public constructor(viewport: Viewport, resources: Resources, inputs: Inputs) {
         this._viewport = viewport;
@@ -63,34 +57,14 @@ export class Game implements IGameContext {
             player.update(time);
         }
 
-        if (this._box.disposed) {
-            this.spawnBox();
-        }
-
-        if (!this._showGameOverScreen && this.allPlayersDead) {
-            this._showGameOverScreen = true;
-            this._showGameOverScreenTime = time.currentTime;
-
-            this._highScores.update(this._level.name, this._score);
-            if (this._score >= 25) {
-                this._unlockedNextLevel = this._levels.unlockNextLevel(this._levelDefinition);
-            }
-        }
-
-        if (this._showGameOverScreen && time.currentTime - this._showGameOverScreenTime > 3000) {
-            this.gameOver(time);
-        }
+        this._mode.update(time);
 
         this._entities.update(time);
         GravityGrenadeEntity.updateGravityPull(this);
         this._projectiles.update(time);
     }
 
-    private gameOver(time: FrameTime) {
-        this.reset(time);
-    }
-
-    private reset(time: FrameTime) {
+    public reset(time: FrameTime) {
         this.loadLevel(this._levelDefinition, time);
     }
 
@@ -101,7 +75,6 @@ export class Game implements IGameContext {
         this._startTime = time.currentTime;
         this._time = time;
         this._score = 0;
-        this._showGameOverScreen = false;
 
         this.loadLevelData(level);
 
@@ -109,7 +82,7 @@ export class Game implements IGameContext {
             this._entities.add(player.entity);
         }
 
-        this.spawnBox();
+        this._mode.initializeGame(time);
     }
 
     private loadLevelData(level: LevelDefinition) {
@@ -125,10 +98,6 @@ export class Game implements IGameContext {
         //     new Player(this._level.playerSpawnLocations[1].clone(), this._inputs.player2, 1, this)];
     }
 
-    private spawnBox() {
-        this._box = new BoxSpawner(this).spawn();
-    }
-
     public addPoint(): number {
         this._score++;
         return this._score;
@@ -138,41 +107,17 @@ export class Game implements IGameContext {
         this.viewport.context.fillStyle = "pink";
         this.viewport.context.fillRect(0, 0, this.viewport.width, this.viewport.height);
         this.viewport.context.drawImage(this._backdropImage, 0, 0);
-        //this._level.render(this.viewport);
 
-        if (!this._showGameOverScreen) {
-            this.resources.fonts.default.renderCenteredInArea(this.viewport, this._score.toString(), 40, this.viewport.width);
-        }
+        this._mode.renderLabels(this.viewport);
+
         this.renderControls();
-
 
         this._entities.render(this.viewport);
         this._projectiles.render(this.viewport);
 
         this.viewport.context.drawImage(this._overlayImage, 0, 0);
 
-        this.renderLabels();
-    }
-
-    private renderLabels() {
-        if (this._showGameOverScreen) {
-            let highscore = this._highScores.get(this._level.name);
-
-            this.resources.fonts.large.renderCenteredInArea(this.viewport, "GAME OVER", 220, this.viewport.width);
-
-            if (highscore == null || this._score > highscore) {
-                this.resources.fonts.small.renderCenteredInArea(this.viewport, `NEW HIGHSCORE ${this._score}!`, 250, this.viewport.width);
-            } else {
-                this.resources.fonts.small.renderCenteredInArea(this.viewport, `SCORE: ${this._score}`, 250, this.viewport.width);
-                this.resources.fonts.small.renderCenteredInArea(this.viewport, `HIGH SCORE: ${highscore}`, 270, this.viewport.width);
-            }
-
-            if (this._unlockedNextLevel) {
-                if (this._time.currentTime % 1000 < 500) {
-                    this.resources.fonts.default.renderCenteredInArea(this.viewport, `NEXT LEVEL UNLOCKED!`, 340, this.viewport.width);
-                }
-            }
-        }
+        this._mode.renderOverlay(this.viewport);
     }
 
     private renderControls() {
@@ -193,6 +138,7 @@ export class Game implements IGameContext {
     public get runTime() { return this._time.currentTime - this._startTime; }
     public get difficulty() { return Math.min(this._score / 50, 1); }
     public get debugMode() { return false; }
+    public get eventSink() { return this._mode; }
 
     public get levelDefinition() { return this._levelDefinition; }
     public get showControls() {
@@ -213,6 +159,4 @@ export class Game implements IGameContext {
         this._backdropImage = backdrop;
         this._overlayImage = overlay;
     }
-
-    private get allPlayersDead() { return this._players.filter(p => !p.entity.dead).length == 0; }
 }

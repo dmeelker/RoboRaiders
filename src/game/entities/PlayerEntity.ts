@@ -6,6 +6,7 @@ import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 import { CollisionContext, PhyicalObject } from "../Physics";
 import { Player } from "../Player";
+import { BoxCollectedEvent, PlayerDiedEvent } from "../modes/Events";
 import { BatWeapon } from "../weapons/Bat";
 import { ChainsawChain } from "../weapons/ChainsawChain";
 import { GoopGunWeapon } from "../weapons/GoopGun";
@@ -140,6 +141,7 @@ export class PlayerEntity extends Entity {
     }
 
     private onBoxCollected() {
+        this.context.eventSink.handleEvent(new BoxCollectedEvent(this, this.context.time));
         let score = this.context.addPoint();
 
         if (score % 5 == 0 && this._availableWeapons.length > 0) {
@@ -185,6 +187,8 @@ export class PlayerEntity extends Entity {
         this.context.entityManager.add(new CorpseEntity(this.location, corpseVector, this._animator.activeAnimation.getImage(), this.context));
         this._weapon.dispose();
         this.markDisposable();
+
+        this.context.eventSink.handleEvent(new PlayerDiedEvent(this, this.context.time));
     }
 
     public weaponTriggerDown(time: FrameTime) {
