@@ -81,7 +81,9 @@ export class VersusMode extends GameMode {
     }
 
     private playerDied(_event: PlayerDiedEvent) {
-        this.gameOver();
+        if (this.game.entityManager.getPlayers().filter(p => !p.dead).length == 0) {
+            this.gameOver();
+        }
     }
 
     private gameOver() {
