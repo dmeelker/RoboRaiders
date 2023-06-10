@@ -18,6 +18,7 @@ export type WeaponFactory = (player: PlayerEntity) => Weapon;
 export class WeaponProvider {
     private _unlockableWeapons: Array<WeaponFactory>;
     private _availableWeapons: Array<WeaponFactory>;
+    private _recentWeapons = new Array<Weapon>();
 
     public constructor(gameContext: IGameContext) {
         this._availableWeapons = [
@@ -43,7 +44,9 @@ export class WeaponProvider {
 
         do {
             newWeapon = randomArrayElement(this._availableWeapons)(player);
-        } while (player.weapon.name == newWeapon.name);
+        } while (this.recentlyUsedWeapon(newWeapon.name));
+
+        this.addRecentWeapon(newWeapon);
 
         return newWeapon;
     }
@@ -52,11 +55,28 @@ export class WeaponProvider {
         let weaponFactory = this._unlockableWeapons.pop();
         if (weaponFactory) {
             this._availableWeapons.push(weaponFactory);
-            return weaponFactory(player);
+            let weapon = weaponFactory(player);
+            this.addRecentWeapon(weapon);
+            return weapon;
         }
 
         throw new Error("No more weapons to unlock");
     }
 
+    private addRecentWeapon(weapon: Weapon) {
+        this._recentWeapons.push(weapon);
+
+        if (this._recentWeapons.length > this.maxRecentWeapons) {
+            this._recentWeapons.shift();
+        }
+
+        console.log(this._recentWeapons.map(w => w.name).join(", "));
+    }
+
+    private recentlyUsedWeapon(name: string): boolean {
+        return this._recentWeapons.filter(w => w.name == name).length > 0;
+    }
+
+    private get maxRecentWeapons() { return Math.max(Math.floor(this._availableWeapons.length / 2), 2); }
     public get unlockableWeaponsLeft() { return this._unlockableWeapons.length > 0; }
 }
