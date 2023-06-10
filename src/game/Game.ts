@@ -9,10 +9,9 @@ import { LevelLoader } from "./LevelLoader";
 import { EntityManager } from "./entities/EntityManager";
 import { GravityGrenadeEntity } from "./entities/GravityGrenade";
 import { Facing, PlayerEntity } from "./entities/PlayerEntity";
-import { IEventSink } from "./modes/Events";
-import { SinglePlayerMode } from "./modes/SinglePlayerMode";
-import { GameMode } from "./modes/GameMode";
 import { CoopMode } from "./modes/CoopMode";
+import { IEventSink } from "./modes/Events";
+import { GameMode } from "./modes/GameMode";
 
 export interface IGameContext {
     get debugMode(): boolean;

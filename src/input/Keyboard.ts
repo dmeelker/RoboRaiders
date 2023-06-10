@@ -12,17 +12,25 @@ export class Keyboard {
     }
 
     private onKeyDown(keyEvent: KeyboardEvent) {
+        keyEvent.preventDefault();
+        keyEvent.stopPropagation();
+
         if (keyEvent.repeat) {
-            return;
+            return false;
         }
 
         //console.log(keyEvent);
         this._keyStates.set(keyEvent.code, true);
         this._frameButtonPresses.set(keyEvent.code, true);
+        return false;
     }
 
     private onKeyUp(keyEvent: KeyboardEvent) {
         this._keyStates.set(keyEvent.code, false);
+
+        keyEvent.preventDefault();
+        keyEvent.stopPropagation();
+        return false;
     }
 
     public isButtonDown(code: string): boolean {

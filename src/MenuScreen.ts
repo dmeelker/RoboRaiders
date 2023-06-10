@@ -24,7 +24,7 @@ export class MenuScreen extends Screen {
         super(viewport, resources, inputs, screens);
     }
 
-    public activate(time: FrameTime): void {
+    public activate(_time: FrameTime): void {
         this._resources.audio.music.play();
     }
 
