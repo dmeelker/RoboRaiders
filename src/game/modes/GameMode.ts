@@ -18,4 +18,6 @@ export abstract class GameMode implements IEventSink {
     public renderOverlay(_viewport: Viewport): void { }
 
     public handleEvent(_gameEvent: GameEvent): void { }
+
+    public abstract get highscoreKey(): string;
 }

@@ -15,18 +15,23 @@ export class LevelSelectionScreen extends Screen {
     private readonly _levels = new LevelSet();
     private _selectedLevelIndex = 0;
     private _renderOffset = 0;
-    private _highscores = new Highscores();
+    public highscores = new Highscores("singleplayer");
     private _transitionStart = 0;
     private _transitionEnd = 0;
     private _transitionTime = 0;
+    private _mode: string = "singleplayer";
+
+    public set mode(mode: string) {
+        this._mode = mode;
+        this.highscores = new Highscores(mode);
+    }
 
     public constructor(viewport: Viewport, resources: Resources, inputs: Inputs, screens: IScreens) {
         super(viewport, resources, inputs, screens);
     }
 
     public activate(time: FrameTime): void {
-        this._resources.audio.music.play();
-        this._highscores.load();
+        this.highscores.load();
         this._levels.load();
         this.transitionToLevel(this._levels.levels[0], time);
     }
@@ -44,9 +49,10 @@ export class LevelSelectionScreen extends Screen {
             }
 
             this.resources.audio.select.play();
-            this._screens.playGame(this.selectedLevel, time);
+            this._screens.playGame(this.selectedLevel, this._mode, time);
         } else if (this.inputs.player1.wasButtonPressedInFrame(Keys.Menu)) {
-            this._screens.showIntro(time);
+            this.resources.audio.select.play();
+            this._screens.showMenu(time);
         }
 
         let timeSinceTransitionStart = time.currentTime - this._transitionTime;
@@ -85,7 +91,7 @@ export class LevelSelectionScreen extends Screen {
     private renderLevel(level: LevelDefinition, centerLocation: Vector) {
         this.resources.fonts.default.renderCenteredOnPoint(this.viewport, level.name.toUpperCase(), centerLocation.addY(130));
 
-        let highscore = this._highscores.get(level.code);
+        let highscore = this.highscores.get(level.code);
         if (highscore) {
             this.resources.fonts.small.renderCenteredOnPoint(this.viewport, `HIGHSCORE ${highscore}`, centerLocation.addY(150));
         }

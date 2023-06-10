@@ -16,7 +16,7 @@ export class IntroScreen extends Screen {
     public update(time: FrameTime): void {
         if (this.inputs.player1.anyButtonPressedInFrame()) {
             this.resources.audio.select.play();
-            this._screens.showLevelSelect(time);
+            this._screens.showMenu(time);
         }
 
         this._showKeyLabel = ((time.currentTime - this._startTime) % 1000) > 500;

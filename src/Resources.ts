@@ -123,6 +123,7 @@ export interface Fonts {
     small: Font;
     default: Font;
     large: Font;
+    redDefault: Font;
 }
 
 export class Resources {
@@ -340,6 +341,7 @@ export class ResourceLoader {
             small: new Font(await imageLoader.load("font_small.png"), 1),
             default: new Font(await imageLoader.load("font_default.png"), 2),
             large: new Font(await imageLoader.load("font_large.png"), 3),
+            redDefault: new Font(await imageLoader.load("font_red_default.png"), 2),
         };
 
         return new Resources(images, audio, animations, fonts);

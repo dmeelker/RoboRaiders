@@ -12,6 +12,7 @@ import { PlayerEntity } from "./entities/PlayerEntity";
 import { IEventSink } from "./modes/Events";
 import { SinglePlayerMode } from "./modes/SinglePlayerMode";
 import { GameMode } from "./modes/GameMode";
+import { CoopMode } from "./modes/CoopMode";
 
 export interface IGameContext {
     get debugMode(): boolean;
@@ -25,6 +26,7 @@ export interface IGameContext {
     get viewport(): Viewport;
     addPoint(): number;
     get eventSink(): IEventSink;
+    get playerCount(): number;
 }
 
 export class Game implements IGameContext {
@@ -41,10 +43,11 @@ export class Game implements IGameContext {
     private _overlayImage: ImageBitmap = null!;
 
     private _score = 0;
-    public playerCount = 1;
+    private _playerCount = 1;
     private _players: Array<PlayerEntity> = null!;
 
-    private _mode: GameMode = new SinglePlayerMode(this);
+    private _mode: GameMode = new CoopMode(this);
+    public set mode(value: GameMode) { this._mode = value; }
 
     public constructor(viewport: Viewport, resources: Resources, inputs: Inputs) {
         this._viewport = viewport;
@@ -83,7 +86,7 @@ export class Game implements IGameContext {
             new PlayerEntity(this._level.playerSpawnLocations[0].clone(), this._inputs.player1, 0, this)
         ];
 
-        if (this.playerCount == 2) {
+        if (this._playerCount == 2) {
             this._players.push(new PlayerEntity(this._level.playerSpawnLocations[1].clone(), this._inputs.player2, 1, this));
         }
 
@@ -140,6 +143,8 @@ export class Game implements IGameContext {
     public get difficulty() { return Math.min(this._score / 50, 1); }
     public get debugMode() { return false; }
     public get eventSink() { return this._mode; }
+    public set playerCount(value: number) { this._playerCount = value; }
+    public get playerCount() { return this._playerCount; }
 
     public get levelDefinition() { return this._levelDefinition; }
     public get showControls() {

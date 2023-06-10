@@ -9,8 +9,8 @@ import { Weapon } from "../weapons/Weapon";
 import { BoxCollectedEvent, GameEvent, PlayerDiedEvent } from "./Events";
 import { GameMode } from "./GameMode";
 
-export class SinglePlayerMode extends GameMode {
-    public get highscoreKey() { return "singleplayer" }
+export class CoopMode extends GameMode {
+    public get highscoreKey() { return "coop" }
     private _score = 0;
     private _showGameOverScreenTime = 0;
     private _showGameOverScreen = false;
@@ -25,7 +25,7 @@ export class SinglePlayerMode extends GameMode {
     }
 
     public override initializeGame(_time: FrameTime): void {
-        this.game.playerCount = 1;
+        this.game.playerCount = 2;
         this.spawnBox();
     }
 
@@ -42,7 +42,7 @@ export class SinglePlayerMode extends GameMode {
                 break;
 
             case PlayerDiedEvent.type:
-                this.gameOver();
+                this.playerDied(gameEvent as PlayerDiedEvent);
                 break;
         }
     }
@@ -66,6 +66,12 @@ export class SinglePlayerMode extends GameMode {
         }
 
         event.player.equipWeapon(weapon, newWeapon);
+    }
+
+    private playerDied(_event: PlayerDiedEvent) {
+        if (this.game.entityManager.getPlayers().filter(p => !p.dead).length == 0) {
+            this.gameOver();
+        }
     }
 
     private gameOver() {

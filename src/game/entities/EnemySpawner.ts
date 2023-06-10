@@ -55,7 +55,7 @@ export class EnemySpawner extends Entity {
     private _lastSpawnTime = -10000;
     private readonly _configuration: EnemySpawnerConfiguration;
 
-    private get interval() { return interpolate(this._configuration.minSpawnInterval, this._configuration.maxSpawnInterval, this.context.difficulty); }
+    private get interval() { return interpolate(this._configuration.minSpawnInterval, this._configuration.maxSpawnInterval, this.context.difficulty) / this.context.playerCount; }
     private get timeSinceLastSpawn() { return this.context.time.currentTime - this._lastSpawnTime; }
 
     public constructor(location: Vector, size: Size, context: IGameContext, configuration: EnemySpawnerConfiguration) {

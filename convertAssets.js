@@ -75,6 +75,7 @@ convertLevel("level4");
 scale("font", 1, "font_small");
 scale("font", 2, "font_default");
 scale("font", 3, "font_large");
+scale("font_red", 2, "font_red_default");
 
 function convert(fileName, tag, outputName) {
     outputName ??= fileName;

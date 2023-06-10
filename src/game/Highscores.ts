@@ -1,7 +1,9 @@
 export class Highscores {
+    private _key: string;
     private _scores: { [id: string]: number } = {};
 
-    public constructor() {
+    public constructor(key: string) {
+        this._key = key;
         this.load();
     }
 
@@ -20,7 +22,7 @@ export class Highscores {
     }
 
     public load() {
-        let scoresString = window.localStorage.getItem("highscores");
+        let scoresString = window.localStorage.getItem(this.storageKey);
 
         if (!scoresString) {
             this._scores = {};
@@ -32,6 +34,8 @@ export class Highscores {
 
     private save() {
         let scoresString = JSON.stringify(this._scores);
-        window.localStorage.setItem("highscores", scoresString);
+        window.localStorage.setItem(this.storageKey, scoresString);
     }
+
+    private get storageKey() { return "highscores." + this._key; }
 }

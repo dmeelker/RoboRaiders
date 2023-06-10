@@ -1,6 +1,7 @@
 import { GameScreen } from "./GameScreen";
 import { IntroScreen } from "./IntroScreen";
 import { LevelSelectionScreen } from "./LevelSelectionScreen";
+import { MenuScreen } from "./MenuScreen";
 import { ResourceLoader, Resources } from "./Resources";
 import { LevelDefinition } from "./game/LevelDefinition";
 import { GamepadPoller } from "./input/GamepadPoller";
@@ -23,20 +24,23 @@ export interface Inputs {
 
 export interface IScreens {
     showIntro(time: FrameTime): void;
-    showLevelSelect(time: FrameTime, level?: LevelDefinition): void;
-    playGame(level: LevelDefinition, time: FrameTime): void;
+    showMenu(time: FrameTime): void;
+    showLevelSelect(time: FrameTime, mode: string, level?: LevelDefinition): void;
+    playGame(level: LevelDefinition, mode: string, time: FrameTime): void;
 }
 
 export class Screens implements IScreens {
     public readonly screenManager: ScreenManager;
     public readonly intro: IntroScreen;
+    public readonly menuScreen: MenuScreen;
     public readonly levelSelection: LevelSelectionScreen;
     public readonly game: GameScreen;
 
     public constructor(viewport: Viewport, resources: Resources, inputs: Inputs, time: FrameTime) {
+        this.intro = new IntroScreen(viewport, resources, inputs, this);
+        this.menuScreen = new MenuScreen(viewport, resources, inputs, this);
         this.levelSelection = new LevelSelectionScreen(viewport, resources, inputs, this);
         this.game = new GameScreen(viewport, resources, inputs, this);
-        this.intro = new IntroScreen(viewport, resources, inputs, this);
         this.screenManager = new ScreenManager(this.intro, time);
     }
 
@@ -44,7 +48,12 @@ export class Screens implements IScreens {
         this.screenManager.changeScreen(this.intro, time);
     }
 
-    public showLevelSelect(time: FrameTime, level?: LevelDefinition) {
+    public showMenu(time: FrameTime) {
+        this.screenManager.changeScreen(this.menuScreen, time);
+    }
+
+    public showLevelSelect(time: FrameTime, mode: string, level?: LevelDefinition) {
+        this.levelSelection.mode = mode;
         this.screenManager.changeScreen(this.levelSelection, time);
 
         if (level) {
@@ -52,8 +61,8 @@ export class Screens implements IScreens {
         }
     }
 
-    public playGame(level: LevelDefinition, time: FrameTime): void {
-        this.game.loadLevel(level, time);
+    public playGame(level: LevelDefinition, mode: string, time: FrameTime): void {
+        this.game.loadLevel(level, mode, time);
         this.screenManager.changeScreen(this.game, time);
     }
 }
@@ -105,6 +114,7 @@ class Main {
 
         this._audioSystem.effectVolume = .1;
         this._audioSystem.musicVolume = .4;
+        //this._audioSystem.musicMuted = true;
         //this._audioSystem.effectsMuted = true;
 
 
