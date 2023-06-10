@@ -12,25 +12,19 @@ export class Keyboard {
     }
 
     private onKeyDown(keyEvent: KeyboardEvent) {
-        keyEvent.preventDefault();
-        keyEvent.stopPropagation();
-
         if (keyEvent.repeat) {
-            return false;
+            return this.preventBubble(keyEvent);
         }
 
         //console.log(keyEvent);
         this._keyStates.set(keyEvent.code, true);
         this._frameButtonPresses.set(keyEvent.code, true);
-        return false;
+        return this.preventBubble(keyEvent);
     }
 
     private onKeyUp(keyEvent: KeyboardEvent) {
         this._keyStates.set(keyEvent.code, false);
-
-        keyEvent.preventDefault();
-        keyEvent.stopPropagation();
-        return false;
+        return this.preventBubble(keyEvent);
     }
 
     public isButtonDown(code: string): boolean {
@@ -55,5 +49,16 @@ export class Keyboard {
 
     public nextFrame() {
         this._frameButtonPresses.clear();
+    }
+
+    private preventBubble(keyEvent: KeyboardEvent): boolean {
+        // Prevent bubbling for keys that might scroll the document
+        if (keyEvent.code == "ArrowUp" || keyEvent.code == "ArrowDown" || keyEvent.code == "ArrowLeft" || keyEvent.code == "ArrowRight") {
+            keyEvent.preventDefault();
+            keyEvent.stopPropagation();
+            return false;
+        } else {
+            return true;
+        }
     }
 }
