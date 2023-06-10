@@ -17,7 +17,7 @@ export class CoopMode extends GameMode {
     private _unlockedNextLevel = false;
     private readonly _levels = new LevelSet();
     private _highScores = new Highscores(this.highscoreKey);
-    private readonly _weaponProvider: WeaponProvider;
+    private _weaponProvider: WeaponProvider;
 
     public constructor(game: Game) {
         super(game);
@@ -26,6 +26,9 @@ export class CoopMode extends GameMode {
 
     public override initializeGame(_time: FrameTime): void {
         this.game.playerCount = 2;
+        this._score = 0;
+        this._weaponProvider = new WeaponProvider(this.game);
+        this._showGameOverScreen = false;
         this.spawnBox();
     }
 
