@@ -30,6 +30,7 @@ export interface PlayerAnimation {
 
 export class PlayerEntity extends Entity {
     public physics: PhyicalObject;
+    public readonly index: number;
     private _input: InputProvider;
     private _facing = Facing.Left;
     private _weaponOffset = new Vector(0, 0);
@@ -51,6 +52,7 @@ export class PlayerEntity extends Entity {
     public constructor(location: Vector, input: InputProvider, index: number, gameContext: IGameContext) {
         super(location, new Size(32, 34), gameContext);
 
+        this.index = index;
         this._input = input;
         this._lastMoveTime = gameContext.time.currentTime;
         this._lastActionTime = gameContext.time.currentTime;

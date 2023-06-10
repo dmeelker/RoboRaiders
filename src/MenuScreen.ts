@@ -16,8 +16,9 @@ class MenuItem {
 export class MenuScreen extends Screen {
     private readonly _singlePlayerItem = new MenuItem("Single Player".toUpperCase());
     private readonly _coopItem = new MenuItem("2 player coop".toUpperCase());
+    private readonly _versusItem = new MenuItem("2 player versus".toUpperCase());
     private _selectedItem = this._singlePlayerItem;
-    private readonly _allItems = [this._singlePlayerItem, this._coopItem];
+    private readonly _allItems = [this._singlePlayerItem, this._coopItem, this._versusItem];
 
     public constructor(viewport: Viewport, resources: Resources, inputs: Inputs, screens: IScreens) {
         super(viewport, resources, inputs, screens);
@@ -79,6 +80,8 @@ export class MenuScreen extends Screen {
 
         if (index < this._allItems.length - 1) {
             this._selectedItem = this._allItems[index + 1];
+        } else {
+            this._selectedItem = this._allItems[0];
         }
     }
 
@@ -88,6 +91,8 @@ export class MenuScreen extends Screen {
 
         if (index > 0) {
             this._selectedItem = this._allItems[index - 1];
+        } else {
+            this._selectedItem = this._allItems[this._allItems.length - 1];
         }
     }
 
@@ -97,6 +102,8 @@ export class MenuScreen extends Screen {
             this._screens.showLevelSelect(time, "singleplayer");
         } else if (this._selectedItem == this._coopItem) {
             this._screens.showLevelSelect(time, "coop");
+        } else if (this._selectedItem == this._versusItem) {
+            this._screens.showLevelSelect(time, "versus");
         }
     }
 }

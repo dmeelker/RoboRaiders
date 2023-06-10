@@ -26,7 +26,6 @@ export class IntroScreen extends Screen {
         this.viewport.context.drawImage(this.resources.images.background, 0, 0);
 
         this.resources.fonts.small.renderCenteredInArea(this.viewport, "WELCOME TO", 60, this.viewport.width);
-
         this.resources.fonts.large.renderCenteredInArea(this.viewport, "ROBO RAIDERS", 100, this.viewport.width);
 
         if (this._showKeyLabel) {

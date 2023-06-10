@@ -2,6 +2,7 @@ import { Game } from "./game/Game";
 import { LevelDefinition } from "./game/LevelDefinition";
 import { CoopMode } from "./game/modes/CoopMode";
 import { SinglePlayerMode } from "./game/modes/SinglePlayerMode";
+import { VersusMode } from "./game/modes/VersusMode";
 import { Keys } from "./input/InputProvider";
 import { FrameTime } from "./utilities/FrameTime";
 import { Screen } from "./utilities/ScreenManager";
@@ -20,6 +21,9 @@ export class GameScreen extends Screen {
                 break;
             case "coop":
                 this._game.mode = new CoopMode(this._game);
+                break;
+            case "versus":
+                this._game.mode = new VersusMode(this._game);
                 break;
             default:
                 throw new Error(`Unknown mode: ${mode}`);
