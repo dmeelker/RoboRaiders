@@ -264,6 +264,7 @@ export class PlayerEntity extends Entity {
     public get weaponLocation() { return this.centerLocation.add(this._facing == Facing.Right ? this._weaponOffset : this._weaponOffset.mirrorX()); }
 
     public get facing() { return this._facing; }
+    public set facing(facing: Facing) { this._facing = facing; }
     public get dead() { return this._dead; }
     public get lastMoveTime() { return this._lastMoveTime; }
     public get lastActionTime() { return this._lastActionTime; }

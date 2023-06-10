@@ -8,7 +8,7 @@ import { LevelDefinition } from "./LevelDefinition";
 import { LevelLoader } from "./LevelLoader";
 import { EntityManager } from "./entities/EntityManager";
 import { GravityGrenadeEntity } from "./entities/GravityGrenade";
-import { PlayerEntity } from "./entities/PlayerEntity";
+import { Facing, PlayerEntity } from "./entities/PlayerEntity";
 import { IEventSink } from "./modes/Events";
 import { SinglePlayerMode } from "./modes/SinglePlayerMode";
 import { GameMode } from "./modes/GameMode";
@@ -91,6 +91,9 @@ export class Game implements IGameContext {
                 new PlayerEntity(this._level.playerSpawnLocations[0].clone(), this._inputs.player1, 0, this),
                 new PlayerEntity(this._level.playerSpawnLocations[1].clone(), this._inputs.player2, 1, this)
             ];
+
+            this._players[0].facing = Facing.Left;
+            this._players[1].facing = Facing.Right;
         }
 
         for (let player of this._players) {
