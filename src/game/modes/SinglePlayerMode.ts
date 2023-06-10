@@ -6,23 +6,8 @@ import { Highscores } from "../Highscores";
 import { LevelSet } from "../Levels";
 import { WeaponProvider } from "../WeaponProvider";
 import { Weapon } from "../weapons/Weapon";
-import { BoxCollectedEvent, GameEvent, IEventSink, PlayerDiedEvent } from "./Events";
-
-export abstract class GameMode implements IEventSink {
-    public readonly game: Game;
-
-    public constructor(game: Game) {
-        this.game = game;
-    }
-
-    public initializeGame(time: FrameTime): void { }
-
-    public update(time: FrameTime): void { }
-    public renderLabels(viewport: Viewport): void { }
-    public renderOverlay(viewport: Viewport): void { }
-
-    public handleEvent(gameEvent: GameEvent): void { }
-}
+import { BoxCollectedEvent, GameEvent, PlayerDiedEvent } from "./Events";
+import { GameMode } from "./GameMode";
 
 export class SinglePlayerMode extends GameMode {
     private _score = 0;
@@ -38,7 +23,8 @@ export class SinglePlayerMode extends GameMode {
         this._weaponProvider = new WeaponProvider(game);
     }
 
-    public override initializeGame(time: FrameTime): void {
+    public override initializeGame(_time: FrameTime): void {
+        this.game.playerCount = 1;
         this.spawnBox();
     }
 

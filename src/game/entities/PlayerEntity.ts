@@ -1,3 +1,4 @@
+import { InputProvider, Keys } from "../../input/InputProvider";
 import { AnimationDefinition } from "../../utilities/Animation";
 import { FrameTime } from "../../utilities/FrameTime";
 import { randomInt } from "../../utilities/Random";
@@ -5,7 +6,6 @@ import { Point, Size, Vector } from "../../utilities/Trig";
 import { Viewport } from "../../utilities/Viewport";
 import { IGameContext } from "../Game";
 import { CollisionContext, PhyicalObject } from "../Physics";
-import { Player } from "../Player";
 import { BoxCollectedEvent, PlayerDiedEvent } from "../modes/Events";
 import { PistolWeapon } from "../weapons/Pistol";
 import { Weapon } from "../weapons/Weapon";
@@ -30,6 +30,7 @@ export interface PlayerAnimation {
 
 export class PlayerEntity extends Entity {
     public physics: PhyicalObject;
+    private _input: InputProvider;
     private _facing = Facing.Left;
     private _weaponOffset = new Vector(0, 0);
     private _weapon: Weapon;
@@ -47,9 +48,10 @@ export class PlayerEntity extends Entity {
     private _animator: ActorAnimator;
     private _animations: ActorAnimations;
 
-    public constructor(location: Vector, _player: Player, index: number, gameContext: IGameContext) {
+    public constructor(location: Vector, input: InputProvider, index: number, gameContext: IGameContext) {
         super(location, new Size(32, 34), gameContext);
 
+        this._input = input;
         this._lastMoveTime = gameContext.time.currentTime;
         this._lastActionTime = gameContext.time.currentTime;
 
@@ -85,6 +87,7 @@ export class PlayerEntity extends Entity {
 
     public update(time: FrameTime) {
         this._weapon.update(time);
+        this.processInput(time);
         this.updateJump(time);
         this.physics.update(time);
 
@@ -107,6 +110,32 @@ export class PlayerEntity extends Entity {
             facing: this.facing,
             timeSinceLastHit: 0
         });
+    }
+
+    private processInput(time: FrameTime) {
+        if (this.dead) {
+            return;
+        }
+
+        if (this._input.wasButtonPressedInFrame(Keys.A)) {
+            this.jump(time);
+        } else if (!this._input.isButtonDown(Keys.A)) {
+            this.stopJump();
+        }
+
+        if (this._input.isButtonDown(Keys.B)) {
+            this.weaponTriggerDown(time);
+        } else {
+            this.weaponTriggerReleased(time);
+        }
+
+        if (this._input.isButtonDown(Keys.MoveLeft)) {
+            this.moveLeft();
+        } else if (this._input.isButtonDown(Keys.MoveRight)) {
+            this.moveRight();
+        } else {
+            this.physics.velocity.x = 0;
+        }
     }
 
     private onBoxCollected(box: BoxEntity) {

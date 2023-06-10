@@ -6,11 +6,12 @@ import { Viewport } from "../utilities/Viewport";
 import { Level } from "./Level";
 import { LevelDefinition } from "./LevelDefinition";
 import { LevelLoader } from "./LevelLoader";
-import { Player } from "./Player";
 import { EntityManager } from "./entities/EntityManager";
 import { GravityGrenadeEntity } from "./entities/GravityGrenade";
+import { PlayerEntity } from "./entities/PlayerEntity";
 import { IEventSink } from "./modes/Events";
-import { GameMode, SinglePlayerMode } from "./modes/SinglePlayerMode";
+import { SinglePlayerMode } from "./modes/SinglePlayerMode";
+import { GameMode } from "./modes/GameMode";
 
 export interface IGameContext {
     get debugMode(): boolean;
@@ -40,7 +41,8 @@ export class Game implements IGameContext {
     private _overlayImage: ImageBitmap = null!;
 
     private _score = 0;
-    private _players: Array<Player> = null!;
+    public playerCount = 1;
+    private _players: Array<PlayerEntity> = null!;
 
     private _mode: GameMode = new SinglePlayerMode(this);
 
@@ -52,11 +54,6 @@ export class Game implements IGameContext {
 
     public update(time: FrameTime) {
         this._time = time;
-
-        for (let player of this._players) {
-            player.update(time);
-        }
-
         this._mode.update(time);
 
         this._entities.update(time);
@@ -77,12 +74,22 @@ export class Game implements IGameContext {
         this._score = 0;
 
         this.loadLevelData(level);
+        this._mode.initializeGame(time);
+        this.initializePlayers();
+    }
 
-        for (let player of this._players) {
-            this._entities.add(player.entity);
+    private initializePlayers() {
+        this._players = [
+            new PlayerEntity(this._level.playerSpawnLocations[0].clone(), this._inputs.player1, 0, this)
+        ];
+
+        if (this.playerCount == 2) {
+            this._players.push(new PlayerEntity(this._level.playerSpawnLocations[1].clone(), this._inputs.player2, 1, this));
         }
 
-        this._mode.initializeGame(time);
+        for (let player of this._players) {
+            this._entities.add(player);
+        }
     }
 
     private loadLevelData(level: LevelDefinition) {
@@ -90,12 +97,6 @@ export class Game implements IGameContext {
         let levelLoader = new LevelLoader(this);
         levelLoader.loadLevel(level);
 
-        this._players = [
-            new Player(this._level.playerSpawnLocations[0].clone(), this._inputs.player1, 0, this)];
-
-        // this._players = [
-        //     new Player(this._level.playerSpawnLocations[0].clone(), this._inputs.player1, 0, this),
-        //     new Player(this._level.playerSpawnLocations[1].clone(), this._inputs.player2, 1, this)];
     }
 
     public addPoint(): number {
@@ -146,8 +147,8 @@ export class Game implements IGameContext {
             return false;
 
         for (let player of this._players) {
-            if (this._time.currentTime - player.entity.lastMoveTime < 5000 &&
-                this._time.currentTime - player.entity.lastActionTime < 5000) {
+            if (this._time.currentTime - player.lastMoveTime < 5000 &&
+                this._time.currentTime - player.lastActionTime < 5000) {
                 return false;
             }
         }
