@@ -82,12 +82,15 @@ export class Game implements IGameContext {
     }
 
     private initializePlayers() {
-        this._players = [
-            new PlayerEntity(this._level.playerSpawnLocations[0].clone(), this._inputs.player1, 0, this)
-        ];
-
-        if (this._playerCount == 2) {
-            this._players.push(new PlayerEntity(this._level.playerSpawnLocations[1].clone(), this._inputs.player2, 1, this));
+        if (this._playerCount == 1) {
+            this._players = [
+                new PlayerEntity(this._level.playerSpawnLocations[0].clone(), this._inputs.player1solo, 0, this)
+            ];
+        } else if (this._playerCount == 2) {
+            this._players = [
+                new PlayerEntity(this._level.playerSpawnLocations[0].clone(), this._inputs.player1, 0, this),
+                new PlayerEntity(this._level.playerSpawnLocations[1].clone(), this._inputs.player2, 1, this)
+            ];
         }
 
         for (let player of this._players) {
@@ -127,9 +130,14 @@ export class Game implements IGameContext {
     private renderControls() {
         if (this.showControls) {
             this.resources.fonts.small.renderCenteredInArea(this.viewport, "HOW TO PLAY", 200, this.viewport.width);
-            this.resources.fonts.small.renderCenteredInArea(this.viewport, "ARROW KEYS  MOVE", 220, this.viewport.width);
-            this.resources.fonts.small.renderCenteredInArea(this.viewport, "Z   JUMP", 240, this.viewport.width);
-            this.resources.fonts.small.renderCenteredInArea(this.viewport, "X   SHOOT", 260, this.viewport.width);
+            if (this.playerCount == 1) {
+                this.resources.fonts.small.renderCenteredInArea(this.viewport, "ARROW KEYS  MOVE", 220, this.viewport.width);
+                this.resources.fonts.small.renderCenteredInArea(this.viewport, "Z   JUMP", 240, this.viewport.width);
+                this.resources.fonts.small.renderCenteredInArea(this.viewport, "X   SHOOT", 260, this.viewport.width);
+            } else {
+                this.resources.fonts.small.renderCenteredInArea(this.viewport, "P1 ARROW KEYS  COMMA  PERIOD", 220, this.viewport.width);
+                this.resources.fonts.small.renderCenteredInArea(this.viewport, "P2 WSAD  F  G", 240, this.viewport.width);
+            }
         }
     }
 

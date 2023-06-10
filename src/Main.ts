@@ -5,7 +5,7 @@ import { MenuScreen } from "./MenuScreen";
 import { ResourceLoader, Resources } from "./Resources";
 import { LevelDefinition } from "./game/LevelDefinition";
 import { GamepadPoller } from "./input/GamepadPoller";
-import { createPlayer1InputProvider, createPlayer2InputProvider } from "./input/InputConfiguration";
+import { createPlayer1InputProvider, createPlayer1SoloInputProvider, createPlayer2InputProvider } from "./input/InputConfiguration";
 import { InputProvider } from "./input/InputProvider";
 import { Keyboard } from "./input/Keyboard";
 import * as Align from "./utilities/Align";
@@ -18,6 +18,7 @@ import { Size } from "./utilities/Trig";
 import { Viewport } from "./utilities/Viewport";
 
 export interface Inputs {
+    player1solo: InputProvider,
     player1: InputProvider,
     player2: InputProvider
 }
@@ -86,6 +87,7 @@ class Main {
         this._container = container;
 
         this._inputs = {
+            player1solo: createPlayer1SoloInputProvider(this._keyboard, this._gamepadPoller),
             player1: createPlayer1InputProvider(this._keyboard, this._gamepadPoller),
             player2: createPlayer2InputProvider(this._keyboard, this._gamepadPoller),
         };
@@ -116,8 +118,6 @@ class Main {
         this._audioSystem.musicVolume = .4;
         //this._audioSystem.musicMuted = true;
         //this._audioSystem.effectsMuted = true;
-
-
 
         this._screens = new Screens(this._viewport, this._resources, this._inputs, new FrameTime(0, 0));
     }

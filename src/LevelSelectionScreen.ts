@@ -37,11 +37,11 @@ export class LevelSelectionScreen extends Screen {
     }
 
     public update(time: FrameTime): void {
-        if (this.inputs.player1.wasButtonPressedInFrame(Keys.MoveLeft)) {
+        if (this.inputs.player1solo.wasButtonPressedInFrame(Keys.MoveLeft)) {
             this.previousLevel(time);
-        } else if (this.inputs.player1.wasButtonPressedInFrame(Keys.MoveRight)) {
+        } else if (this.inputs.player1solo.wasButtonPressedInFrame(Keys.MoveRight)) {
             this.nextLevel(time);
-        } else if (this.inputs.player1.wasButtonPressedInFrame(Keys.A) || this.inputs.player1.wasButtonPressedInFrame(Keys.Select)) {
+        } else if (this.inputs.player1solo.wasButtonPressedInFrame(Keys.A) || this.inputs.player1solo.wasButtonPressedInFrame(Keys.Select)) {
             if (this.selectedLevel.locked) {
                 this.resources.audio.error.play();
                 this.viewport.shakeLight(time);
@@ -50,7 +50,7 @@ export class LevelSelectionScreen extends Screen {
 
             this.resources.audio.select.play();
             this._screens.playGame(this.selectedLevel, this._mode, time);
-        } else if (this.inputs.player1.wasButtonPressedInFrame(Keys.Menu)) {
+        } else if (this.inputs.player1solo.wasButtonPressedInFrame(Keys.Menu)) {
             this.resources.audio.select.play();
             this._screens.showMenu(time);
         }

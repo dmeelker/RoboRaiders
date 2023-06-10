@@ -28,15 +28,15 @@ export class MenuScreen extends Screen {
     }
 
     public update(time: FrameTime): void {
-        if (this.inputs.player1.wasButtonPressedInFrame(Keys.MoveDown)) {
+        if (this.inputs.player1solo.wasButtonPressedInFrame(Keys.MoveDown)) {
             this.next();
-        } else if (this.inputs.player1.wasButtonPressedInFrame(Keys.MoveUp)) {
+        } else if (this.inputs.player1solo.wasButtonPressedInFrame(Keys.MoveUp)) {
             this.previous();
-        } if (this.inputs.player1.wasButtonPressedInFrame(Keys.A) || this.inputs.player1.wasButtonPressedInFrame(Keys.Select)) {
+        } if (this.inputs.player1solo.wasButtonPressedInFrame(Keys.A) || this.inputs.player1solo.wasButtonPressedInFrame(Keys.Select)) {
             this.select(time);
         }
 
-        if (this.inputs.player1.wasButtonPressedInFrame(Keys.Menu)) {
+        if (this.inputs.player1solo.wasButtonPressedInFrame(Keys.Menu)) {
             this.resources.audio.select.play();
             this._screens.showIntro(time);
         }
