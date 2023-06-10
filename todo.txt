@@ -14,6 +14,7 @@
 [x] Controls
 [x] Weapon unlocks
 [x] Music
+[x] Coop
 
 - Tutorial
 
@@ -26,7 +27,6 @@
  - Foam grenade (fires a grenade that explodes on contact, expanding into a large foam blob that blocks enemy movement, large enemies might be able to walk through and destroy it)
  - Rust weapon (slowly damages robots)
 - Multiplayer modes
- - Coop
  - Competition
 - Extra level elements
  - Pools of sludge
