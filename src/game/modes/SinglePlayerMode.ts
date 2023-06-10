@@ -116,4 +116,6 @@ export class SinglePlayerMode extends GameMode {
             }
         }
     }
+
+    public getHighestScore() { return this._score; }
 }

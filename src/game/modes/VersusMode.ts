@@ -88,9 +88,9 @@ export class VersusMode extends GameMode {
         this._showGameOverScreenTime = this.game.time.currentTime;
         this._showGameOverScreen = true;
 
-        this._highScores.update(this.game.level.name, this.maxScore);
+        this._highScores.update(this.game.level.name, this.getHighestScore());
 
-        if (this.maxScore >= 25) {
+        if (this.getHighestScore() >= 25) {
             this._unlockedNextLevel = this._levels.unlockNextLevel(this.game.levelDefinition);
         }
     }
@@ -117,8 +117,8 @@ export class VersusMode extends GameMode {
 
             this.game.resources.fonts.large.renderCenteredInArea(viewport, "GAME OVER", 180, viewport.width);
 
-            if (highscore == null || this.maxScore > highscore) {
-                this.game.resources.fonts.small.renderCenteredInArea(viewport, `NEW HIGHSCORE ${this.maxScore}!`, 210, viewport.width);
+            if (highscore == null || this.getHighestScore() > highscore) {
+                this.game.resources.fonts.small.renderCenteredInArea(viewport, `NEW HIGHSCORE ${this.getHighestScore()}!`, 210, viewport.width);
             } else {
                 this.game.resources.fonts.default.renderCenteredInArea(viewport, this.getWinnerMessage(), 220, viewport.width);
                 this.game.resources.fonts.small.renderCenteredInArea(viewport, `P1 SCORE: ${this._players[0].score}`, 250, viewport.width);
@@ -144,5 +144,5 @@ export class VersusMode extends GameMode {
         }
     }
 
-    private get maxScore() { return Math.max(this._players[0].score, this._players[1].score); }
+    public getHighestScore() { return Math.max(this._players[0].score, this._players[1].score); }
 }

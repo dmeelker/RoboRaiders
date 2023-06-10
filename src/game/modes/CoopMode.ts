@@ -122,4 +122,6 @@ export class CoopMode extends GameMode {
             }
         }
     }
+
+    public getHighestScore() { return this._score; }
 }

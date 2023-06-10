@@ -23,7 +23,6 @@ export interface IGameContext {
     get entityManager(): EntityManager;
     get particleSystem(): ParticleSystem;
     get viewport(): Viewport;
-    addPoint(): number;
     get eventSink(): IEventSink;
     get playerCount(): number;
 }
@@ -41,7 +40,6 @@ export class Game implements IGameContext {
     private _backdropImage: ImageBitmap = null!;
     private _overlayImage: ImageBitmap = null!;
 
-    private _score = 0;
     private _playerCount = 1;
     private _players: Array<PlayerEntity> = null!;
 
@@ -73,7 +71,6 @@ export class Game implements IGameContext {
 
         this._startTime = time.currentTime;
         this._time = time;
-        this._score = 0;
 
         this.loadLevelData(level);
         this._mode.initializeGame(time);
@@ -105,11 +102,6 @@ export class Game implements IGameContext {
         let levelLoader = new LevelLoader(this);
         levelLoader.loadLevel(level);
 
-    }
-
-    public addPoint(): number {
-        this._score++;
-        return this._score;
     }
 
     public render() {
@@ -150,7 +142,7 @@ export class Game implements IGameContext {
     public get particleSystem() { return this._projectiles; }
     public get viewport() { return this._viewport; }
     public get runTime() { return this._time.currentTime - this._startTime; }
-    public get difficulty() { return Math.min(this._score / 50, 1); }
+    public get difficulty() { return Math.min(this._mode.getHighestScore() / 50, 1); }
     public get debugMode() { return false; }
     public get eventSink() { return this._mode; }
     public set playerCount(value: number) { this._playerCount = value; }
@@ -158,7 +150,7 @@ export class Game implements IGameContext {
 
     public get levelDefinition() { return this._levelDefinition; }
     public get showControls() {
-        if (this._score > 0)
+        if (this._mode.getHighestScore() > 0)
             return false;
 
         for (let player of this._players) {

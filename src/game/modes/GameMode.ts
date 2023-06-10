@@ -20,4 +20,5 @@ export abstract class GameMode implements IEventSink {
     public handleEvent(_gameEvent: GameEvent): void { }
 
     public abstract get highscoreKey(): string;
+    public abstract getHighestScore(): number;
 }
