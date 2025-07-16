@@ -115,7 +115,7 @@ class Main {
         this._viewport.uiElement.removeChild(loadingElement);
 
         this._audioSystem.effectVolume = .1;
-        this._audioSystem.musicVolume = .4;
+        this._audioSystem.musicVolume = .1;
         //this._audioSystem.musicMuted = true;
         //this._audioSystem.effectsMuted = true;
 
