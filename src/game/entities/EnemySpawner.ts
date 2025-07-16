@@ -10,6 +10,8 @@ import { Facing } from "./PlayerEntity";
 
 type EnemyFactory = (location: Vector, context: IGameContext) => EnemyEntity;
 
+const speedModifier = .6;
+
 export interface IEnemySpawnerConfigurationOptions {
     enemyTypes?: EnemySpawnConfiguration[];
     minSpawnInterval?: number;
@@ -122,7 +124,7 @@ export class EnemySpawner extends Entity {
 
         let enemy = new WalkingEnemyEntity(location, animations, context);
         enemy.hitpoints = 10;
-        enemy.speed = 200;
+        enemy.speed = 200 * speedModifier;
         enemy.facing = EnemySpawner.randomFacing();
         return enemy;
     }
@@ -141,7 +143,7 @@ export class EnemySpawner extends Entity {
 
         let enemy = new WalkingEnemyEntity(location, animations, context);
         enemy.hitpoints = 5;
-        enemy.speed = 250;
+        enemy.speed = 250 * speedModifier;
         enemy.facing = EnemySpawner.randomFacing();
         return enemy;
     }
@@ -160,7 +162,7 @@ export class EnemySpawner extends Entity {
 
         let enemy = new WalkingEnemyEntity(location, animations, context);
         enemy.hitpoints = 20;
-        enemy.speed = 100;
+        enemy.speed = 100 * speedModifier;
         enemy.facing = EnemySpawner.randomFacing();
         enemy.heavy = true;
         return enemy;
@@ -169,7 +171,7 @@ export class EnemySpawner extends Entity {
     public static createFlyingEnemy(location: Vector, context: IGameContext) {
         let enemy = new FlyingEnemyEntity(location, context);
         enemy.hitpoints = 5;
-        enemy.speed = 20;
+        enemy.speed = 20 * speedModifier;
         return enemy;
     }
 
